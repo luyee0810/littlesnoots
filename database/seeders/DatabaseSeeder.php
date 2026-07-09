@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Breed;
+use App\Models\Organization;
 use App\Models\Pet;
 use App\Models\PetPhoto;
 use App\Models\Species;
@@ -29,6 +30,31 @@ class DatabaseSeeder extends Seeder
             'email' => 'staff@twofatcats.test',
             'role' => 'staff',
         ]);
+
+        // ---- Organizations (shelters / rescues) --------------------
+        $twoFatCats = Organization::create([
+            'name' => 'Two Fat Cats Shelter',
+            'slug' => 'two-fat-cats-shelter',
+            'type' => 'shelter',
+            'email' => 'hello@twofatcats.test',
+            'phone' => '(555) 012-3456',
+            'website' => 'https://twofatcats.test',
+            'address1' => '12 Whisker Lane',
+            'city' => 'Portland',
+            'state' => 'ME',
+            'postcode' => '04101',
+            'country' => 'US',
+            'mission_statement' => 'Two Fat Cats is a no-kill shelter dedicated to rehoming abandoned and surrendered pets across New England.',
+            'adoption_policy' => 'Adopters must be 18+, complete an application, and pass a brief home check. Fees cover vaccinations and spay/neuter.',
+            'hours' => [
+                'mon' => '10:00–17:00', 'tue' => '10:00–17:00', 'wed' => '10:00–17:00',
+                'thu' => '10:00–17:00', 'fri' => '10:00–17:00', 'sat' => '10:00–15:00', 'sun' => 'Closed',
+            ],
+            'facebook' => 'https://facebook.com/twofatcats',
+            'instagram' => 'https://instagram.com/twofatcats',
+        ]);
+
+        $organizations = collect([$twoFatCats])->merge(Organization::factory(2)->create());
 
         // ---- Species + breeds --------------------------------------
         $taxonomy = [
@@ -64,10 +90,17 @@ class DatabaseSeeder extends Seeder
                 ->for($species[$speciesName])
                 ->create([
                     'listed_by' => $staff->id,
+                    'organization_id' => $organizations->random()->id,
+                    // Cats can't be "good with cats" flagged oddly; keep declawed only for cats
+                    'declawed' => $speciesName === 'Cat' ? fake()->boolean(15) : false,
                 ])
-                ->each(function (Pet $pet) use ($breedPool, $speciesName) {
+                ->each(function (Pet $pet) use ($breedPool, $speciesName, $organizations) {
+                    $breeds = collect($breedPool[$speciesName]);
+
                     $pet->update([
-                        'breed_id' => fake()->randomElement($breedPool[$speciesName])->id,
+                        'organization_id' => $organizations->random()->id,
+                        'breed_id' => $breeds->random()->id,
+                        'secondary_breed_id' => $pet->breed_mixed ? $breeds->random()->id : null,
                     ]);
 
                     // Two placeholder photos per pet (seeded by pet id for stability).
