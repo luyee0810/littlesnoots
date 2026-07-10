@@ -18,10 +18,23 @@
                 <a href="{{ route('pets.index') }}" class="hover:text-amber-700">Adopt</a>
                 <span class="cursor-not-allowed text-stone-400" title="Coming soon">Services</span>
                 <span class="cursor-not-allowed text-stone-400" title="Coming soon">Shop</span>
-                <a href="{{ route('pets.index') }}"
-                   class="rounded-full bg-amber-600 px-4 py-1.5 text-white shadow-sm transition hover:bg-amber-700">
-                    Find a pet
-                </a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="hover:text-amber-700">Dashboard</a>
+                    <form method="POST" action="{{ route('logout') }}" class="flex items-center">
+                        @csrf
+                        <button type="submit" class="text-stone-500 hover:text-amber-700">Log out</button>
+                    </form>
+                    <a href="{{ route('pets.index') }}"
+                       class="rounded-full bg-amber-600 px-4 py-1.5 text-white shadow-sm transition hover:bg-amber-700">
+                        Find a pet
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="hover:text-amber-700">Log in</a>
+                    <a href="{{ route('register') }}"
+                       class="rounded-full bg-amber-600 px-4 py-1.5 text-white shadow-sm transition hover:bg-amber-700">
+                        Sign up
+                    </a>
+                @endauth
             </div>
         </nav>
     </header>

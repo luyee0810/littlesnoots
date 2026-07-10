@@ -14,7 +14,7 @@ are needed) so the codebase stays uniform.
 - **Data:** seeded species/breeds + demo pets with photos; admin & staff demo users.
 
 ### Remaining Phase 1 polish
-- [ ] Auth (Laravel Breeze/Fortify) so adopters have accounts and can track applications.
+- [x] Auth (hand-rolled native Laravel auth) so adopters have accounts and can track applications — register/login/logout, password reset, and a `/dashboard` listing the user's applications.
 - [ ] Staff dashboard: manage pet listings, review applications, change status.
 - [ ] Authorization policies (`PetPolicy`, `AdoptionApplicationPolicy`).
 - [ ] Real image uploads (currently placeholder URLs) via the `public` storage disk.
