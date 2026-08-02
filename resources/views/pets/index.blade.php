@@ -8,116 +8,89 @@
 @endphp
 
 @section('content')
-    <div class="mx-auto max-w-6xl px-4 py-10">
-        <h1 class="text-3xl font-semibold text-stone-900">Adoptable pets</h1>
-        <p class="mt-1 text-stone-600">{{ $pets->total() }} {{ Str::plural('friend', $pets->total()) }} looking for a home.</p>
+    <div class="shell page">
+        <div class="page-head">
+            <div>
+                <p class="kicker">Adoption</p>
+                <h1>Adoptable pets</h1>
+            </div>
+            <p class="meta">
+                {{ $pets->total() }} {{ Str::plural('friend', $pets->total()) }} looking for a home
+            </p>
+        </div>
 
-        <div class="mt-6 grid gap-8 lg:grid-cols-[18rem_1fr]">
-            {{-- Filter sidebar --}}
-            <form method="GET" class="h-max rounded-2xl border border-stone-200 bg-white p-5">
-                <div class="space-y-5 text-sm">
-                    <div>
-                        <label class="mb-1 block font-medium text-stone-700">Search</label>
-                        <input type="search" name="q" value="{{ $val('q') }}" placeholder="Name or keyword…"
-                               class="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-500 focus:ring-amber-500">
-                    </div>
+        <div class="results-layout">
+            {{-- ---- Filters ------------------------------------------------ --}}
+            <form method="GET" class="filters">
+                <div class="field">
+                    <label for="q">Search</label>
+                    <input type="search" id="q" name="q" value="{{ $val('q') }}" placeholder="Name or keyword…" class="input">
+                </div>
 
-                    <div>
-                        <label class="mb-1 block font-medium text-stone-700">Type</label>
-                        <select name="species" class="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-500 focus:ring-amber-500">
+                @foreach ([
+                    'species' => ['Type', $species->pluck('name', 'slug')->all()],
+                    'age' => ['Age', ['baby' => 'Baby', 'young' => 'Young', 'adult' => 'Adult', 'senior' => 'Senior']],
+                    'gender' => ['Gender', ['male' => 'Male', 'female' => 'Female']],
+                    'size' => ['Size', ['small' => 'Small', 'medium' => 'Medium', 'large' => 'Large', 'extra_large' => 'Extra large']],
+                    'coat' => ['Coat length', ['hairless' => 'Hairless', 'short' => 'Short', 'medium' => 'Medium', 'long' => 'Long', 'wire' => 'Wire', 'curly' => 'Curly']],
+                ] as $name => [$label, $options])
+                    <div class="field">
+                        <label for="filter-{{ $name }}">{{ $label }}</label>
+                        <select id="filter-{{ $name }}" name="{{ $name }}" class="select">
                             <option value="">Any</option>
-                            @foreach ($species as $s)
-                                <option value="{{ $s->slug }}" @selected($val('species') === $s->slug)>{{ $s->name }}</option>
+                            @foreach ($options as $key => $option)
+                                <option value="{{ $key }}" @selected($val($name) === (string) $key)>{{ $option }}</option>
                             @endforeach
                         </select>
                     </div>
+                @endforeach
 
-                    <div>
-                        <label class="mb-1 block font-medium text-stone-700">Age</label>
-                        <select name="age" class="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-500 focus:ring-amber-500">
-                            <option value="">Any</option>
-                            @foreach (['baby' => 'Baby', 'young' => 'Young', 'adult' => 'Adult', 'senior' => 'Senior'] as $k => $label)
-                                <option value="{{ $k }}" @selected($val('age') === $k)>{{ $label }}</option>
-                            @endforeach
-                        </select>
+                <fieldset class="fieldset">
+                    <legend>Good in a home with</legend>
+                    <div class="check-stack">
+                        @foreach (['good_with_children' => 'Children', 'good_with_dogs' => 'Dogs', 'good_with_cats' => 'Cats'] as $k => $label)
+                            <label class="check">
+                                <input type="checkbox" name="{{ $k }}" value="1" @checked($checked($k))>
+                                {{ $label }}
+                            </label>
+                        @endforeach
                     </div>
+                </fieldset>
 
-                    <div>
-                        <label class="mb-1 block font-medium text-stone-700">Gender</label>
-                        <select name="gender" class="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-500 focus:ring-amber-500">
-                            <option value="">Any</option>
-                            @foreach (['male' => 'Male', 'female' => 'Female'] as $k => $label)
-                                <option value="{{ $k }}" @selected($val('gender') === $k)>{{ $label }}</option>
-                            @endforeach
-                        </select>
+                <fieldset class="fieldset">
+                    <legend>Care &amp; behaviour</legend>
+                    <div class="check-stack">
+                        @foreach (['house_trained' => 'House-trained', 'special_needs' => 'Special needs'] as $k => $label)
+                            <label class="check">
+                                <input type="checkbox" name="{{ $k }}" value="1" @checked($checked($k))>
+                                {{ $label }}
+                            </label>
+                        @endforeach
                     </div>
+                </fieldset>
 
-                    <div>
-                        <label class="mb-1 block font-medium text-stone-700">Size</label>
-                        <select name="size" class="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-500 focus:ring-amber-500">
-                            <option value="">Any</option>
-                            @foreach (['small' => 'Small', 'medium' => 'Medium', 'large' => 'Large', 'extra_large' => 'Extra Large'] as $k => $label)
-                                <option value="{{ $k }}" @selected($val('size') === $k)>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="mb-1 block font-medium text-stone-700">Coat length</label>
-                        <select name="coat" class="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-500 focus:ring-amber-500">
-                            <option value="">Any</option>
-                            @foreach (['hairless', 'short', 'medium', 'long', 'wire', 'curly'] as $k)
-                                <option value="{{ $k }}" @selected($val('coat') === $k)>{{ ucfirst($k) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <fieldset>
-                        <legend class="mb-2 font-medium text-stone-700">Good in a home with</legend>
-                        <div class="space-y-2">
-                            @foreach (['good_with_children' => 'Children', 'good_with_dogs' => 'Dogs', 'good_with_cats' => 'Cats'] as $k => $label)
-                                <label class="flex items-center gap-2 text-stone-600">
-                                    <input type="checkbox" name="{{ $k }}" value="1" @checked($checked($k))
-                                           class="rounded border-stone-300 text-amber-600 focus:ring-amber-500">
-                                    {{ $label }}
-                                </label>
-                            @endforeach
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend class="mb-2 font-medium text-stone-700">Care &amp; behaviour</legend>
-                        <div class="space-y-2">
-                            @foreach (['house_trained' => 'House-trained', 'special_needs' => 'Special needs'] as $k => $label)
-                                <label class="flex items-center gap-2 text-stone-600">
-                                    <input type="checkbox" name="{{ $k }}" value="1" @checked($checked($k))
-                                           class="rounded border-stone-300 text-amber-600 focus:ring-amber-500">
-                                    {{ $label }}
-                                </label>
-                            @endforeach
-                        </div>
-                    </fieldset>
-
-                    <div class="flex gap-2 pt-2">
-                        <button class="flex-1 rounded-lg bg-amber-600 px-4 py-2 font-medium text-white hover:bg-amber-700">Apply filters</button>
-                        <a href="{{ route('pets.index') }}" class="rounded-lg border border-stone-300 px-4 py-2 text-stone-600 hover:bg-stone-50">Reset</a>
-                    </div>
+                <div class="filters__actions">
+                    <button class="btn btn--primary btn--sm">Apply filters</button>
+                    <a href="{{ route('pets.index') }}" class="btn btn--outline btn--sm">Reset</a>
                 </div>
             </form>
 
-            {{-- Results --}}
+            {{-- ---- Results ------------------------------------------------ --}}
             <div>
                 @if ($pets->isEmpty())
-                    <div class="rounded-2xl border border-dashed border-stone-300 p-12 text-center text-stone-500">
-                        No pets match your filters. Try widening your search.
+                    <div class="empty">
+                        <p class="empty__icon">🔍</p>
+                        <h2>No pets match your filters</h2>
+                        <p>Try widening your search — fewer filters usually turns up more friends.</p>
+                        <a href="{{ route('pets.index') }}" class="btn btn--outline btn--sm">Clear all filters</a>
                     </div>
                 @else
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                    <div class="card-grid">
                         @foreach ($pets as $pet)
                             @include('partials.pet-card')
                         @endforeach
                     </div>
-                    <div class="mt-10">{{ $pets->links() }}</div>
+                    <div class="pagination-wrap">{{ $pets->links() }}</div>
                 @endif
             </div>
         </div>

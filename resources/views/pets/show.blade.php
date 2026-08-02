@@ -2,110 +2,124 @@
 
 @section('title', $pet->name.' — Two Fat Cats')
 
-@section('content')
-    <div class="mx-auto max-w-5xl px-4 py-10">
-        <a href="{{ route('pets.index') }}" class="text-sm text-amber-700 hover:underline">&larr; Back to all pets</a>
+@php
+    $photos = $pet->photos;
+    $statusTone = match ($pet->status) {
+        'available' => 'status--ok',
+        'pending' => 'status--warn',
+        default => 'status--idle',
+    };
+@endphp
 
-        <div class="mt-4 grid gap-10 lg:grid-cols-2">
-            {{-- Gallery --}}
+@section('content')
+    <div class="shell page">
+        <a href="{{ route('pets.index') }}" class="back-link">
+            <i data-lucide="arrow-left" aria-hidden="true"></i> All pets
+        </a>
+
+        <div class="mt-6 grid gap-10 lg:grid-cols-2">
+            {{-- ---- Gallery ------------------------------------------------ --}}
             <div>
-                @php($photos = $pet->photos)
-                <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-stone-100">
+                <div class="listing__media" style="border-radius:var(--r-md);border:1px solid var(--rule)">
                     @if ($photos->isNotEmpty())
-                        <img src="{{ $photos->first()->url() }}" alt="{{ $photos->first()->alt }}" class="h-full w-full object-cover">
+                        <img src="{{ $photos->first()->url() }}" alt="{{ $photos->first()->alt ?? 'Photo of '.$pet->name }}">
                     @else
-                        <div class="flex h-full items-center justify-center text-6xl">🐾</div>
+                        <div class="listing__fallback"><i data-lucide="paw-print" aria-hidden="true"></i></div>
                     @endif
                 </div>
+
                 @if ($photos->count() > 1)
                     <div class="mt-3 grid grid-cols-4 gap-3">
                         @foreach ($photos as $photo)
-                            <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" class="aspect-square w-full rounded-lg object-cover">
+                            <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy"
+                                 class="aspect-square w-full object-cover"
+                                 style="border-radius:var(--r-sm);border:1px solid var(--rule)">
                         @endforeach
                     </div>
                 @endif
             </div>
 
-            {{-- Summary --}}
+            {{-- ---- Summary ------------------------------------------------ --}}
             <div>
-                <div class="flex items-center gap-3">
-                    <h1 class="text-3xl font-semibold text-stone-900">{{ $pet->name }}</h1>
-                    <span @class([
-                        'rounded-full px-3 py-1 text-xs font-medium capitalize',
-                        'bg-emerald-100 text-emerald-800' => $pet->status === 'available',
-                        'bg-amber-100 text-amber-800' => $pet->status === 'pending',
-                        'bg-stone-200 text-stone-600' => in_array($pet->status, ['adopted', 'found', 'unavailable']),
-                    ])>{{ $pet->status }}</span>
+                <p class="kicker">{{ $pet->species->name }}</p>
+
+                <div class="flex flex-wrap items-center gap-4">
+                    <h1 style="font-size:clamp(2.4rem,5vw,3.4rem)">{{ $pet->name }}</h1>
+                    <span class="status {{ $statusTone }}">{{ $pet->status }}</span>
                 </div>
-                <p class="mt-1 text-stone-600">{{ $pet->breedLabel() }} · {{ $pet->species->name }}</p>
 
-                {{-- Characteristics --}}
-                <dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
-                    <div><dt class="text-stone-500">Age</dt><dd class="font-medium capitalize">{{ $pet->age_group ?? '—' }}{{ $pet->ageForHumans() && $pet->age_months ? ' ('.$pet->ageForHumans().')' : '' }}</dd></div>
-                    <div><dt class="text-stone-500">Gender</dt><dd class="font-medium capitalize">{{ $pet->gender }}</dd></div>
-                    <div><dt class="text-stone-500">Size</dt><dd class="font-medium capitalize">{{ $pet->size ? str_replace('_', ' ', $pet->size) : '—' }}</dd></div>
-                    <div><dt class="text-stone-500">Coat length</dt><dd class="font-medium capitalize">{{ $pet->coat ?? '—' }}</dd></div>
-                    <div><dt class="text-stone-500">Color</dt><dd class="font-medium">{{ $pet->colorLabel() ?? '—' }}</dd></div>
-                    <div><dt class="text-stone-500">Adoption fee</dt><dd class="font-medium text-amber-700">{{ $pet->adoption_fee > 0 ? '$'.number_format($pet->adoption_fee, 0) : 'Free' }}</dd></div>
-                </dl>
+                <p class="lede" style="margin-top:.5rem">{{ $pet->breedLabel() }}</p>
 
-                {{-- Personality tags --}}
                 @if (! empty($pet->tags))
-                    <div class="mt-6">
-                        <h3 class="text-sm font-medium text-stone-500">Personality</h3>
-                        <div class="mt-2 flex flex-wrap gap-2">
-                            @foreach ($pet->tags as $tag)
-                                <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800">{{ $tag }}</span>
-                            @endforeach
-                        </div>
+                    <div class="chip-row" style="margin-top:1.25rem">
+                        @foreach ($pet->tags as $tag)
+                            <span class="chip chip--butter">{{ $tag }}</span>
+                        @endforeach
                     </div>
                 @endif
 
+                <dl class="dl dl--cols" style="margin-top:1.75rem">
+                    <div>
+                        <dt>Age</dt>
+                        <dd>{{ $pet->ageForHumans() ?? (ucfirst((string) $pet->age_group) ?: '—') }}</dd>
+                    </div>
+                    <div><dt>Gender</dt><dd class="capitalize">{{ $pet->gender ?: '—' }}</dd></div>
+                    <div><dt>Size</dt><dd class="capitalize">{{ $pet->size ? str_replace('_', ' ', $pet->size) : '—' }}</dd></div>
+                    <div><dt>Coat</dt><dd class="capitalize">{{ $pet->coat ?: '—' }}</dd></div>
+                    <div><dt>Colour</dt><dd>{{ $pet->colorLabel() ?: '—' }}</dd></div>
+                    <div>
+                        <dt>Adoption fee</dt>
+                        <dd class="price">{{ $pet->adoption_fee > 0 ? 'RM '.number_format($pet->adoption_fee, 0) : 'Free' }}</dd>
+                    </div>
+                </dl>
+
                 @if ($pet->status === 'available')
-                    <a href="#apply" class="mt-8 inline-block rounded-full bg-amber-600 px-6 py-3 font-medium text-white shadow-sm transition hover:bg-amber-700">
-                        Considering {{ $pet->name }} for adoption?
+                    <a href="#apply" class="btn btn--accent" style="margin-top:2rem">
+                        Apply to adopt {{ $pet->name }} <i data-lucide="arrow-right" aria-hidden="true"></i>
                     </a>
                 @endif
             </div>
         </div>
 
-        {{-- About + attributes --}}
-        <div class="mt-12 grid gap-8 lg:grid-cols-3">
-            <div class="lg:col-span-2">
-                <h2 class="text-xl font-semibold text-stone-900">Meet {{ $pet->name }}</h2>
+        {{-- ---- About + shelter -------------------------------------------- --}}
+        <div class="section-gap grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+            <div>
+                <h2 style="font-size:1.75rem">Meet {{ $pet->name }}</h2>
                 @if ($pet->description)
-                    <p class="mt-3 whitespace-pre-line leading-relaxed text-stone-700">{{ $pet->description }}</p>
+                    <p class="prose" style="margin-top:1rem">{{ $pet->description }}</p>
                 @else
-                    <p class="mt-3 text-stone-500">No description provided yet.</p>
+                    <p class="meta" style="margin-top:1rem">No description provided yet.</p>
                 @endif
 
-                <div class="mt-8 grid gap-8 sm:grid-cols-2">
+                <div class="section-gap grid gap-8 sm:grid-cols-2">
                     <div>
-                        <h3 class="font-medium text-stone-900">Health &amp; care</h3>
-                        <ul class="mt-3 space-y-2 text-sm">
+                        <p class="label">Health &amp; care</p>
+                        <ul class="ticks" style="margin-top:.9rem">
                             @foreach ([
                                 'spayed_neutered' => 'Spayed / neutered',
-                                'shots_current'   => 'Vaccinations up to date',
-                                'house_trained'   => 'House-trained',
-                                'declawed'        => 'Declawed',
-                                'special_needs'   => 'Special needs',
+                                'shots_current' => 'Vaccinations up to date',
+                                'house_trained' => 'House-trained',
+                                'declawed' => 'Declawed',
+                                'special_needs' => 'Special needs',
                             ] as $flag => $label)
-                                <li class="flex items-center gap-2 {{ $pet->$flag ? 'text-stone-700' : 'text-stone-400' }}">
-                                    <span>{{ $pet->$flag ? '✓' : '—' }}</span> {{ $label }}
+                                <li @if (! $pet->$flag) data-off @endif>
+                                    <span class="tick" aria-hidden="true">{{ $pet->$flag ? '✓' : '–' }}</span>
+                                    {{ $label }}
                                 </li>
                             @endforeach
                         </ul>
                     </div>
                     <div>
-                        <h3 class="font-medium text-stone-900">Good in a home with</h3>
-                        <ul class="mt-3 space-y-2 text-sm">
+                        <p class="label">Good in a home with</p>
+                        <ul class="ticks" style="margin-top:.9rem">
                             @foreach ([
                                 'good_with_children' => 'Children',
-                                'good_with_dogs'     => 'Dogs',
-                                'good_with_cats'     => 'Cats',
+                                'good_with_dogs' => 'Dogs',
+                                'good_with_cats' => 'Cats',
                             ] as $flag => $label)
-                                <li class="flex items-center gap-2 {{ $pet->$flag ? 'text-stone-700' : 'text-stone-400' }}">
-                                    <span>{{ $pet->$flag ? '✓' : '—' }}</span> {{ $label }}
+                                <li @if (! $pet->$flag) data-off @endif>
+                                    <span class="tick" aria-hidden="true">{{ $pet->$flag ? '✓' : '–' }}</span>
+                                    {{ $label }}
                                 </li>
                             @endforeach
                         </ul>
@@ -113,96 +127,118 @@
                 </div>
             </div>
 
-            {{-- Organization / shelter card --}}
             @if ($pet->organization)
                 @php($org = $pet->organization)
-                <aside class="h-max rounded-2xl border border-stone-200 bg-white p-6">
-                    <p class="text-xs font-medium uppercase tracking-wide text-stone-400">{{ ucfirst($org->type) }}</p>
-                    <h3 class="mt-1 font-semibold text-stone-900">{{ $org->name }}</h3>
+                <aside class="card card-pad" style="align-self:start">
+                    <p class="label">{{ ucfirst($org->type) }}</p>
+                    <h3 style="margin-top:.5rem;font-size:1.3rem">{{ $org->name }}</h3>
+
                     @if ($org->fullAddress())
-                        <p class="mt-2 text-sm text-stone-600">📍 {{ $org->fullAddress() }}</p>
+                        <p class="listing__place"><i data-lucide="map-pin" aria-hidden="true"></i>{{ $org->fullAddress() }}</p>
                     @endif
-                    <dl class="mt-4 space-y-1 text-sm text-stone-600">
-                        @if ($org->phone)<div>📞 {{ $org->phone }}</div>@endif
-                        @if ($org->email)<div>✉️ <a href="mailto:{{ $org->email }}" class="text-amber-700 hover:underline">{{ $org->email }}</a></div>@endif
-                        @if ($org->website)<div>🌐 <a href="{{ $org->website }}" class="text-amber-700 hover:underline">Website</a></div>@endif
+
+                    <dl class="dl" style="margin-top:1.25rem">
+                        @if ($org->phone)<div><dt>Phone</dt><dd>{{ $org->phone }}</dd></div>@endif
+                        @if ($org->email)
+                            <div><dt>Email</dt><dd><a href="mailto:{{ $org->email }}" class="link-quiet">{{ $org->email }}</a></dd></div>
+                        @endif
+                        @if ($org->website)
+                            <div><dt>Website</dt><dd><a href="{{ $org->website }}" class="link-quiet">Visit site</a></dd></div>
+                        @endif
                     </dl>
+
                     @if ($org->hours)
-                        <details class="mt-4 text-sm">
-                            <summary class="cursor-pointer font-medium text-stone-700">Opening hours</summary>
-                            <ul class="mt-2 space-y-0.5 text-stone-600">
+                        <details style="margin-top:1.25rem">
+                            <summary class="label" style="cursor:pointer">Opening hours</summary>
+                            <dl class="dl" style="margin-top:.5rem">
                                 @foreach ($org->hours as $day => $time)
-                                    <li class="flex justify-between"><span class="capitalize">{{ $day }}</span><span>{{ $time }}</span></li>
+                                    <div><dt>{{ $day }}</dt><dd>{{ $time }}</dd></div>
                                 @endforeach
-                            </ul>
+                            </dl>
                         </details>
                     @endif
+
                     @if ($org->adoption_policy)
-                        <details class="mt-3 text-sm">
-                            <summary class="cursor-pointer font-medium text-stone-700">Adoption policy</summary>
-                            <p class="mt-2 text-stone-600">{{ $org->adoption_policy }}</p>
+                        <details style="margin-top:1rem">
+                            <summary class="label" style="cursor:pointer">Adoption policy</summary>
+                            <p class="meta" style="margin-top:.5rem">{{ $org->adoption_policy }}</p>
                         </details>
                     @endif
                 </aside>
             @endif
         </div>
 
-        {{-- Adoption application --}}
+        {{-- ---- Application ------------------------------------------------ --}}
         @if ($pet->status === 'available')
-            <div id="apply" class="mt-12 rounded-2xl border border-stone-200 bg-white p-6 sm:p-8">
-                <h2 class="text-xl font-semibold text-stone-900">Apply to adopt {{ $pet->name }}</h2>
-                <p class="mt-1 text-sm text-stone-600">Fill in your details and {{ $pet->organization?->name ?? 'our team' }} will reach out to arrange a meet.</p>
+            <section id="apply" class="panel section-gap">
+                <div class="panel__head">
+                    <div>
+                        <h2>Apply to adopt {{ $pet->name }}</h2>
+                        <p class="meta" style="margin-top:.25rem">
+                            {{ $pet->organization?->name ?? 'Our team' }} will reach out to arrange a meet.
+                        </p>
+                    </div>
+                </div>
 
-                @if ($errors->any())
-                    <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Please correct the errors below.</div>
-                @endif
+                <div class="panel__body">
+                    @if ($errors->any())
+                        <div class="alert alert--bad" style="margin-bottom:1.5rem">Please correct the errors below.</div>
+                    @endif
 
-                <form method="POST" action="{{ route('pets.apply', $pet) }}" class="mt-6 grid gap-4 sm:grid-cols-2">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700">Your name *</label>
-                        <input name="applicant_name" value="{{ old('applicant_name') }}" required
-                               class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:ring-amber-500">
-                        @error('applicant_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700">Email *</label>
-                        <input type="email" name="applicant_email" value="{{ old('applicant_email') }}" required
-                               class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:ring-amber-500">
-                        @error('applicant_email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700">Phone</label>
-                        <input name="applicant_phone" value="{{ old('applicant_phone') }}"
-                               class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:ring-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700">Home type</label>
-                        <select name="home_type" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:ring-amber-500">
-                            <option value="">Prefer not to say</option>
-                            <option value="apartment" @selected(old('home_type') === 'apartment')>Apartment</option>
-                            <option value="house" @selected(old('home_type') === 'house')>House</option>
-                            <option value="other" @selected(old('home_type') === 'other')>Other</option>
-                        </select>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-sm font-medium text-stone-700">Why would you be a great match?</label>
-                        <textarea name="message" rows="4"
-                                  class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:ring-amber-500">{{ old('message') }}</textarea>
-                    </div>
-                    <label class="flex items-center gap-2 text-sm text-stone-700 sm:col-span-2">
-                        <input type="checkbox" name="has_other_pets" value="1" @checked(old('has_other_pets'))
-                               class="rounded border-stone-300 text-amber-600 focus:ring-amber-500">
-                        I currently have other pets at home
-                    </label>
-                    <div class="sm:col-span-2">
-                        <button class="rounded-full bg-amber-600 px-6 py-3 font-medium text-white shadow-sm transition hover:bg-amber-700">Submit application</button>
-                    </div>
-                </form>
-            </div>
+                    <form method="POST" action="{{ route('pets.apply', $pet) }}" class="form-grid form-grid--2">
+                        @csrf
+
+                        <div class="field">
+                            <label for="applicant_name">Your name *</label>
+                            <input id="applicant_name" name="applicant_name" value="{{ old('applicant_name') }}" required
+                                   class="input" @error('applicant_name') aria-invalid="true" @enderror>
+                            @error('applicant_name')<p class="field-error">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div class="field">
+                            <label for="applicant_email">Email *</label>
+                            <input id="applicant_email" type="email" name="applicant_email" value="{{ old('applicant_email') }}" required
+                                   class="input" @error('applicant_email') aria-invalid="true" @enderror>
+                            @error('applicant_email')<p class="field-error">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div class="field">
+                            <label for="applicant_phone">Phone</label>
+                            <input id="applicant_phone" name="applicant_phone" value="{{ old('applicant_phone') }}" class="input">
+                        </div>
+
+                        <div class="field">
+                            <label for="home_type">Home type</label>
+                            <select id="home_type" name="home_type" class="select">
+                                <option value="">Prefer not to say</option>
+                                @foreach (['apartment' => 'Apartment', 'house' => 'House', 'other' => 'Other'] as $k => $label)
+                                    <option value="{{ $k }}" @selected(old('home_type') === $k)>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="field span-2">
+                            <label for="message">Why would you be a great match?</label>
+                            <textarea id="message" name="message" rows="4" class="textarea">{{ old('message') }}</textarea>
+                        </div>
+
+                        <label class="check span-2">
+                            <input type="checkbox" name="has_other_pets" value="1" @checked(old('has_other_pets'))>
+                            I currently have other pets at home
+                        </label>
+
+                        <div class="span-2">
+                            <button class="btn btn--accent">Submit application <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </section>
         @else
-            <div class="mt-12 rounded-2xl border border-stone-200 bg-stone-100 p-6 text-center text-stone-600">
-                {{ $pet->name }} is no longer available for adoption.
+            <div class="empty section-gap">
+                <p class="empty__icon">🏡</p>
+                <h2>{{ $pet->name }} is no longer available</h2>
+                <p>They've found their home — but plenty of others are still looking.</p>
+                <a href="{{ route('pets.index') }}" class="btn btn--outline btn--sm">Browse available pets</a>
             </div>
         @endif
     </div>

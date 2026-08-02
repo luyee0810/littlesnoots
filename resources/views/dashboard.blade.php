@@ -3,88 +3,146 @@
 @section('title', 'My dashboard — Two Fat Cats')
 
 @section('content')
-<div class="mx-auto max-w-4xl px-4 py-12">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-semibold text-stone-900">Hello, {{ auth()->user()->name }}</h1>
-            <p class="mt-1 text-stone-500">
-                {{ auth()->user()->isStaff() ? "Manage the pets you've listed for adoption." : "Track the adoption applications you've submitted." }}
-            </p>
+    <div class="shell-mid page">
+        <div class="page-head">
+            <div>
+                <p class="kicker">Your account</p>
+                <h1>Hello, {{ auth()->user()->name }}</h1>
+                <p class="lede" style="margin-top:.5rem">
+                    {{ auth()->user()->isStaff()
+                        ? "Manage the pets you've listed for adoption."
+                        : "Track the adoption applications you've submitted." }}
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                @if ($providerProfile)
+                    <a href="{{ route('provider.bookings.index') }}" class="btn btn--outline btn--sm">Sitter dashboard</a>
+                @else
+                    <a href="{{ route('provider.onboarding') }}" class="btn btn--outline btn--sm">Become a sitter</a>
+                @endif
+                <a href="{{ route('pets.index') }}" class="btn btn--accent btn--sm">Browse pets</a>
+            </div>
         </div>
-        <a href="{{ route('pets.index') }}"
-           class="rounded-full bg-amber-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-amber-700">
-            Browse pets
-        </a>
-    </div>
 
-    @isset($listedPets)
-        {{-- Rehomer view: pets this member has posted for adoption --}}
-        <div class="mt-8 space-y-4">
-            @forelse ($listedPets as $pet)
-                @php($photo = $pet->primaryPhoto())
-                <div class="flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-                    <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-stone-100">
-                        @if ($photo)
-                            <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" class="h-full w-full object-cover">
-                        @else
-                            <div class="flex h-full items-center justify-center text-3xl">🐾</div>
-                        @endif
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <a href="{{ route('pets.show', $pet) }}" class="font-semibold text-stone-900 hover:text-amber-700">{{ $pet->name }}</a>
-                        <p class="text-sm text-stone-500">{{ $pet->breedLabel() }}</p>
+        {{-- ---- Service bookings (Phase 2) -------------------------------- --}}
+        <section class="section-gap">
+            <div class="flex flex-wrap items-baseline justify-between gap-4">
+                <p class="label">My service bookings</p>
+                <a href="{{ route('services.index') }}" class="link-quiet" style="font-size:.85rem">Find a sitter →</a>
+            </div>
+
+            @if ($bookings->isEmpty())
+                <div class="empty" style="margin-top:1rem;padding-block:2.5rem">
+                    <p class="empty__icon">🏡</p>
+                    <h2>No bookings yet</h2>
+                    <p>Browse boarding, walking and grooming near you.</p>
+                    <a href="{{ route('services.index') }}" class="btn btn--outline btn--sm">Find a sitter</a>
+                </div>
+            @else
+                <div class="panel rows" style="margin-top:1rem">
+                    @foreach ($bookings as $booking)
+                        <div class="row">
+                            <div style="min-width:0">
+                                <a href="{{ route('bookings.show', $booking) }}" class="link-draw" style="font-weight:600">
+                                    <span aria-hidden="true">{{ $booking->category->icon }}</span>
+                                    {{ $booking->category->name }} for {{ $booking->pet_name }}
+                                </a>
+                                <p class="meta" style="margin-top:.3rem">
+                                    {{ $booking->providerProfile->user->name }} · {{ $booking->dateRangeLabel() }}
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="price" style="font-size:1rem">{{ $booking->totalLabel() }}</span>
+                                <span class="status {{ $booking->statusClasses() }}">{{ $booking->statusLabel() }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
+        {{-- ---- Adoption ---------------------------------------------------- --}}
+        <section class="section-gap">
+            <p class="label">
+                {{ auth()->user()->isStaff() ? 'Pets I’ve listed' : 'My adoption applications' }}
+            </p>
+
+            @isset($listedPets)
+                {{-- Rehomer view: pets this member has posted for adoption --}}
+                <div class="panel rows" style="margin-top:1rem">
+                    @forelse ($listedPets as $pet)
+                        @php($photo = $pet->primaryPhoto())
                         @php($applicationCount = $pet->applications()->count())
-                        <p class="mt-1 text-xs text-stone-400">{{ $applicationCount }} {{ \Illuminate\Support\Str::plural('application', $applicationCount) }}</p>
-                    </div>
-                    <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium capitalize text-stone-600">{{ $pet->status }}</span>
+                        <div class="row">
+                            <div class="flex items-center gap-4" style="min-width:0">
+                                <div class="thumb">
+                                    @if ($photo)
+                                        <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy">
+                                    @else
+                                        <span aria-hidden="true">🐾</span>
+                                    @endif
+                                </div>
+                                <div style="min-width:0">
+                                    <a href="{{ route('pets.show', $pet) }}" class="link-draw" style="font-weight:600">{{ $pet->name }}</a>
+                                    <p class="meta" style="margin-top:.2rem">{{ $pet->breedLabel() }}</p>
+                                    <p class="meta" style="font-size:.78rem">
+                                        {{ $applicationCount }} {{ \Illuminate\Support\Str::plural('application', $applicationCount) }}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="status status--idle">{{ $pet->status }}</span>
+                        </div>
+                    @empty
+                        <div class="empty" style="border:0;padding-block:2.5rem">
+                            <p class="empty__icon">📋</p>
+                            <h2>You haven't listed any pets yet</h2>
+                            <p>Listing management is coming soon — you'll be able to post pets right here.</p>
+                        </div>
+                    @endforelse
                 </div>
-            @empty
-                <div class="rounded-2xl border border-dashed border-stone-300 bg-white p-10 text-center">
-                    <p class="text-lg text-stone-700">You haven't listed any pets yet.</p>
-                    <p class="mt-1 text-sm text-stone-500">Listing management is coming soon — you'll be able to post pets right here.</p>
+            @else
+                {{-- Adopter view: applications this member has submitted --}}
+                <div class="panel rows" style="margin-top:1rem">
+                    @forelse ($applications as $application)
+                        @php($pet = $application->pet)
+                        @php($photo = $pet?->primaryPhoto())
+                        <div class="row">
+                            <div class="flex items-center gap-4" style="min-width:0">
+                                <div class="thumb">
+                                    @if ($photo)
+                                        <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy">
+                                    @else
+                                        <span aria-hidden="true">🐾</span>
+                                    @endif
+                                </div>
+                                <div style="min-width:0">
+                                    @if ($pet)
+                                        <a href="{{ route('pets.show', $pet) }}" class="link-draw" style="font-weight:600">{{ $pet->name }}</a>
+                                        <p class="meta" style="margin-top:.2rem">{{ $pet->breedLabel() }}</p>
+                                    @else
+                                        <p style="font-weight:600">Pet no longer listed</p>
+                                    @endif
+                                    <p class="meta" style="font-size:.78rem">Applied {{ $application->created_at->format('M j, Y') }}</p>
+                                </div>
+                            </div>
+                            <span @class([
+                                'status',
+                                'status--warn' => $application->status === 'pending',
+                                'status--ok' => $application->status === 'approved',
+                                'status--bad' => $application->status === 'rejected',
+                                'status--idle' => ! in_array($application->status, ['pending', 'approved', 'rejected'], true),
+                            ])>{{ $application->status }}</span>
+                        </div>
+                    @empty
+                        <div class="empty" style="border:0;padding-block:2.5rem">
+                            <p class="empty__icon">🐾</p>
+                            <h2>You haven't applied for any pets yet</h2>
+                            <p>Find your new best friend — it starts with one application.</p>
+                            <a href="{{ route('pets.index') }}" class="btn btn--accent btn--sm">Browse adoptable pets</a>
+                        </div>
+                    @endforelse
                 </div>
-            @endforelse
-        </div>
-    @else
-        {{-- Adopter view: applications this member has submitted --}}
-        <div class="mt-8 space-y-4">
-            @forelse ($applications as $application)
-            @php($pet = $application->pet)
-            @php($photo = $pet?->primaryPhoto())
-            <div class="flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-                <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-stone-100">
-                    @if ($photo)
-                        <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" class="h-full w-full object-cover">
-                    @else
-                        <div class="flex h-full items-center justify-center text-3xl">🐾</div>
-                    @endif
-                </div>
-                <div class="min-w-0 flex-1">
-                    @if ($pet)
-                        <a href="{{ route('pets.show', $pet) }}" class="font-semibold text-stone-900 hover:text-amber-700">{{ $pet->name }}</a>
-                        <p class="text-sm text-stone-500">{{ $pet->breedLabel() }}</p>
-                    @else
-                        <p class="font-semibold text-stone-900">Pet no longer listed</p>
-                    @endif
-                    <p class="mt-1 text-xs text-stone-400">Applied {{ $application->created_at->format('M j, Y') }}</p>
-                </div>
-                <span @class([
-                    'rounded-full px-3 py-1 text-xs font-medium capitalize',
-                    'bg-amber-100 text-amber-800' => $application->status === 'pending',
-                    'bg-emerald-100 text-emerald-800' => $application->status === 'approved',
-                    'bg-red-100 text-red-700' => $application->status === 'rejected',
-                    'bg-stone-100 text-stone-600' => ! in_array($application->status, ['pending', 'approved', 'rejected'], true),
-                ])>
-                    {{ $application->status }}
-                </span>
-            </div>
-        @empty
-            <div class="rounded-2xl border border-stone-200 bg-stone-100 p-10 text-center text-stone-600">
-                <p class="text-lg">You haven't applied for any pets yet.</p>
-                <a href="{{ route('pets.index') }}" class="mt-3 inline-block font-medium text-amber-700 hover:underline">Find your new best friend &rarr;</a>
-            </div>
-        @endforelse
-        </div>
-    @endisset
-</div>
+            @endisset
+        </section>
+    </div>
 @endsection

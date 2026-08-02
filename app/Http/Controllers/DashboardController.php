@@ -12,13 +12,25 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
+        // Service bookings are shown to everyone — adopter or rehomer, anyone can
+        // book a sitter (Phase 2).
+        $shared = [
+            'bookings' => $user->bookings()
+                ->with(['providerProfile.user', 'category'])
+                ->latest()
+                ->get(),
+            'providerProfile' => $user->providerProfile,
+        ];
+
         if ($user->isStaff()) {
             return view('dashboard', [
+                ...$shared,
                 'listedPets' => $user->listedPets()->with('photos')->latest()->get(),
             ]);
         }
 
         return view('dashboard', [
+            ...$shared,
             'applications' => $user->adoptionApplications()->with('pet.photos')->latest()->get(),
         ]);
     }

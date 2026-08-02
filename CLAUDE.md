@@ -29,7 +29,27 @@ php artisan migrate:fresh --seed   # rebuild + reseed demo data
 - `tags` (json personality tags), `status` (available/pending/adopted/found/unavailable)
 - `Organization` = Petfinder "organization": contact, address, `hours` (json), `mission_statement`, `adoption_policy`, socials.
 
-Demo users: `admin@twofatcats.test`, `staff@twofatcats.test` (password = factory default `password`).
+## Domain model (Phase 2a — services marketplace)
+PetBacker-style: individuals list services, owners book them directly. Demo data is
+Malaysia-based and priced in **MYR (RM)**.
+
+- `ServiceCategory` (Boarding, House Sitting, Dog Walking, Daycare, Grooming, Pet Taxi, Training).
+  `pricing_unit` (night/day/walk/session/trip/hour) + `requires_date_range` drive the booking form.
+- `ProviderProfile` — 1:1 with `User`, binds routes on `slug`, has `approved()`/`published()`/
+  `inCategory()`/`inLocation()`/`search()` scopes. → `ProviderService` (price per category),
+  `ProviderPhoto`, `ProviderUnavailableDate`.
+- `Booking` — direct booking. `pending` → provider `accepted`/`declined` → `in_progress` →
+  `completed`; either side can cancel. Transitions go through guarded model methods
+  (`markAccepted()` …) that throw on an illegal move; don't set `status` directly.
+- **Provider is not a role.** A user can be an adopter *and* a sitter, which the single-value
+  `users.role` enum can't express — `$user->isProvider()` checks for an approved profile.
+- **Pet & price are snapshotted onto the booking.** `pets` is the shelter's adoption listing, not
+  the owner's pet. Booking totals are always computed server-side in `ProviderService::totalFor()`.
+- No payments in Phase 2 — the price is recorded for reference, settled off-platform.
+- Search is keywords + location + category only. Other columns exist but aren't facets yet.
+
+Demo users: `admin@twofatcats.test`, `staff@twofatcats.test`, `sitter@twofatcats.test`
+(password = factory default `password`).
 
 ## Key paths
 - Routes: `routes/web.php`
@@ -42,6 +62,8 @@ Demo users: `admin@twofatcats.test`, `staff@twofatcats.test` (password = factory
 - Thin controllers, validation in Form Requests, query logic in Eloquent scopes.
 - Case-insensitive search uses Postgres `ilike`.
 - Format with `./vendor/bin/pint`; test with `php artisan test`.
+- Tests run against **Postgres**, not sqlite — search relies on `ilike`, which sqlite lacks.
+  One-time setup: `createdb twofatcats_testing` (configured in `phpunit.xml`).
 
 ## Specialised agents (`.claude/agents/`)
 - **design-engineer** — Blade/Tailwind UI & visual design

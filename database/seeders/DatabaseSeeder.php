@@ -103,11 +103,14 @@ class DatabaseSeeder extends Seeder
                         'secondary_breed_id' => $pet->breed_mixed ? $breeds->random()->id : null,
                     ]);
 
-                    // Two placeholder photos per pet (seeded by pet id for stability).
+                    // Two species-relevant photos per pet, locked by pet id so
+                    // they stay stable across reseeds.
+                    $keyword = strtolower($speciesName); // cat / dog / rabbit
                     foreach ([true, false] as $i => $primary) {
+                        $lock = $pet->id * 10 + $i;
                         PetPhoto::create([
                             'pet_id' => $pet->id,
-                            'path' => "https://picsum.photos/seed/pet{$pet->id}-{$i}/800/600",
+                            'path' => "https://loremflickr.com/800/600/{$keyword}?lock={$lock}",
                             'alt' => "Photo of {$pet->name}",
                             'is_primary' => $primary,
                             'sort_order' => $i,
@@ -115,5 +118,11 @@ class DatabaseSeeder extends Seeder
                     }
                 });
         }
+
+        // ---- Phase 2 — services marketplace -------------------------
+        $this->call([
+            ServiceCategorySeeder::class,
+            ServiceDemoSeeder::class,
+        ]);
     }
 }

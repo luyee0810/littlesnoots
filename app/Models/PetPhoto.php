@@ -22,10 +22,17 @@ class PetPhoto extends Model
         return $this->belongsTo(Pet::class);
     }
 
-    /** Return an external URL as-is, otherwise resolve from the public disk. */
+    /**
+     * External URLs and root-relative paths (the bundled demo images under
+     * `public/images/`) are returned as-is; anything else resolves from the public disk.
+     */
     public function url(): string
     {
         if (str_starts_with($this->path, 'http://') || str_starts_with($this->path, 'https://')) {
+            return $this->path;
+        }
+
+        if (str_starts_with($this->path, '/')) {
             return $this->path;
         }
 
