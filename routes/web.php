@@ -23,6 +23,17 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+// ---- New design preview (scrapbook homepage, WIP) ----------------------
+Route::get('/newdesign', function () {
+    return view('newdesign', [
+        'featured' => Pet::published()->available()
+            ->with(['species', 'photos'])
+            ->latest('published_at')
+            ->take(4)
+            ->get(),
+    ]);
+})->name('newdesign');
+
 // ---- Pet adoption (Phase 1) --------------------------------------------
 Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
 Route::get('/pets/{pet}', [PetController::class, 'show'])->name('pets.show');
