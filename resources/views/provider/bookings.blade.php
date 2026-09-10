@@ -19,7 +19,7 @@
                     <div class="flex flex-wrap items-start justify-between gap-4">
                         <div style="min-width:0">
                             <h2 style="font-size:1.15rem">
-                                <span aria-hidden="true">{{ $booking->category->icon }}</span>
+                                <i class="svc-icon" data-lucide="{{ $booking->category->lucideIcon() }}" aria-hidden="true"></i>
                                 {{ $booking->category->name }} for {{ $booking->pet_name }}
                             </h2>
                             <p class="meta" style="margin-top:.4rem">

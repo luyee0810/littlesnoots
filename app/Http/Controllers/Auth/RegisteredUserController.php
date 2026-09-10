@@ -18,7 +18,7 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    /** Register a new adopter and sign them in. */
+    /** Register a new member and sign them in. */
     public function store(RegisterRequest $request): RedirectResponse
     {
         $user = User::create([
@@ -32,6 +32,12 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        // Service providers still need a profile before they can list anything.
+        if ($request->wantsToProvideServices()) {
+            return redirect()->route('provider.onboarding')
+                ->with('status', 'Welcome! Tell us about the services you offer.');
+        }
 
         return redirect()->route('dashboard');
     }

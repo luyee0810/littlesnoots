@@ -14,14 +14,15 @@
 
     <header class="site-header">
         <nav class="shell header-nav" aria-label="Main navigation">
-            <a href="{{ route('home') }}" class="wordmark" aria-label="Two Fat Cats home">Two Fat Cats</a>
+            <a href="{{ route('home') }}" class="brand" aria-label="Two Fat Cats home">
+                <img src="{{ asset('images/logo.png') }}" alt="Two Fat Cats" width="749" height="391" fetchpriority="high">
+            </a>
 
             @php
                 $nav = [
                     ['label' => 'Adopt', 'href' => route('pets.index'), 'on' => request()->routeIs('pets.*')],
                     ['label' => 'Pet care', 'href' => route('services.index'), 'on' => request()->routeIs('services.*', 'providers.*')],
-                    ['label' => 'How it works', 'href' => route('home').'#how-it-works', 'on' => false],
-                    ['label' => 'Stories', 'href' => route('home').'#stories', 'on' => false],
+                    ['label' => 'Memorials', 'href' => route('memorials.index'), 'on' => request()->routeIs('memorials.*')],
                 ];
             @endphp
 
@@ -72,7 +73,9 @@
         <div class="shell">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="{{ route('home') }}" class="wordmark">Two Fat Cats</a>
+                    <a href="{{ route('home') }}" class="brand brand--footer">
+                        <img src="{{ asset('images/logo.png') }}" alt="Two Fat Cats" width="749" height="391" loading="lazy">
+                    </a>
                     <p>Connecting loving pets with loving people — and the sitters who look after them. Because every pet deserves a home.</p>
                 </div>
                 <div>
@@ -80,13 +83,12 @@
                     <nav>
                         <a href="{{ route('pets.index') }}">Adopt a pet</a>
                         <a href="{{ route('services.index') }}">Find a sitter</a>
-                        <a href="{{ route('home') }}#stories">Adoption stories</a>
+                        <a href="{{ route('memorials.index') }}">Pet memorials</a>
                     </nav>
                 </div>
                 <div>
                     <h3>Support</h3>
                     <nav>
-                        <a href="{{ route('home') }}#how-it-works">Adoption process</a>
                         <a href="{{ route('home') }}#guides">Guides &amp; resources</a>
                         <a href="{{ route('provider.onboarding') }}">Become a sitter</a>
                     </nav>

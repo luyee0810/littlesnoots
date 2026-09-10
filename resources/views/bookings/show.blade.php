@@ -42,7 +42,7 @@
                     <dl class="dl">
                         <div>
                             <dt>Service</dt>
-                            <dd><span aria-hidden="true">{{ $booking->category->icon }}</span> {{ $booking->category->name }}</dd>
+                            <dd><i class="svc-icon" data-lucide="{{ $booking->category->lucideIcon() }}" aria-hidden="true"></i> {{ $booking->category->name }}</dd>
                         </div>
                         <div><dt>When</dt><dd>{{ $booking->dateRangeLabel() }}</dd></div>
                         <div>

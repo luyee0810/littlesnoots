@@ -4,11 +4,15 @@
 
 @section('content')
     {{-- ---- Hero ---------------------------------------------------------- --}}
-    <section class="hero">
+    <section class="hero hero--bg">
+        <video class="hero__bg" autoplay loop muted playsinline preload="metadata"
+               poster="{{ asset('images/dogcat-poster.jpg') }}" aria-hidden="true">
+            <source src="{{ asset('videos/dogcat.mp4') }}" type="video/mp4">
+        </video>
         <div class="shell hero__grid">
             <div>
                 <p class="kicker">Adopt · Love · Thrive</p>
-                <h1>Find the companion who changes <em>everything</em>.</h1>
+                <h1>Find the companion who changes <em>everything</em></h1>
                 <p class="lede">
                     Meet cats and dogs waiting for a second chance, and book trusted local
                     sitters to look after them once they're home.
@@ -19,24 +23,45 @@
                     <a href="{{ route('services.index') }}" class="btn btn--outline">Find pet care <i data-lucide="arrow-right" aria-hidden="true"></i></a>
                 </div>
 
-                <div class="hero__stats">
-                    <div><strong>Local</strong><span>Shelters &amp; rescues near you</span></div>
-                    <div><strong>Verified</strong><span>Every listing checked</span></div>
-                    <div><strong>Free</strong><span>No fees to adopt or browse</span></div>
+                <div class="hero__adopters">
+                    <div class="avatar-stack" aria-hidden="true">
+                        @foreach ([32, 12, 45, 5] as $face)
+                            <img src="https://i.pravatar.cc/88?img={{ $face }}" alt="" width="44" height="44">
+                        @endforeach
+                    </div>
+                    <p>Join <strong>120K+</strong> happy adopters</p>
                 </div>
             </div>
 
             <div class="hero__visual">
-                <span class="hero__badge"><i data-lucide="shield-check" aria-hidden="true"></i> Verified shelters</span>
                 <div class="hero__frame">
-                    <img src="{{ asset('images/two-fat-cats-hero.png') }}"
-                         alt="A golden retriever and a tabby cat sitting together"
-                         fetchpriority="high">
+                    <video class="hero__video" autoplay loop muted playsinline preload="metadata"
+                           poster="{{ asset('images/dogcat-poster.jpg') }}" aria-hidden="true">
+                        <source src="{{ asset('videos/dogcat.mp4') }}" type="video/mp4">
+                    </video>
                 </div>
-                <figure class="hero__note">
-                    <p>“Best decision, ever!”</p>
-                    <footer>Mia &amp; Milo</footer>
-                </figure>
+            </div>
+        </div>
+
+        {{-- Proof bar: closes the hero, spanning both columns. --}}
+        <div class="shell">
+            <div class="hero__stat-bar">
+                @foreach ([
+                    ['paw-print', 'blush', '12,000+', 'Pets available'],
+                    ['heart', 'sage', '20,000+', 'Successful adoptions'],
+                    ['house', 'butter', '980+', 'Shelters & rescues'],
+                    ['shield-check', 'sky', '100%', 'Verified & safe'],
+                ] as [$icon, $tint, $figure, $label])
+                    <div class="hero__stat">
+                        <span class="hero__stat-icon hero__stat-icon--{{ $tint }}" aria-hidden="true">
+                            <i data-lucide="{{ $icon }}"></i>
+                        </span>
+                        <div>
+                            <b>{{ $figure }}</b>
+                            <small>{{ $label }}</small>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -79,56 +104,61 @@
             </div>
 
             <div class="steps-grid">
-                <article>
-                    <span class="n">01</span>
-                    <h3>Search &amp; connect</h3>
-                    <p>Filter by species, age, size and temperament to find pets that suit your home.</p>
-                </article>
-                <article>
-                    <span class="n">02</span>
-                    <h3>Apply to adopt</h3>
-                    <p>Send one application. The shelter reads it and gets back to you directly.</p>
-                </article>
-                <article>
-                    <span class="n">03</span>
-                    <h3>Meet &amp; bond</h3>
-                    <p>Visit in person, spend time together, and make sure it's the right match.</p>
-                </article>
-                <article>
-                    <span class="n">04</span>
-                    <h3>Adopt &amp; thrive</h3>
-                    <p>Take them home — and book a sitter here whenever you need a hand.</p>
-                </article>
+                <svg class="steps-grid__line" viewBox="0 0 600 20" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0 10C120 -6 200 26 300 10s180-16 300 0" fill="none" stroke="currentColor"
+                          stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round"/>
+                </svg>
+                @foreach ([
+                    ['butter', 'search', 'Search &amp; connect', 'Find pets that match your lifestyle and preferences.'],
+                    ['sky', 'message-circle', 'Ask about them', 'Send your questions — no commitment to adopt.'],
+                    ['blush', 'users', 'Meet &amp; bond', 'Meet your potential match and fall in love.'],
+                    ['sage', 'heart', 'Adopt &amp; thrive', 'Take them home and start your journey together.'],
+                ] as [$tint, $icon, $title, $copy])
+                    <article>
+                        <span class="steps-grid__ring steps-grid__ring--{{ $tint }}" aria-hidden="true">
+                            <i data-lucide="{{ $icon }}"></i>
+                        </span>
+                        <h3>{!! $title !!}</h3>
+                        <p>{{ $copy }}</p>
+                    </article>
+                @endforeach
             </div>
         </div>
     </section>
 
-    {{-- ---- Stories -------------------------------------------------------- --}}
-    <section class="band band--raised" id="stories">
-        <div class="shell story">
-            <div class="story__gallery">
-                @php($withPhotos = $featured->filter(fn ($pet) => $pet->primaryPhoto()))
-                @forelse ($withPhotos->take(2) as $pet)
-                    <img src="{{ $pet->primaryPhoto()->url() }}" alt="{{ $pet->name }}, an adoptable pet" loading="lazy">
-                @empty
-                    <div class="story__placeholder">🐾</div>
-                @endforelse
-            </div>
+    {{-- ---- In loving memory ----------------------------------------------- --}}
+    <section class="band band--raised" id="memorials">
+        <div class="shell">
+            <div class="stories">
+                <div class="stories-grid">
+                    <div class="stories__intro">
+                        <p class="kicker">In loving memory</p>
+                        <h2>A place to<br>remember them</h2>
+                        <p>
+                            The companions we lose never really leave us. Create a lasting
+                            tribute to a beloved pet, light a candle, and share the memories
+                            that live on.
+                        </p>
+                        <a href="{{ route('memorials.index') }}" class="btn btn--accent">
+                            Visit the memorials <i data-lucide="arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
 
-            <div>
-                <p class="kicker">A new beginning</p>
-                <h2>Adoption stories,<br>forever homes</h2>
-                <p class="lede">
-                    Every adoption is the start of something wonderful — for the pet, and
-                    just as often for the person who took them in.
-                </p>
-                <blockquote class="quote">
-                    <p>Finding the right companion was the best decision we made. We didn't just change a life; ours changed too.</p>
-                    <footer>Laria &amp; Max — adopted March 2026</footer>
-                </blockquote>
-                <a href="{{ route('pets.index') }}" class="btn btn--primary" style="margin-top:2rem">
-                    Meet your match <i data-lucide="arrow-right" aria-hidden="true"></i>
-                </a>
+                    <div class="story-photos">
+                        <span class="washi" aria-hidden="true"></span>
+                        @forelse ($memorials->take(3) as $memorial)
+                            <img src="{{ $memorial->photoUrl() }}" alt="{{ $memorial->pet_name }}, in loving memory" loading="lazy">
+                        @empty
+                            <div class="story-photos__placeholder"><i data-lucide="paw-print" aria-hidden="true"></i></div>
+                        @endforelse
+                    </div>
+
+                    <blockquote class="quote-card">
+                        <div class="quote-card__mark" aria-hidden="true">&ldquo;</div>
+                        <p>They were only with us a while, but they left paw prints on our hearts that will never fade.</p>
+                        <footer>— In memory of every good companion</footer>
+                    </blockquote>
+                </div>
             </div>
         </div>
     </section>
@@ -147,63 +177,21 @@
 
             <div class="guide-grid">
                 @foreach ([
-                    ['boarding', 'sage', '🐕', 'New pet parent guide', 'Everyday care for a happy start.'],
-                    ['house-sitting', 'sky', '🏠', 'Prepare your home', 'Make your space safe and pet-friendly.'],
-                    ['training', 'blush', '🧶', 'Training &amp; behaviour', 'Build good habits and a stronger bond.'],
-                    ['grooming', 'butter', '🥣', 'Health &amp; nutrition', 'Support a long and healthy life.'],
-                ] as [$slug, $tint, $glyph, $title, $copy])
+                    ['boarding', 'sage', 'book-open', 'New pet parent guide', 'Everyday care for a happy start.'],
+                    ['house-sitting', 'sky', 'house', 'Prepare your home', 'Make your space safe and pet-friendly.'],
+                    ['training', 'blush', 'graduation-cap', 'Training &amp; behaviour', 'Build good habits and a stronger bond.'],
+                    ['grooming', 'butter', 'heart-pulse', 'Health &amp; nutrition', 'Support a long and healthy life.'],
+                ] as [$slug, $tint, $icon, $title, $copy])
                     <a href="{{ route('services.index', ['category' => $slug]) }}" class="guide-card guide-card--{{ $tint }}">
-                        <span class="glyph" aria-hidden="true">{{ $glyph }}</span>
+                        <span class="glyph" aria-hidden="true"><i data-lucide="{{ $icon }}"></i></span>
                         <span>
                             <h3>{!! $title !!}</h3>
                             <p>{{ $copy }}</p>
                         </span>
-                        <span class="guide-card__go" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
                     </a>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- ---- Reviews -------------------------------------------------------- --}}
-    <section class="band band--forest">
-        <div class="shell">
-            <div class="band-head">
-                <div>
-                    <p class="kicker">Loved by pets and people</p>
-                    <h2>Real stories from our<br>growing community</h2>
-                </div>
-            </div>
-
-            <div class="reviews">
-                @foreach ([
-                    ['The whole journey felt clear, caring, and stress-free.', 'Mia &amp; Milo'],
-                    ['We found our best friend and felt supported at every step.', 'Amir &amp; Luna'],
-                    ['Simple to use, warm, and genuinely focused on the pets.', 'Jo &amp; Bean'],
-                ] as [$quote, $who])
-                    <blockquote class="review">
-                        <div class="stars" aria-label="Rated 5 out of 5">★★★★★</div>
-                        <p>“{{ $quote }}”</p>
-                        <footer>{!! $who !!}</footer>
-                    </blockquote>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- ---- Closing CTA ---------------------------------------------------- --}}
-    <section class="band">
-        <div class="shell">
-            <div class="cta-strip">
-                <div>
-                    <h2>Ready to meet your match?</h2>
-                    <p>There's a new best friend waiting to say hello.</p>
-                </div>
-                <div class="hero__actions" style="margin-top:0">
-                    <a href="{{ route('pets.index') }}" class="btn btn--accent">Find a pet <i data-lucide="paw-print" aria-hidden="true"></i></a>
-                    <a href="{{ route('provider.onboarding') }}" class="btn btn--outline">Become a sitter</a>
-                </div>
-            </div>
-        </div>
-    </section>
 @endsection

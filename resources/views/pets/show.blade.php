@@ -75,7 +75,7 @@
 
                 @if ($pet->status === 'available')
                     <a href="#apply" class="btn btn--accent" style="margin-top:2rem">
-                        Apply to adopt {{ $pet->name }} <i data-lucide="arrow-right" aria-hidden="true"></i>
+                        I want to know more about {{ $pet->name }} <i data-lucide="arrow-right" aria-hidden="true"></i>
                     </a>
                 @endif
             </div>
@@ -168,14 +168,15 @@
             @endif
         </div>
 
-        {{-- ---- Application ------------------------------------------------ --}}
+        {{-- ---- Enquiry ----------------------------------------------------- --}}
         @if ($pet->status === 'available')
             <section id="apply" class="panel section-gap">
                 <div class="panel__head">
                     <div>
-                        <h2>Apply to adopt {{ $pet->name }}</h2>
+                        <h2>I want to know more about {{ $pet->name }}</h2>
                         <p class="meta" style="margin-top:.25rem">
-                            {{ $pet->organization?->name ?? 'Our team' }} will reach out to arrange a meet.
+                            Ask anything — you don't have to be ready to adopt.
+                            {{ $pet->organization?->name ?? 'Our team' }} will get back to you.
                         </p>
                     </div>
                 </div>
@@ -208,7 +209,7 @@
                         </div>
 
                         <div class="field">
-                            <label for="home_type">Home type</label>
+                            <label for="home_type">Home type <span class="meta">(optional)</span></label>
                             <select id="home_type" name="home_type" class="select">
                                 <option value="">Prefer not to say</option>
                                 @foreach (['apartment' => 'Apartment', 'house' => 'House', 'other' => 'Other'] as $k => $label)
@@ -218,8 +219,9 @@
                         </div>
 
                         <div class="field span-2">
-                            <label for="message">Why would you be a great match?</label>
-                            <textarea id="message" name="message" rows="4" class="textarea">{{ old('message') }}</textarea>
+                            <label for="message">What would you like to know?</label>
+                            <textarea id="message" name="message" rows="4" class="textarea"
+                                      placeholder="e.g. How is {{ $pet->name }} with other pets? Can I visit before deciding?">{{ old('message') }}</textarea>
                         </div>
 
                         <label class="check span-2">
@@ -228,7 +230,7 @@
                         </label>
 
                         <div class="span-2">
-                            <button class="btn btn--accent">Submit application <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+                            <button class="btn btn--accent">Send my enquiry <i data-lucide="arrow-right" aria-hidden="true"></i></button>
                         </div>
                     </form>
                 </div>

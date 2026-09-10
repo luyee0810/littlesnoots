@@ -29,7 +29,7 @@
                     <div class="row" style="align-items:flex-start">
                         <div style="min-width:0">
                             <h2 style="font-size:1.05rem">
-                                <span aria-hidden="true">{{ $service->category->icon }}</span> {{ $service->label() }}
+                                <i class="svc-icon" data-lucide="{{ $service->category->lucideIcon() }}" aria-hidden="true"></i> {{ $service->label() }}
                                 @unless ($service->is_active)
                                     <span class="chip" style="margin-left:.35rem">Hidden</span>
                                 @endunless

@@ -12,8 +12,9 @@ class ServiceCategoryController extends Controller
     /** Services landing page — the category grid plus the shared search bar. */
     public function index(Request $request): View
     {
-        // A keyword or location search from the landing page goes straight to results.
-        if ($request->filled('q') || $request->filled('location') || $request->filled('category')) {
+        // Any submitted search — even an empty one, i.e. "Any service" — goes straight
+        // to results. A bare visit to /services has none of these keys and stays here.
+        if ($request->hasAny(['q', 'location', 'category'])) {
             return $this->results($request, null);
         }
 
@@ -41,13 +42,20 @@ class ServiceCategoryController extends Controller
      */
     private function results(Request $request, ?ServiceCategory $category): View
     {
-        $categorySlug = $category?->slug ?? $request->string('category')->toString();
+        // Categories can come from the route (/services/{category}) and/or the
+        // multi-select filter (?category[]=…). An empty selection means "any".
+        $categorySlugs = collect((array) $request->input('category', []))
+            ->push($category?->slug)
+            ->filter(fn ($slug) => filled($slug))
+            ->unique()
+            ->values()
+            ->all();
 
         $providers = ProviderProfile::query()
             ->approved()
             ->published()
             ->with(['user', 'photos', 'services.category'])
-            ->when($categorySlug !== '', fn ($q) => $q->inCategory($categorySlug))
+            ->when($categorySlugs !== [], fn ($q) => $q->inCategories($categorySlugs))
             ->when($request->filled('location'), fn ($q) => $q->inLocation($request->string('location')))
             ->when($request->filled('q'), fn ($q) => $q->search($request->string('q')))
             ->orderByDesc('rating_avg')
@@ -62,7 +70,7 @@ class ServiceCategoryController extends Controller
             'filters' => [
                 'q' => $request->string('q')->toString(),
                 'location' => $request->string('location')->toString(),
-                'category' => $categorySlug,
+                'category' => $categorySlugs,
             ],
         ]);
     }

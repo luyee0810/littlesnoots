@@ -12,7 +12,8 @@
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-display: 'Bricolage Grotesque', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-script: 'Caveat', 'Segoe Script', cursive;
 
     /* Brand ramps — expose the palette to utilities (bg-paper, text-forest, …) */
     --color-paper: #ffffff;
@@ -84,12 +85,22 @@
     --persimmon: #d4462c;
     --persimmon-deep: #b3341f;
     --ochre: #e0a01c;
+    --ochre-deep: #a8760f;
 
     /* Decorative tints */
     --butter: #fdefc3;
+
+    /* Brighter cousins of the four tints, for surfaces that carry a whole
+       card rather than a small chip. */
+    --butter-bright: #fff5c4;
+    --sage-bright: #e7f5d9;
+    --sky-bright: #d9edfd;
+    --blush-bright: #ffe2e5;
     --sage: #e3ecd9;
     --sky: #d7e6f2;
     --blush: #f8e0e2;
+    --sand: #f0e7d8;
+    --butter-wash: #ffffee;
 
     /* Rules — the whole system's structure lives here */
     --rule: rgba(20, 32, 27, 0.12);
@@ -110,6 +121,10 @@
     --r-md: 16px;
     --r-lg: 24px;
     --r-pill: 999px;
+
+    /* Depth — used sparingly; the system leads with rules, not shadows. */
+    --shadow-soft: 0 2px 4px rgba(20, 32, 27, 0.04),
+                   0 18px 38px -22px rgba(20, 32, 27, 0.4);
 
     --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -139,15 +154,15 @@
         font-optical-sizing: auto;
     }
 
-    /* Fraunces carries the brand voice: soft, slightly wonky, warm. */
+    /* Bricolage Grotesque carries the display voice: modern, clean, a little
+       character at large sizes via its optical-size axis. */
     h1, h2, h3, .display {
         margin: 0;
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 24, 'WONK' 1, 'opsz' 40;
+        font-family: var(--font-display);
         font-weight: 600;
         line-height: 1.08;
         letter-spacing: -0.02em;
-        color: var(--forest-deep);
+        color: var(--ink);
         text-wrap: balance;
     }
 
@@ -182,7 +197,7 @@
 
     ::selection {
         background: var(--butter);
-        color: var(--forest-deep);
+        color: var(--ink);
     }
 
     a, button, summary, label {
@@ -328,22 +343,20 @@
     }
 
     .serif-num {
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 24, 'WONK' 1;
+        font-family: var(--font-display);
         font-weight: 600;
     }
 
     .price {
-        color: var(--forest);
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 24;
+        color: var(--persimmon);
+        font-family: var(--font-display);
         font-size: 1.15rem;
         font-weight: 600;
         letter-spacing: -0.01em;
     }
 
     .link-quiet {
-        color: var(--forest);
+        color: var(--persimmon);
         font-weight: 600;
         text-underline-offset: 3px;
     }
@@ -391,16 +404,31 @@
         align-items: center;
         justify-content: space-between;
         gap: 2rem;
-        min-height: 76px;
+        min-height: 84px;
+    }
+
+    /* The lockup carries the brand in the header and footer; the type-set
+       .wordmark below survives for surfaces the black lettering can't sit on. */
+    .brand {
+        display: inline-flex;
+        flex: none;
+    }
+
+    .brand img {
+        width: auto;
+        height: 60px;
+    }
+
+    .brand--footer img {
+        height: 68px;
     }
 
     .wordmark {
         display: inline-flex;
         align-items: baseline;
         gap: 0.4rem;
-        color: var(--forest-deep);
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 20;
+        color: var(--ink);
+        font-family: var(--font-display);
         font-size: 1.4rem;
         font-weight: 600;
         letter-spacing: -0.03em;
@@ -433,7 +461,7 @@
 
     .nav-link:hover,
     .nav-link[aria-current='page'] {
-        color: var(--forest-deep);
+        color: var(--ink);
     }
 
     .nav-link::after {
@@ -468,13 +496,13 @@
         border: 1px solid var(--rule-strong);
         border-radius: var(--r-pill);
         background: transparent;
-        color: var(--forest);
+        color: var(--persimmon);
         transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
     }
 
     .icon-button:hover {
         background: var(--paper-sunk);
-        border-color: var(--forest);
+        border-color: var(--persimmon);
     }
 
     .icon-button svg {
@@ -514,7 +542,7 @@
         width: 100%;
         padding: 0.7rem 0.75rem;
         border-radius: var(--r-xs);
-        color: var(--forest-deep);
+        color: var(--ink);
         font-size: 0.92rem;
         font-weight: 500;
         text-align: left;
@@ -553,15 +581,14 @@
         flex: 0 0 auto;
     }
 
-    /* Forest is the workhorse; persimmon is reserved for the single most
-       important action on a page, so it keeps its weight. */
+    /* Persimmon (red) is the site-wide action colour, matching the homepage. */
     .btn--primary {
-        background: var(--forest);
+        background: var(--persimmon);
         color: #fffdf7;
     }
 
     .btn--primary:hover {
-        background: var(--forest-deep);
+        background: var(--persimmon-deep);
     }
 
     .btn--accent {
@@ -575,7 +602,7 @@
 
     .btn--outline {
         border-color: var(--rule-strong);
-        color: var(--forest-deep);
+        color: var(--ink);
     }
 
     .btn--outline:hover {
@@ -589,7 +616,7 @@
     }
 
     .btn--ghost:hover {
-        color: var(--forest-deep);
+        color: var(--ink);
         background: var(--paper-sunk);
     }
 
@@ -776,7 +803,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.35rem;
-        color: var(--forest);
+        color: var(--persimmon);
         font-size: 0.78rem;
         font-weight: 600;
     }
@@ -922,15 +949,15 @@
     .input:hover,
     .select:hover,
     .textarea:hover {
-        border-color: color-mix(in srgb, var(--forest) 45%, transparent);
+        border-color: color-mix(in srgb, var(--persimmon) 45%, transparent);
     }
 
     .input:focus,
     .select:focus,
     .textarea:focus {
         outline: none;
-        border-color: var(--forest);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--forest) 14%, transparent);
+        border-color: var(--persimmon);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--persimmon) 14%, transparent);
     }
 
     .input[aria-invalid='true'],
@@ -1016,8 +1043,8 @@
     }
 
     .check input:checked {
-        border-color: var(--forest);
-        background: var(--forest)
+        border-color: var(--persimmon);
+        background: var(--persimmon)
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23fffdf7' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
             center / 11px no-repeat;
     }
@@ -1034,6 +1061,8 @@
 
     /* Big selectable cards (account type, service picker) */
     .choice {
+        position: relative;
+        display: block;
         cursor: pointer;
     }
 
@@ -1045,6 +1074,7 @@
     }
 
     .choice__box {
+        display: block;
         height: 100%;
         padding: 1.1rem;
         border: 1px solid var(--rule-strong);
@@ -1054,11 +1084,11 @@
     }
 
     .choice:hover .choice__box {
-        border-color: color-mix(in srgb, var(--forest) 55%, transparent);
+        border-color: color-mix(in srgb, var(--persimmon) 55%, transparent);
     }
 
     .choice input:checked + .choice__box {
-        border-color: var(--forest);
+        border-color: var(--persimmon);
         background: var(--sage);
     }
 
@@ -1070,7 +1100,7 @@
     .choice__box strong {
         display: block;
         margin-top: 0.75rem;
-        color: var(--forest-deep);
+        color: var(--ink);
         font-size: 0.92rem;
     }
 
@@ -1081,6 +1111,37 @@
         font-size: 0.78rem;
         line-height: 1.45;
     }
+
+    /* Row of choice cards — three across on desktop, stacked on phones. */
+    .choice-grid {
+        display: grid;
+        gap: 0.9rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 760px) {
+        .choice-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .choice__icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: var(--r-sm);
+        background: var(--butter);
+        color: var(--forest);
+    }
+
+    .choice__icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .choice-grid > .choice:nth-child(2) .choice__icon { background: var(--sky); }
+    .choice-grid > .choice:nth-child(3) .choice__icon { background: var(--blush); color: var(--persimmon-deep); }
 
     /* ---- Alerts & flashes ------------------------------------------------- */
 
@@ -1142,11 +1203,11 @@
     }
 
     .tab:hover {
-        color: var(--forest-deep);
+        color: var(--ink);
     }
 
     .tab[aria-current='page'] {
-        color: var(--forest-deep);
+        color: var(--ink);
         font-weight: 600;
     }
 
@@ -1170,7 +1231,7 @@
     }
 
     .breadcrumb a:hover {
-        color: var(--forest-deep);
+        color: var(--ink);
         text-decoration: underline;
         text-underline-offset: 3px;
     }
@@ -1189,7 +1250,7 @@
     }
 
     .back-link:hover {
-        color: var(--forest-deep);
+        color: var(--ink);
     }
 
     .back-link svg {
@@ -1229,8 +1290,8 @@
     }
 
     .step[data-current] {
-        border-color: var(--forest);
-        background: var(--forest);
+        border-color: var(--persimmon);
+        background: var(--persimmon);
         color: #fffdf7;
     }
 
@@ -1258,12 +1319,11 @@
         border: 1px solid var(--rule);
         border-radius: var(--r-md);
         background: var(--paper-raised);
-        transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+        transition: border-color 0.25s var(--ease);
     }
 
     .listing:hover {
         border-color: var(--rule-strong);
-        transform: translateY(-3px);
     }
 
     .listing__media {
@@ -1278,11 +1338,6 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s var(--ease);
-    }
-
-    .listing:hover .listing__media img {
-        transform: scale(1.04);
     }
 
     .listing__fallback {
@@ -1364,27 +1419,65 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-top: auto;
         padding-top: 1rem;
+        border-top: 1px solid var(--rule);
+    }
+
+    .listing__price {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+        white-space: nowrap;
+    }
+
+    .listing__price-from {
+        color: var(--ink-faint);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .listing__price .price {
+        color: var(--ink-soft);
+        font-size: 0.98rem;
     }
 
     .listing .chip-row {
-        margin-top: 0.85rem;
+        margin: 0.85rem 0 0.35rem;
     }
+
+    /* Colour a row of tags on the same 4-tint cycle as the homepage. */
+    .chip-row--tinted .chip:nth-child(4n + 1) { background: var(--butter); color: #71540c; }
+    .chip-row--tinted .chip:nth-child(4n + 2) { background: var(--sky); color: #2c4c68; }
+    .chip-row--tinted .chip:nth-child(4n + 3) { background: var(--blush); color: #8d3b36; }
+    .chip-row--tinted .chip:nth-child(4n + 4) { background: var(--sage); color: #3a5540; }
 
     .listing__cta {
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        color: var(--forest);
-        font-size: 0.84rem;
+        flex: 0 0 auto;
+        padding: 0.38rem 0.7rem;
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--persimmon) 10%, transparent);
+        color: var(--persimmon);
+        font-size: 0.78rem;
         font-weight: 600;
+        white-space: nowrap;
+        transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    }
+
+    .listing:hover .listing__cta {
+        background: var(--persimmon);
+        color: var(--paper);
     }
 
     .listing__cta svg {
-        width: 15px;
-        height: 15px;
+        width: 13px;
+        height: 13px;
         transition: transform 0.25s var(--ease);
     }
 
@@ -1401,13 +1494,11 @@
         border: 1px solid var(--rule);
         border-radius: var(--r-md);
         background: var(--paper-raised);
-        transition: border-color 0.25s var(--ease), transform 0.25s var(--ease),
-            background 0.25s var(--ease);
+        transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
     }
 
     .tile:hover {
-        transform: translateY(-3px);
-        border-color: var(--forest);
+        border-color: var(--persimmon);
         background: var(--paper-sunk);
     }
 
@@ -1419,12 +1510,30 @@
         margin-bottom: 1rem;
         border-radius: var(--r-sm);
         background: var(--butter);
-        font-size: 1.5rem;
+        color: var(--forest);
     }
 
-    .tile:nth-child(4n + 2) .tile__icon { background: var(--sky); }
-    .tile:nth-child(4n + 3) .tile__icon { background: var(--blush); }
-    .tile:nth-child(4n + 4) .tile__icon { background: var(--sage); }
+    .tile__icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Distinct tint per pet service, so each reads as its own thing. */
+    .tile__icon--boarding { background: var(--butter); color: #71540c; }
+    .tile__icon--house-sitting { background: var(--sky); color: #2c4c68; }
+    .tile__icon--dog-walking { background: var(--sage); color: #3a5540; }
+    .tile__icon--daycare { background: #ffe6cc; color: #9a5411; }
+    .tile__icon--grooming { background: var(--blush); color: var(--persimmon-deep); }
+    .tile__icon--pet-taxi { background: #e6e2fb; color: #574aa0; }
+    .tile__icon--training { background: #d7f2e4; color: #1c7a54; }
+
+    /* Inline category icon — line-icon in flowing text, matching the homepage. */
+    .svc-icon {
+        display: inline-block;
+        width: 1.05em;
+        height: 1.05em;
+        vertical-align: -0.16em;
+    }
 
     .tile h3 {
         font-size: 1.15rem;
@@ -1477,6 +1586,63 @@
         }
     }
 
+    /* ---- Multi-select dropdown (service filter) ---------------------------- */
+
+    .multiselect {
+        position: relative;
+    }
+
+    .multiselect__details {
+        position: relative;
+    }
+
+    .multiselect__summary {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .multiselect__summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .multiselect__panel {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 0.4rem);
+        left: 0;
+        min-width: max(100%, 12rem);
+        display: flex;
+        flex-direction: column;
+        padding: 0.4rem;
+        border: 1px solid var(--rule-strong);
+        border-radius: var(--r-sm);
+        background: var(--paper-raised);
+        box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.25);
+    }
+
+    .multiselect__option {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 0.6rem;
+        border-radius: var(--r-xs, 6px);
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+
+    .multiselect__option:hover {
+        background: var(--paper-sunk);
+    }
+
+    .multiselect__option input {
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--persimmon);
+    }
+
     /* ---- Filter sidebar ---------------------------------------------------- */
 
     .filters {
@@ -1519,8 +1685,49 @@
     .hero {
         position: relative;
         overflow: hidden;
-        padding-block: 4rem 0;
+        padding-block: 4rem 4.5rem;
     }
+
+    /* Full-bleed video hero: the meadow clip fills the section, a light scrim on
+       the left keeps the headline legible while the scene opens up to the right. */
+    .hero--bg {
+        padding-block: 3.25rem 3.5rem;
+        /* Soft sky-to-grass wash that the video's blended edges melt into. */
+        background: linear-gradient(180deg, #e9f2fb 0%, #f2f7ea 52%, var(--sage-bright) 100%);
+    }
+    .hero--bg .hero__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 58%;
+        z-index: 0;
+        /* Zoom the scene out so the dog reads smaller, then feather all four
+           edges so the smaller frame dissolves into the wash behind it. */
+        transform: scale(0.8);
+        transform-origin: right 60%;
+        -webkit-mask-image:
+            linear-gradient(90deg, transparent 0, #000 24%, #000 100%),
+            linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+        -webkit-mask-composite: source-in;
+        mask-image:
+            linear-gradient(90deg, transparent 0, #000 24%, #000 100%),
+            linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+        mask-composite: intersect;
+    }
+    .hero--bg::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+            linear-gradient(90deg, rgba(255,253,247,0.96) 0%, rgba(255,253,247,0.9) 24%, rgba(255,253,247,0.55) 40%, rgba(255,253,247,0) 56%),
+            linear-gradient(0deg, rgba(255,253,247,0.4) 0%, rgba(255,253,247,0) 26%);
+    }
+    .hero--bg .shell { position: relative; z-index: 2; }
+    .hero--bg .hero__visual { display: none; }
+    .hero--bg .hero__grid { grid-template-columns: minmax(0, 42rem); }
 
     .hero__grid {
         display: grid;
@@ -1531,18 +1738,22 @@
 
     .hero h1 {
         font-size: clamp(3.1rem, 6.4vw, 5.4rem);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 144;
         line-height: 0.96;
         letter-spacing: -0.035em;
     }
 
-    /* The one flourish: a persimmon italic word with a hand-drawn underline. */
+    /* The one flourish: a persimmon script word with a hand-drawn underline.
+       Set in caps at the same size as the surrounding grotesk. */
     .hero h1 em {
         position: relative;
         display: inline-block;
         color: var(--persimmon);
-        font-style: italic;
-        font-variation-settings: 'SOFT' 80, 'WONK' 1, 'opsz' 144;
+        font-family: var(--font-script);
+        font-size: 1em;
+        font-style: normal;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        text-transform: uppercase;
     }
 
     .hero h1 em::after {
@@ -1570,39 +1781,232 @@
         margin-top: 2rem;
     }
 
-    /* Editorial stat strip: hairline-separated, serif figures. */
-    .hero__stats {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        margin-top: 2.75rem;
-        padding-top: 1.75rem;
-        border-top: 1px solid var(--rule);
+    /* Social proof: an overlapped avatar cluster, then the adopter count.
+       The circles carry the four decorative tints in order, so the cluster
+       reads as the brand's palette rather than as four stock portraits. */
+    .hero__adopters {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin-top: 1.5rem;
     }
 
-    .hero__stats > div + div {
-        padding-left: 1.5rem;
-        border-left: 1px solid var(--rule);
+    .avatar-stack {
+        display: flex;
+        flex: 0 0 auto;
     }
 
-    .hero__stats > div + div {
-        margin-left: 1.5rem;
+    .avatar-stack img {
+        width: 44px;
+        height: 44px;
+        margin-left: -14px;
+        border: 3px solid var(--paper);
+        border-radius: var(--r-pill);
+        object-fit: cover;
     }
 
-    .hero__stats strong {
-        display: block;
-        color: var(--forest-deep);
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 30, 'WONK' 1;
-        font-size: 1.65rem;
+    /* The tints sit behind each photo, so a slow or failed load still reads
+       as a cluster of four rather than four holes in the layout. */
+    .avatar-stack img:first-child { margin-left: 0; }
+    .avatar-stack img:nth-child(1) { background: var(--butter); }
+    .avatar-stack img:nth-child(2) { background: var(--sage); }
+    .avatar-stack img:nth-child(3) { background: var(--sky); }
+    .avatar-stack img:nth-child(4) { background: var(--blush); }
+
+    .hero__adopters p {
+        min-width: 0;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
         font-weight: 600;
+    }
+
+    .hero__adopters strong {
+        color: var(--persimmon);
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    /* Proof bar: closes the hero, spanning both columns. The demo floats this
+       on a drop shadow; here it sits on a hairline + raised paper, because the
+       system takes its structure from rules, not shadows. */
+    .hero__stat-bar {
+        position: relative;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 3.5rem;
+        padding: 1.6rem 2rem;
+        border: 1px solid color-mix(in srgb, var(--ochre) 24%, transparent);
+        border-radius: var(--r-md);
+        background: var(--butter-wash);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .hero__stat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.85rem;
+        min-width: 0;
+    }
+
+    .hero__stat-icon {
+        display: grid;
+        flex: none;
+        width: 48px;
+        height: 48px;
+        place-items: center;
+        border-radius: var(--r-pill);
+        color: var(--forest);
+    }
+
+    .hero__stat-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .hero__stat-icon--blush { background: var(--blush); color: var(--persimmon-deep); }
+    .hero__stat-icon--sage { background: var(--sage); }
+    .hero__stat-icon--butter { background: var(--butter); }
+    .hero__stat-icon--sky { background: var(--sky); }
+
+    .hero__stat b {
+        display: block;
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1;
         letter-spacing: -0.02em;
     }
 
-    .hero__stats span {
+    .hero__stat small {
         display: block;
-        margin-top: 0.15rem;
+        margin-top: 0.3rem;
         color: var(--ink-faint);
-        font-size: 0.78rem;
+        font-size: 0.85rem;
+    }
+
+    /* ---- Pet card ---------------------------------------------------------
+       Photo inset inside the frame, dotted meta line, full-width red CTA.
+       Lift + hairline on hover; the system takes structure from rules, so
+       there is no drop shadow under the card. */
+    .pet-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--rule);
+        border-radius: var(--r-md);
+        background: var(--paper-raised);
+        transition: border-color 0.25s var(--ease);
+    }
+
+    .pet-card:hover {
+        border-color: var(--rule-strong);
+    }
+
+    .pet-card__photo {
+        position: relative;
+        overflow: hidden;
+        margin: 12px 12px 0;
+        border-radius: var(--r-sm);
+        aspect-ratio: 4 / 3.4;
+        background: var(--paper-sunk);
+    }
+
+    .pet-card__photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pet-card__fallback {
+        display: grid;
+        height: 100%;
+        place-items: center;
+        color: var(--ink-faint);
+    }
+
+    .pet-card__fallback svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .pet-card__flag {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0.25rem 0.65rem;
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--paper) 92%, transparent);
+        color: var(--ink);
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+    .pet-card__body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding: 1rem 1.1rem 1.2rem;
+    }
+
+    .pet-card__title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    .pet-card__title h3 {
+        font-size: 1.3rem;
+    }
+
+    .pet-card__title svg {
+        width: 17px;
+        height: 17px;
+        flex: none;
+        color: var(--ink-faint);
+    }
+
+    .pet-card__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.35rem;
+        color: var(--ink-faint);
+        font-size: 0.86rem;
+    }
+
+    .pet-card__dot {
+        width: 4px;
+        height: 4px;
+        flex: none;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.5;
+    }
+
+    .pet-card .chip-row {
+        margin: 0.8rem 0 1rem;
+    }
+
+    .pet-card__fee {
+        margin-bottom: 0.8rem;
+        color: var(--ink-faint);
+        font-size: 0.8rem;
+    }
+
+    .pet-card__cta {
+        width: 100%;
+        margin-top: auto;
+        justify-content: center;
+        padding: 0.7rem;
+        font-size: 0.9rem;
     }
 
     .hero__visual {
@@ -1615,69 +2019,19 @@
         overflow: hidden;
         aspect-ratio: 4 / 5;
         border-radius: 50% 50% var(--r-lg) var(--r-lg) / 32% 32% var(--r-lg) var(--r-lg);
-        background: linear-gradient(170deg, var(--butter), var(--blush) 55%, var(--sky));
     }
 
-    .hero__frame img {
+    .hero__frame img,
+    .hero__frame .hero__video {
         width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center 42%;
-        mix-blend-mode: multiply;
     }
 
-    .hero__note {
-        position: absolute;
-        right: -0.5rem;
-        bottom: 2.5rem;
-        z-index: 2;
-        max-width: 12rem;
-        padding: 0.9rem 1.1rem;
-        border: 1px solid var(--rule);
-        border-radius: var(--r-md);
-        background: var(--paper-raised);
-        transform: rotate(2.5deg);
-    }
-
-    .hero__note p {
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 60, 'WONK' 1;
-        font-size: 0.92rem;
-        font-style: italic;
-        line-height: 1.35;
-        color: var(--forest-deep);
-    }
-
-    .hero__note footer {
-        margin-top: 0.5rem;
-        color: var(--ink-faint);
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
-    .hero__badge {
-        position: absolute;
-        left: -1rem;
-        top: 2rem;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.55rem 0.95rem;
-        border: 1px solid var(--rule);
-        border-radius: var(--r-pill);
-        background: var(--paper-raised);
-        color: var(--forest-deep);
-        font-size: 0.8rem;
-        font-weight: 600;
-        transform: rotate(-2deg);
-    }
-
-    .hero__badge svg {
-        width: 16px;
-        height: 16px;
-        color: var(--persimmon);
+    .hero__frame .hero__video {
+        display: block;
+        object-position: 72% 60%;
     }
 
     /* ---- Home: sections ---------------------------------------------------- */
@@ -1715,111 +2069,179 @@
         text-align: center;
     }
 
-    /* Numbered editorial columns — replaces the usual four coloured circles. */
+    /* Four tinted rings on a hand-drawn dash — the demo's process row. */
     .steps-grid {
+        position: relative;
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 0;
-        border-top: 1px solid var(--rule);
+        gap: 1.4rem;
+    }
+
+    .steps-grid__line {
+        position: absolute;
+        top: 24px;
+        left: 12%;
+        z-index: 0;
+        /* An SVG is a replaced element: with width:auto the browser uses the
+           300px intrinsic width and ignores `right`, so the width is explicit. */
+        width: 76%;
+        height: 24px;
+        /* The path's control points sit outside the 0 0 600 20 viewBox, so the
+           crests clip at the default overflow. Let them draw, and centre the
+           box on the rings (ring centre 36px = top 29 + half of 14). */
+        overflow: visible;
+        color: color-mix(in srgb, var(--persimmon) 45%, transparent);
     }
 
     .steps-grid article {
-        padding: 2rem 1.75rem 0.5rem;
-        border-right: 1px solid var(--rule);
+        position: relative;
+        z-index: 1;
+        text-align: center;
     }
 
-    .steps-grid article:last-child {
-        border-right: 0;
+    .steps-grid__ring {
+        display: grid;
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 1.1rem;
+        place-items: center;
+        border: 3px solid var(--paper);
+        border-radius: var(--r-pill);
+        color: var(--forest);
     }
 
-    .steps-grid article:first-child {
-        padding-left: 0;
+    .steps-grid__ring svg {
+        width: 30px;
+        height: 30px;
     }
 
-    .steps-grid article:last-child {
-        padding-right: 0;
-    }
-
-    .steps-grid .n {
-        display: block;
-        color: var(--persimmon);
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1;
-        font-size: 2.5rem;
-        font-weight: 600;
-        line-height: 1;
-        letter-spacing: -0.04em;
-    }
+    .steps-grid__ring--butter { background: var(--butter); }
+    .steps-grid__ring--sky { background: var(--sky); }
+    .steps-grid__ring--blush { background: var(--blush); color: var(--persimmon-deep); }
+    .steps-grid__ring--sage { background: var(--sage); }
 
     .steps-grid h3 {
-        margin-top: 1rem;
         font-size: 1.15rem;
     }
 
     .steps-grid p {
+        max-width: 24ch;
         margin-top: 0.5rem;
+        margin-inline: auto;
         color: var(--ink-soft);
         font-size: 0.9rem;
         line-height: 1.55;
     }
 
     /* Story: overlapping gallery + pull quote */
-    .story {
+    /* Stories: intro column, a taped photo strip, and a pull-quote card.
+       The demo floats the strip and card on shadows; here the tinted panel
+       plus hairlines carry it, per the system's rules-not-shadows stance. */
+    .stories {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(1.6rem, 4vw, 2.6rem);
+        border: 1px solid var(--rule);
+        border-radius: var(--r-lg);
+        background: var(--sand);
+    }
+
+    .stories-grid {
         display: grid;
-        grid-template-columns: 1fr 1.15fr;
+        grid-template-columns: 0.85fr 1.2fr 1fr;
         align-items: center;
-        gap: 4rem;
+        gap: 1.6rem;
     }
 
-    .story__gallery {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+    .stories h2 {
+        font-size: clamp(1.6rem, 3.5vw, 2.2rem);
     }
 
-    .story__gallery img {
-        width: 100%;
-        aspect-ratio: 3 / 4;
+    .stories__intro p {
+        margin: 0.8rem 0 1.3rem;
+        color: var(--ink-soft);
+        font-size: 0.96rem;
+    }
+
+    .story-photos {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+    }
+
+    .story-photos img {
+        position: relative;
+        width: 33%;
+        aspect-ratio: 1;
+        border: 5px solid var(--paper);
+        border-radius: 14px;
         object-fit: cover;
-        border-radius: var(--r-md);
     }
 
-    .story__gallery img:nth-child(2) {
-        margin-top: 2.5rem;
-    }
+    /* The washi tape is child 1, so the photos are children 2–4. The middle
+       print sits upright, scaled up and on top; the outer two tilt away and
+       drop, so the trio reads as a deliberate arrangement, not a jitter. */
+    .story-photos img:nth-child(2) { transform: rotate(-5deg) translateY(7px); }
+    .story-photos img:nth-child(3) { z-index: 2; transform: scale(1.12); }
+    .story-photos img:nth-child(4) { transform: rotate(5deg) translateY(7px); }
 
-    .story__gallery .story__placeholder {
+    .story-photos__placeholder {
         display: grid;
-        grid-column: 1 / -1;
-        aspect-ratio: 16 / 10;
+        width: 33%;
+        aspect-ratio: 1;
         place-items: center;
-        border-radius: var(--r-md);
+        border: 4px solid var(--paper);
+        border-radius: 14px;
         background: var(--butter);
         color: var(--forest);
-        font-size: 2.5rem;
     }
 
-    .quote {
-        margin-top: 2rem;
-        padding-left: 1.5rem;
-        border-left: 2px solid var(--persimmon);
+    .washi {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        z-index: 3;
+        width: 70px;
+        height: 26px;
+        border-radius: 3px;
+        background: var(--ochre);
+        opacity: 0.8;
+        transform: translateX(-50%) rotate(-3deg);
     }
 
-    .quote p {
-        color: var(--forest-deep);
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 60;
-        font-size: 1.3rem;
-        font-style: italic;
-        line-height: 1.4;
+    .quote-card {
+        position: relative;
+        padding: 1.4rem;
+        border: 1px solid var(--rule);
+        border-radius: var(--r-md);
+        background: var(--paper-raised);
     }
 
-    .quote footer {
-        margin-top: 0.85rem;
-        color: var(--ink-faint);
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+    .quote-card__mark {
+        color: var(--persimmon);
+        font-family: var(--font-display);
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 0.6;
+    }
+
+    .quote-card p {
+        margin-top: 0.6rem;
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 500;
+        line-height: 1.45;
+    }
+
+    .quote-card footer {
+        margin-top: 1rem;
+        color: var(--forest);
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 600;
     }
 
     /* Guide cards — the one place tint carries a whole surface, so the
@@ -1831,35 +2253,46 @@
     }
 
     .guide-card {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        align-items: start;
-        gap: 1rem;
-        padding: 1.35rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        padding: 1.75rem 1.35rem;
         border-radius: var(--r-md);
-        transition: transform 0.28s var(--ease);
+        text-align: center;
     }
 
-    .guide-card:hover {
-        transform: translateY(-4px);
-    }
+    .guide-card--sage { background: var(--sage-bright); }
+    .guide-card--sky { background: var(--sky-bright); }
+    .guide-card--blush { background: var(--blush-bright); }
+    .guide-card--butter { background: var(--butter-bright); }
 
-    .guide-card--sage { background: var(--sage); }
-    .guide-card--sky { background: var(--sky); }
-    .guide-card--blush { background: var(--blush); }
-    .guide-card--butter { background: var(--butter); }
-
+    /* The glyph sits in a translucent white tile, so it reads as a lit chip
+       on the coloured field rather than ink printed straight onto it. */
     .guide-card .glyph {
-        font-size: 2.25rem;
-        line-height: 1;
+        display: grid;
+        width: 52px;
+        height: 52px;
+        place-items: center;
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--paper) 55%, transparent);
+        color: var(--forest);
     }
+
+    .guide-card .glyph svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .guide-card--blush .glyph { color: var(--persimmon); }
+    .guide-card--butter .glyph { color: var(--ochre-deep); }
 
     .guide-card h3 {
         font-size: 1rem;
         font-family: var(--font-sans);
         font-weight: 700;
         letter-spacing: 0;
-        color: var(--forest-deep);
+        color: var(--ink);
     }
 
     .guide-card p {
@@ -1869,26 +2302,33 @@
         line-height: 1.45;
     }
 
-    .guide-card__go {
-        grid-column: 2;
-        display: grid;
-        width: 30px;
-        height: 30px;
-        place-items: center;
-        margin-top: 0.9rem;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.75);
-        color: var(--forest-deep);
-        transition: transform 0.28s var(--ease);
+    /* Guides band grows out of a soft green field, with a strip of real grass
+       rising from the bottom edge — a playful nod to the "outdoors" of pet care.
+       Whole blades (tip to base) are shown at the strip's height and tiled
+       across the width, so we never slice through the middle of a blade; the
+       base sits a little above the section edge on a strip of the green field. */
+    #guides.band {
+        position: relative;
+        overflow: hidden;
+        padding-bottom: clamp(180px, 18vw, 250px);
+        background: linear-gradient(180deg, transparent 0%, var(--sage-bright) 68%, var(--sage-bright) 100%);
     }
 
-    .guide-card__go svg {
-        width: 15px;
-        height: 15px;
+    #guides.band > .shell {
+        position: relative;
+        z-index: 1;
     }
 
-    .guide-card:hover .guide-card__go {
-        transform: translateX(4px);
+    #guides.band::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: clamp(14px, 2vw, 26px);
+        height: clamp(96px, 10vw, 140px);
+        background: url("/images/grass.png") repeat-x center bottom;
+        background-size: auto 100%;
+        pointer-events: none;
     }
 
     /* Testimonials on deep forest */
@@ -1934,8 +2374,7 @@
     .review p {
         margin-top: 1rem;
         color: #e6efe9;
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 30;
+        font-family: var(--font-display);
         font-size: 1.05rem;
         font-style: italic;
         line-height: 1.45;
@@ -2091,8 +2530,7 @@
 
     .auth__quote blockquote {
         color: #e6efe9;
-        font-family: var(--font-serif);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1;
+        font-family: var(--font-display);
         font-size: 1.1rem;
         font-style: italic;
         line-height: 1.5;
@@ -2166,6 +2604,8 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 1024px) {
+
+    .hero__stat-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem; }
     .desktop-nav { gap: 1.25rem; }
     .header-login { display: none; }
 
@@ -2174,13 +2614,10 @@
     .hero .lede { max-width: none; }
 
     .card-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .steps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .steps-grid article { border-bottom: 1px solid var(--rule); padding-inline: 1.5rem; }
-    .steps-grid article:nth-child(2n) { border-right: 0; padding-right: 0; }
-    .steps-grid article:nth-child(2n + 1) { padding-left: 0; }
-    .steps-grid article:nth-last-child(-n + 2) { border-bottom: 0; }
+    .steps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2.5rem; }
+    .steps-grid__line { display: none; }
 
-    .story { grid-template-columns: 1fr; gap: 2.5rem; }
+    .stories-grid { grid-template-columns: 1fr; gap: 2.2rem; }
     .reviews { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
 }
@@ -2200,17 +2637,16 @@
 }
 
 @media (max-width: 560px) {
+
+    .hero__stat-bar { grid-template-columns: 1fr; padding: 1.4rem; }
+    .hero__stat { justify-content: flex-start; }
     .shell, .shell-narrow, .shell-mid { width: min(100% - 1.75rem, 1160px); }
 
-    .hero { padding-top: 2.5rem; }
-    .hero__stats { grid-template-columns: 1fr; gap: 1rem; }
-    .hero__stats > div + div { margin-left: 0; padding-left: 0; border-left: 0; padding-top: 1rem; border-top: 1px solid var(--rule); }
-    .hero__note { right: 0; bottom: 1rem; max-width: 10rem; }
+    .hero { padding-block: 2.5rem 3rem; }
+    .hero__adopters { margin-top: 1.25rem; gap: 0.75rem; }
     .hero__actions .btn { width: 100%; }
 
     .card-grid, .card-grid--4, .steps-grid, .guide-grid { grid-template-columns: 1fr; }
-    .steps-grid article { border-right: 0; padding-inline: 0; }
-    .story__gallery img:nth-child(2) { margin-top: 0; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
     .row { align-items: flex-start; flex-direction: column; }
 }
@@ -2221,4 +2657,479 @@
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
     }
+}
+
+/* ==========================================================================
+   PET MEMORIALS — a quieter corner. Warm paper, ochre candlelight, forest ink.
+   ========================================================================== */
+
+@layer components {
+
+    /* ---- Index: garden of remembrance ------------------------------------ */
+
+    .memorial-intro__lede {
+        margin-inline: auto;
+        max-width: 46ch;
+    }
+
+    .memorial-intro__actions {
+        margin-top: 1.75rem;
+    }
+
+    .memorial-grid {
+        margin-top: 0.5rem;
+    }
+
+    .memorial-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--rule);
+        border-radius: var(--r-md);
+        background: var(--paper-raised);
+        color: inherit;
+        text-decoration: none;
+        transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .memorial-card:hover {
+        border-color: var(--rule-strong);
+        transform: translateY(-2px);
+    }
+
+    .memorial-card__photo {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        background: var(--paper-sunk);
+    }
+
+    .memorial-card__photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(0.92);
+    }
+
+    .memorial-card__fallback {
+        display: grid;
+        height: 100%;
+        place-items: center;
+        color: var(--rule-strong);
+    }
+
+    .memorial-card__fallback svg {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .memorial-card__body {
+        padding: 1.1rem 1.2rem 1.2rem;
+    }
+
+    .memorial-card__body h3 {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+    }
+
+    .memorial-card__years {
+        margin-top: 0.15rem;
+        color: var(--ochre-deep);
+        font-family: var(--font-script);
+        font-size: 1.1rem;
+    }
+
+    .memorial-card__species {
+        margin-top: 0.25rem;
+        color: var(--ink-faint);
+        font-size: 0.85rem;
+    }
+
+    .memorial-card__meta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.85rem;
+        padding-top: 0.85rem;
+        border-top: 1px solid var(--rule-faint);
+        color: var(--ink-faint);
+        font-size: 0.8rem;
+    }
+
+    .memorial-card__meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .memorial-card__meta svg {
+        width: 0.95rem;
+        height: 0.95rem;
+    }
+
+    /* ---- Show: the tribute page ------------------------------------------ */
+
+    .memorial-hero {
+        padding-block: 2.5rem 3rem;
+        background:
+            radial-gradient(120% 90% at 50% 0%, var(--butter) 0%, transparent 60%),
+            var(--paper);
+        border-bottom: 1px solid var(--rule);
+    }
+
+    .memorial-hero__inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .memorial-hero__portrait {
+        flex: 0 0 auto;
+        width: 190px;
+        height: 190px;
+        overflow: hidden;
+        border-radius: var(--r-lg);
+        border: 1px solid var(--rule);
+        background: var(--paper-sunk);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .memorial-hero__portrait img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .memorial-hero__fallback {
+        display: grid;
+        height: 100%;
+        place-items: center;
+        color: var(--rule-strong);
+    }
+
+    .memorial-hero__fallback svg {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .memorial-hero__id h1 {
+        margin-top: 0.35rem;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 2.75rem);
+        line-height: 1.05;
+    }
+
+    .memorial-hero__years {
+        margin-top: 0.5rem;
+        color: var(--ochre-deep);
+        font-family: var(--font-script);
+        font-size: 1.6rem;
+        line-height: 1;
+    }
+
+    .memorial-hero__species {
+        margin-top: 0.5rem;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+    }
+
+    .memorial-hero__author {
+        margin-top: 0.75rem;
+        color: var(--ink-faint);
+        font-size: 0.85rem;
+    }
+
+    .memorial-body {
+        padding-block: 2.5rem 4rem;
+    }
+
+    /* ---- Candle bar ------------------------------------------------------- */
+
+    .candle-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.4rem;
+        border: 1px solid var(--rule);
+        border-radius: var(--r-md);
+        background: var(--paper-sunk);
+    }
+
+    .candle-bar__count {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+    }
+
+    .candle-bar__flame {
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--paper-raised);
+        border: 1px solid var(--rule);
+        color: var(--ink-faint);
+    }
+
+    .candle-bar__flame.is-lit {
+        color: var(--ochre);
+        background: var(--butter);
+        border-color: var(--ochre);
+    }
+
+    .candle-bar__count b {
+        display: block;
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    .candle-bar__count small {
+        color: var(--ink-faint);
+        font-size: 0.8rem;
+    }
+
+    /* ---- Tribute text ----------------------------------------------------- */
+
+    .tribute-text {
+        margin-top: 2rem;
+        color: var(--ink-soft);
+        font-size: 1.075rem;
+        line-height: 1.8;
+    }
+
+    .memorial-owner {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--rule-faint);
+    }
+
+    /* ---- Guestbook -------------------------------------------------------- */
+
+    .guestbook {
+        margin-top: 3rem;
+        padding-top: 2.5rem;
+        border-top: 1px solid var(--rule);
+    }
+
+    .guestbook__form {
+        margin-bottom: 2.5rem;
+    }
+
+    .guestbook__form .field {
+        margin-bottom: 0.75rem;
+    }
+
+    .guestbook__signin {
+        margin-bottom: 2rem;
+        color: var(--ink-faint);
+        font-size: 0.9rem;
+    }
+
+    .guestbook__signin a {
+        color: var(--persimmon-deep);
+        font-weight: 600;
+    }
+
+    .guestbook__entry {
+        display: flex;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-bottom: 1px solid var(--rule-faint);
+    }
+
+    .guestbook__avatar {
+        display: grid;
+        flex: 0 0 auto;
+        width: 2.5rem;
+        height: 2.5rem;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--sage);
+        color: var(--forest);
+        font-weight: 700;
+    }
+
+    .guestbook__byline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.6rem;
+    }
+
+    .guestbook__byline time {
+        color: var(--ink-faint);
+        font-size: 0.8rem;
+    }
+
+    .guestbook__body {
+        margin-top: 0.3rem;
+        color: var(--ink-soft);
+        line-height: 1.6;
+    }
+
+    .guestbook__empty {
+        color: var(--ink-faint);
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .memorial-hero__inner { gap: 1.5rem; }
+    .memorial-hero__portrait { width: 140px; height: 140px; }
+}
+
+/* ==========================================================================
+   BONE CURSOR + CHASING DOG
+   The pointer becomes a bone; a dog trails behind it, running while the bone
+   moves and settling when it stops. Injected by resources/js/pet-cursor.js,
+   which only runs for fine pointers on wide screens without reduced-motion.
+   Add class="no-pet-cursor" to <body> to opt a page out.
+   ========================================================================== */
+
+body.pet-cursor-on,
+body.pet-cursor-on * {
+    cursor: none;
+}
+
+.pc-root {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pc-root.is-awake { opacity: 1; }
+.pc-root.is-typing { opacity: 0; }
+
+.pc-bone,
+.pc-dog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform;
+}
+
+/* --- The bone ---------------------------------------------------------- */
+
+.pc-bone {
+    width: 42px;
+    height: 23px;
+}
+
+.pc-bone svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 3px 5px rgb(20 32 27 / 0.28));
+    transition: scale 0.18s var(--ease-out, ease);
+}
+
+.pc-bone.is-grabbed svg { scale: 0.82; }
+
+.pc-bone__outline {
+    fill: var(--color-ink);
+    stroke: var(--color-ink);
+    stroke-width: 6;
+    stroke-linejoin: round;
+}
+
+.pc-bone__fill { fill: #fffdf6; }
+
+/* --- The dog ----------------------------------------------------------- */
+
+.pc-dog {
+    width: 92px;
+    height: 66px;
+}
+
+.pc-dog svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 6px 8px rgb(20 32 27 / 0.22));
+    animation: pc-bob 0.9s ease-in-out infinite;
+}
+
+.pc-dog.is-running svg { animation-duration: 0.34s; }
+
+.pc-dog__body,
+.pc-dog__muzzle,
+.pc-dog__leg rect {
+    fill: var(--color-ochre);
+    stroke: var(--color-ink);
+    stroke-width: 4;
+    stroke-linejoin: round;
+}
+
+.pc-dog__muzzle { fill: #f4dcb2; }
+.pc-dog__leg rect { fill: #c98d16; }
+
+.pc-dog__ear path {
+    fill: #b57c11;
+    stroke: var(--color-ink);
+    stroke-width: 4;
+    stroke-linejoin: round;
+    transform-origin: 80px 18px;
+    animation: pc-ear 0.9s ease-in-out infinite;
+}
+
+.pc-dog.is-running .pc-dog__ear path { animation-duration: 0.34s; }
+
+.pc-dog__nose,
+.pc-dog__eye { fill: var(--color-ink); }
+
+.pc-dog__eye-white { fill: #fffdf6; }
+
+.pc-dog__tail path {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 9;
+    stroke-linecap: round;
+    transform-origin: 27px 42px;
+    animation: pc-wag 0.5s ease-in-out infinite alternate;
+}
+
+.pc-dog.is-running .pc-dog__tail path { animation-duration: 0.18s; }
+
+.pc-dog__leg {
+    transform-origin: 50% 56px;
+    animation: pc-step 0.34s ease-in-out infinite alternate;
+    animation-play-state: paused;
+}
+
+.pc-dog.is-running .pc-dog__leg { animation-play-state: running; }
+
+.pc-dog__leg--front,
+.pc-dog__leg--back-far { animation-direction: alternate-reverse; }
+
+.pc-dog__leg--back-far rect,
+.pc-dog__leg--front-far rect { fill: #a97a10; }
+
+@keyframes pc-step {
+    from { transform: rotate(-26deg); }
+    to   { transform: rotate(26deg); }
+}
+
+@keyframes pc-wag {
+    from { transform: rotate(-16deg); }
+    to   { transform: rotate(26deg); }
+}
+
+@keyframes pc-bob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -4px; }
+}
+
+@keyframes pc-ear {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(11deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pc-root { display: none; }
 }

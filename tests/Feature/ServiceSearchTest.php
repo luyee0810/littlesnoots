@@ -52,6 +52,35 @@ class ServiceSearchTest extends TestCase
             ->assertDontSee($groomer->user->name);
     }
 
+    public function test_selecting_multiple_categories_shows_providers_from_each(): void
+    {
+        $boarding = ServiceCategory::factory()->create(['name' => 'Pet Boarding', 'slug' => 'boarding', 'pricing_unit' => 'night']);
+        $grooming = ServiceCategory::factory()->create(['name' => 'Pet Grooming', 'slug' => 'grooming', 'pricing_unit' => 'session']);
+        $walking = ServiceCategory::factory()->create(['name' => 'Dog Walking', 'slug' => 'dog-walking', 'pricing_unit' => 'walk']);
+
+        $boarder = $this->provider([], $boarding);
+        $groomer = $this->provider([], $grooming);
+        $walker = $this->provider([], $walking);
+
+        $this->get(route('services.index', ['category' => ['boarding', 'grooming']]))
+            ->assertOk()
+            ->assertSee($boarder->user->name)
+            ->assertSee($groomer->user->name)
+            ->assertDontSee($walker->user->name);
+    }
+
+    public function test_the_any_service_search_shows_all_providers(): void
+    {
+        $boarder = $this->provider([], ServiceCategory::factory()->create(['slug' => 'boarding']));
+        $groomer = $this->provider([], ServiceCategory::factory()->create(['slug' => 'grooming']));
+
+        // An empty search submission ("Any service", no keyword or location).
+        $this->get(route('services.index', ['q' => '', 'location' => '', 'category' => []]))
+            ->assertOk()
+            ->assertSee($boarder->user->name)
+            ->assertSee($groomer->user->name);
+    }
+
     public function test_location_search_matches_city_case_insensitively(): void
     {
         $pj = $this->provider(['city' => 'Petaling Jaya']);

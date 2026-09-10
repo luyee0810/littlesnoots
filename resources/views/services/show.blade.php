@@ -17,7 +17,7 @@
                 <p class="kicker">{{ $category ? 'Service' : 'Results' }}</p>
                 <h1>
                     @if ($category)
-                        <span aria-hidden="true">{{ $category->icon }}</span> {{ $category->name }}
+                        <i class="svc-icon" data-lucide="{{ $category->lucideIcon() }}" aria-hidden="true"></i> {{ $category->name }}
                     @else
                         Search results
                     @endif
@@ -52,7 +52,7 @@
         @else
             <div class="card-grid" style="margin-top:1.5rem">
                 @foreach ($providers as $provider)
-                    @include('partials.provider-card', ['provider' => $provider])
+                    @include('partials.provider-card', ['provider' => $provider, 'category' => $category])
                 @endforeach
             </div>
 

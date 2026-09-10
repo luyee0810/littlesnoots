@@ -55,6 +55,42 @@ class ServiceCategory extends Model
         return 'slug';
     }
 
+    /**
+     * Lucide icon name for the category, matching the line-icon style used on
+     * the homepage. Keyed on slug so it survives regardless of the stored emoji.
+     */
+    public function lucideIcon(): string
+    {
+        return match ($this->slug) {
+            'boarding' => 'house',
+            'house-sitting' => 'sofa',
+            'dog-walking' => 'dog',
+            'daycare' => 'sun',
+            'grooming' => 'scissors',
+            'pet-taxi' => 'car',
+            'training' => 'graduation-cap',
+            default => 'paw-print',
+        };
+    }
+
+    /**
+     * Modifier class that tints the category icon a distinct colour, so each
+     * service reads as its own thing in the grid. Keyed on slug.
+     */
+    public function iconColorClass(): string
+    {
+        return match ($this->slug) {
+            'boarding' => 'tile__icon--boarding',
+            'house-sitting' => 'tile__icon--house-sitting',
+            'dog-walking' => 'tile__icon--dog-walking',
+            'daycare' => 'tile__icon--daycare',
+            'grooming' => 'tile__icon--grooming',
+            'pet-taxi' => 'tile__icon--pet-taxi',
+            'training' => 'tile__icon--training',
+            default => '',
+        };
+    }
+
     /** "per night", "per walk" — used wherever a price is shown. */
     public function priceSuffix(): string
     {

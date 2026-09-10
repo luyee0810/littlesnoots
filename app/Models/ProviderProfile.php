@@ -91,6 +91,13 @@ class ProviderProfile extends Model
             ->whereHas('category', fn ($c) => $c->where('slug', $slug)));
     }
 
+    /** Providers offering any of the given categories, by slug. */
+    public function scopeInCategories(Builder $query, array $slugs): Builder
+    {
+        return $query->whereHas('services', fn ($s) => $s->active()
+            ->whereHas('category', fn ($c) => $c->whereIn('slug', $slugs)));
+    }
+
     /** City or postcode match — Phase 2 keeps location search textual. */
     public function scopeInLocation(Builder $query, string $term): Builder
     {
@@ -124,6 +131,20 @@ class ProviderProfile extends Model
     public function primaryPhoto(): ?ProviderPhoto
     {
         return $this->photos->firstWhere('is_primary', true) ?? $this->photos->first();
+    }
+
+    /**
+     * The photo showing a given service, so a category listing leads with the
+     * right picture. Falls back to the primary photo.
+     */
+    public function photoFor(?ServiceCategory $category): ?ProviderPhoto
+    {
+        if (! $category) {
+            return $this->primaryPhoto();
+        }
+
+        return $this->photos->firstWhere('service_category_id', $category->id)
+            ?? $this->primaryPhoto();
     }
 
     public function isLive(): bool

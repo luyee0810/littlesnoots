@@ -57,6 +57,12 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class);
     }
 
+    /** Pet memorials this user has created. */
+    public function memorials(): HasMany
+    {
+        return $this->hasMany(PetMemorial::class);
+    }
+
     // ---- Role helpers --------------------------------------------------
 
     public function isAdmin(): bool

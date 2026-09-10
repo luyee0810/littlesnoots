@@ -10,7 +10,7 @@ class ProviderPhoto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['provider_profile_id', 'url', 'caption', 'is_primary', 'sort_order'];
+    protected $fillable = ['provider_profile_id', 'service_category_id', 'url', 'caption', 'is_primary', 'sort_order'];
 
     protected function casts(): array
     {
@@ -20,5 +20,10 @@ class ProviderPhoto extends Model
     public function providerProfile(): BelongsTo
     {
         return $this->belongsTo(ProviderProfile::class);
+    }
+
+    public function serviceCategory(): BelongsTo
+    {
+        return $this->belongsTo(ServiceCategory::class);
     }
 }

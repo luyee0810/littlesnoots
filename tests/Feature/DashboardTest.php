@@ -23,7 +23,7 @@ class DashboardTest extends TestCase
             ->get('/dashboard')
             ->assertOk()
             ->assertSee($user->name)
-            ->assertSee('applications you');
+            ->assertSee('pets you');
     }
 
     public function test_pet_listers_see_the_listings_dashboard(): void

@@ -35,11 +35,17 @@
         <div class="blob"></div>
         <div class="blob-2"></div>
         <div class="pets">
-          <img class="pet-cut pet-dog" src="https://placedog.net/540/680?id=170" alt="A friendly golden dog looking for a home">
-          <div class="cat-wrap">
+          <span class="dog-cut eye-cut" data-eyes data-head>
+            <img class="pet-cut pet-dog is-cutout" src="{{ asset('images/hero/dog-cake.png') }}" alt="A happy black-and-white rescue dog looking at the camera">
+            <span class="eye" data-ex="34" data-ey="23"><img class="eyeball" src="{{ asset('images/hero/dog-cake.png') }}" alt="" aria-hidden="true"><span class="lid"></span></span>
+            <span class="eye" data-ex="67" data-ey="24"><img class="eyeball" src="{{ asset('images/hero/dog-cake.png') }}" alt="" aria-hidden="true"><span class="lid"></span></span>
+          </span>
+          <span class="cat-cut eye-cut" data-eyes>
             <svg class="crown" viewBox="0 0 24 24"><use href="#i-crown"/></svg>
-            <img class="pet-cut pet-cat" src="https://cataas.com/cat?width=360&height=450&type=square" alt="A curious tabby cat">
-          </div>
+            <img class="pet-cut pet-cat" src="{{ asset('images/hero/cat.png') }}" alt="A cute orange kitten looking up">
+            <span class="eye" data-ex="9.5" data-ey="23.5" style="left:9.5%;top:23.5%;--lid:linear-gradient(#dadcd4 55%,#c2c4bb)"><img class="eyeball" src="{{ asset('images/hero/cat.png') }}" alt="" aria-hidden="true"><span class="lid"></span></span>
+            <span class="eye" data-ex="34" data-ey="26" style="left:34%;top:26%;--lid:linear-gradient(#cdb899 55%,#b09a7c)"><img class="eyeball" src="{{ asset('images/hero/cat.png') }}" alt="" aria-hidden="true"><span class="lid"></span></span>
+          </span>
         </div>
         <div class="speech">Best decision, ever!</div>
         <div class="card-stack">
@@ -61,6 +67,96 @@
         <svg class="doodle hide-sm" style="bottom:20%;right:14%;width:22px;color:oklch(68% 0.12 250)" viewBox="0 0 24 24"><use href="#i-spark"/></svg>
       </div>
     </div>
+
+    @once
+    <script>
+      (function () {
+        var wraps = Array.prototype.slice.call(document.querySelectorAll('[data-eyes]'));
+        var groups = [];
+        wraps.forEach(function (wrap) {
+          var eyes = Array.prototype.slice.call(wrap.querySelectorAll('.eye'));
+          if (eyes.length) groups.push({ wrap: wrap, base: wrap.querySelector('img'), eyes: eyes });
+        });
+        if (!groups.length) return;
+
+        var allEyes = groups.reduce(function (a, g) { return a.concat(g.eyes); }, []);
+
+        // Align each socket's photo copy so the iris sits dead-centre at rest.
+        function layout() {
+          groups.forEach(function (g) {
+            var W = g.wrap.clientWidth, H = g.wrap.clientHeight;
+            g.eyes.forEach(function (eye) {
+              var ball = eye.querySelector('.eyeball');
+              ball.style.width = W + 'px';
+              var ex = parseFloat(eye.dataset.ex) / 100 * W;
+              var ey = parseFloat(eye.dataset.ey) / 100 * H;
+              eye._bx = eye.clientWidth / 2 - ex;
+              eye._by = eye.clientHeight / 2 - ey;
+              eye._max = eye.clientWidth * 0.16; // how far the iris can glance
+              ball.style.transform = 'translate(' + eye._bx + 'px,' + eye._by + 'px)';
+            });
+          });
+        }
+
+        var fine = window.matchMedia('(pointer:fine)').matches;
+        var still = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+        groups.forEach(function (g) {
+          if (g.base.complete) layout();
+          else g.base.addEventListener('load', layout);
+        });
+        layout();
+        window.addEventListener('resize', layout, { passive: true });
+
+        // Occasional blink, each animal on its own random timer so they blink apart.
+        if (!still) {
+          groups.forEach(function (g) {
+            var lids = g.eyes.map(function (e) { return e.querySelector('.lid'); });
+            (function blink() {
+              setTimeout(function () {
+                lids.forEach(function (lid) {
+                  lid.animate(
+                    [{ transform: 'translateY(-102%)' }, { transform: 'translateY(2%)', offset: 0.5 }, { transform: 'translateY(-102%)' }],
+                    { duration: 210, easing: 'ease-in-out' }
+                  );
+                });
+                blink();
+              }, 2600 + Math.random() * 4600);
+            })();
+          });
+        }
+
+        if (!fine || still) return; // static, forward-looking eyes on touch / reduced-motion
+
+        var headWraps = groups.filter(function (g) { return g.wrap.hasAttribute('data-head'); });
+        var pending = false, mx = 0, my = 0;
+        function clamp(v) { return v < -1 ? -1 : v > 1 ? 1 : v; }
+        function track() {
+          pending = false;
+          allEyes.forEach(function (eye) {
+            var r = eye.getBoundingClientRect();
+            var dx = mx - (r.left + r.width / 2), dy = my - (r.top + r.height / 2);
+            var d = Math.hypot(dx, dy) || 1;
+            var m = Math.min(eye._max, d);
+            eye.querySelector('.eyeball').style.transform =
+              'translate(' + (eye._bx + dx / d * m).toFixed(1) + 'px,' + (eye._by + dy / d * m).toFixed(1) + 'px)';
+          });
+          // Fake a head turn: tilt the whole cut-out in 3D toward the cursor.
+          headWraps.forEach(function (g) {
+            var r = g.wrap.getBoundingClientRect();
+            var nx = clamp((mx - (r.left + r.width / 2)) / (window.innerWidth * 0.45));
+            var ny = clamp((my - (r.top + r.height * 0.4)) / (window.innerHeight * 0.45));
+            var ry = (nx * 10).toFixed(2), rx = (-ny * 6).toFixed(2), rz = (nx * 2.5).toFixed(2);
+            g.wrap.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotate(' + rz + 'deg)';
+          });
+        }
+        window.addEventListener('mousemove', function (e) {
+          mx = e.clientX; my = e.clientY;
+          if (!pending) { pending = true; requestAnimationFrame(track); }
+        }, { passive: true });
+      })();
+    </script>
+    @endonce
 
     {{-- stat bar --}}
     <div class="stats reveal">

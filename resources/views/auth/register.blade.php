@@ -1,89 +1,108 @@
-@extends('layouts.guest')
+@extends('layouts.app')
 
-@section('title', 'Sign up — Two Fat Cats')
+@section('title', 'Create your account — Two Fat Cats')
 
 @section('content')
-    <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Get started</p>
-        <h2 class="mt-2 text-3xl font-semibold tracking-tight text-stone-900">Create your account</h2>
-        <p class="mt-2 text-sm text-stone-500">It takes a minute. Tell us how you'd like to use Two Fat Cats.</p>
-    </div>
+    <div class="shell-mid page">
+        <div class="page-head">
+            <div>
+                <p class="kicker">Get started</p>
+                <h1>Create your account</h1>
+                <p class="lede" style="margin-top:.75rem">
+                    It takes a minute. Tell us how you&rsquo;d like to use Two Fat Cats and we&rsquo;ll
+                    set the rest up around you.
+                </p>
+            </div>
+        </div>
 
-    <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-5">
-        @csrf
+        @if ($errors->any())
+            <div class="alert alert--bad" style="margin-top:1.5rem">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        {{-- Account type — the two kinds of member --}}
-        <fieldset>
-            <legend class="mb-2 text-sm font-medium text-stone-700">I'm here to&hellip;</legend>
-            <div class="grid grid-cols-2 gap-3">
+        <form method="POST" action="{{ route('register') }}" class="form-grid" style="margin-top:2rem">
+            @csrf
+
+            {{-- Account type — how the member plans to use the site --}}
+            <fieldset class="fieldset">
+                <legend>I&rsquo;m here to&hellip;</legend>
+
                 @php($chosen = old('account_type', 'adopter'))
-                <label class="cursor-pointer">
-                    <input type="radio" name="account_type" value="adopter" class="peer sr-only" @checked($chosen === 'adopter')>
-                    <div class="h-full rounded-xl border border-stone-300 bg-white p-4 transition hover:border-amber-300 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-sm peer-checked:ring-2 peer-checked:ring-amber-500/25 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-500">
-                        <span class="text-2xl">🏡</span>
-                        <p class="mt-3 text-sm font-semibold text-stone-900">Adopt a pet</p>
-                        <p class="mt-0.5 text-xs leading-snug text-stone-500">Browse pets and apply to bring one home.</p>
-                    </div>
-                </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="account_type" value="lister" class="peer sr-only" @checked($chosen === 'lister')>
-                    <div class="h-full rounded-xl border border-stone-300 bg-white p-4 transition hover:border-amber-300 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-sm peer-checked:ring-2 peer-checked:ring-amber-500/25 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-500">
-                        <span class="text-2xl">🐾</span>
-                        <p class="mt-3 text-sm font-semibold text-stone-900">Rehome a pet</p>
-                        <p class="mt-0.5 text-xs leading-snug text-stone-500">Post pets for adoption and review applicants.</p>
-                    </div>
-                </label>
+                <div class="choice-grid">
+                    @foreach ([
+                        ['value' => 'adopter', 'icon' => 'house', 'title' => 'Adopt or care for a pet', 'blurb' => 'Browse pets, apply to adopt, and book sitters, groomers or walkers.'],
+                        ['value' => 'shelter', 'icon' => 'paw-print', 'title' => 'List pets for adoption', 'blurb' => 'A shelter, a rescue, or rehoming your own pet — post listings and review applicants.'],
+                        ['value' => 'provider', 'icon' => 'heart', 'title' => 'Offer pet services', 'blurb' => 'Boarding, walking, grooming and more. We’ll set up your sitter profile next.'],
+                    ] as $option)
+                        <label class="choice">
+                            <input type="radio" name="account_type" value="{{ $option['value'] }}" @checked($chosen === $option['value'])>
+                            <span class="choice__box">
+                                <span class="choice__icon"><i data-lucide="{{ $option['icon'] }}" aria-hidden="true"></i></span>
+                                <strong>{{ $option['title'] }}</strong>
+                                <small>{{ $option['blurb'] }}</small>
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+
+                @error('account_type') <p class="field-error" style="margin-top:.5rem">{{ $message }}</p> @enderror
+
+                <p class="field-hint" style="margin-top:.7rem">
+                    This only sets where you start — it doesn&rsquo;t lock you in. Sign up to offer services and you can
+                    still post a pet for adoption later; sign up to list pets and you can add a services profile any time.
+                    One account does all of it.
+                </p>
+            </fieldset>
+
+            <div class="field">
+                <label for="name">Name</label>
+                <input id="name" class="input" type="text" name="name" value="{{ old('name') }}" required autofocus
+                       autocomplete="name" placeholder="Alex Rivera" @error('name') aria-invalid="true" @enderror>
+                @error('name') <p class="field-error">{{ $message }}</p> @enderror
             </div>
-            @error('account_type') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
-        </fieldset>
 
-        <div>
-            <label for="name" class="mb-1.5 block text-sm font-medium text-stone-700">Name</label>
-            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
-                   placeholder="Alex Rivera"
-                   class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm transition placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30 @error('name') border-red-400 @enderror">
-            @error('name') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
-        </div>
-
-        <div>
-            <label for="email" class="mb-1.5 block text-sm font-medium text-stone-700">Email</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
-                   placeholder="you@example.com"
-                   class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm transition placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30 @error('email') border-red-400 @enderror">
-            @error('email') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
-        </div>
-
-        <div>
-            <label for="phone" class="mb-1.5 block text-sm font-medium text-stone-700">Phone <span class="font-normal text-stone-400">(optional)</span></label>
-            <input id="phone" type="text" name="phone" value="{{ old('phone') }}" autocomplete="tel"
-                   placeholder="(555) 123-4567"
-                   class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm transition placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30 @error('phone') border-red-400 @enderror">
-            @error('phone') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-                <label for="password" class="mb-1.5 block text-sm font-medium text-stone-700">Password</label>
-                <input id="password" type="password" name="password" required autocomplete="new-password"
-                       placeholder="••••••••"
-                       class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm transition placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30 @error('password') border-red-400 @enderror">
-                @error('password') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" class="input" type="email" name="email" value="{{ old('email') }}" required
+                       autocomplete="username" placeholder="you@example.com" @error('email') aria-invalid="true" @enderror>
+                @error('email') <p class="field-error">{{ $message }}</p> @enderror
             </div>
-            <div>
-                <label for="password_confirmation" class="mb-1.5 block text-sm font-medium text-stone-700">Confirm</label>
-                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
-                       placeholder="••••••••"
-                       class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm transition placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+
+            <div class="field">
+                <label for="phone">Phone <span class="field-label__optional">(optional)</span></label>
+                <input id="phone" class="input" type="text" name="phone" value="{{ old('phone') }}" autocomplete="tel"
+                       placeholder="+60 12-345 6789" @error('phone') aria-invalid="true" @enderror>
+                @error('phone') <p class="field-error">{{ $message }}</p> @enderror
             </div>
-        </div>
 
-        <button class="w-full rounded-xl bg-amber-600 px-6 py-3 font-semibold text-white shadow-sm shadow-amber-600/20 transition hover:bg-amber-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:translate-y-px">
-            Create account
-        </button>
-    </form>
+            <div class="form-grid form-grid--2">
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" class="input" type="password" name="password" required
+                           autocomplete="new-password" placeholder="••••••••" @error('password') aria-invalid="true" @enderror>
+                    @error('password') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+                <div class="field">
+                    <label for="password_confirmation">Confirm password</label>
+                    <input id="password_confirmation" class="input" type="password" name="password_confirmation" required
+                           autocomplete="new-password" placeholder="••••••••">
+                </div>
+            </div>
 
-    <p class="mt-8 text-center text-sm text-stone-500">
-        Already have an account?
-        <a href="{{ route('login') }}" class="font-semibold text-amber-700 hover:text-amber-800 hover:underline">Log in</a>
-    </p>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <p class="field-hint">
+                    Already have an account?
+                    <a href="{{ route('login') }}" class="link-quiet">Log in</a>
+                </p>
+                <button type="submit" class="btn btn--accent">
+                    Create account <i data-lucide="arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </form>
+    </div>
 @endsection

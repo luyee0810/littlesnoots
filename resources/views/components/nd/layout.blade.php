@@ -146,6 +146,24 @@ html.nd-root{scroll-behavior:smooth}
 .nd .pets{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-start;padding-left:6%;gap:0;z-index:2}
 .nd .pet-cut{object-fit:cover;filter:drop-shadow(0 18px 28px oklch(30% 0.05 158 / .35))}
 .nd .pet-dog{width:56%;max-width:280px;aspect-ratio:4/5;border-radius:22px;border:5px solid var(--paper);position:relative;z-index:2}
+/* Transparent cut-out: drop the photo-card frame so the silhouette shows through */
+.nd .pet-cut.is-cutout{object-fit:contain;object-position:bottom;aspect-ratio:720/988;border:0;border-radius:0;width:100%;filter:drop-shadow(0 16px 22px oklch(30% 0.05 158 / .32))}
+/* Realistic cursor-tracking eyes: a clipped socket over each real eye holds an
+   aligned copy of the photo; shifting it moves the iris + catchlight (JS below). */
+.nd .eye-cut{position:relative;display:inline-block;align-self:flex-end;line-height:0}
+/* Head-turn: the cut-out tilts in 3D toward the cursor, pivoting at the neck (JS). */
+.nd .eye-cut[data-head]{transform-origin:50% 80%;transition:transform .18s ease-out;backface-visibility:hidden}
+.nd .dog-cut{width:56%;max-width:300px;z-index:2}
+.nd .cat-cut{width:32%;max-width:158px;margin-left:-9%;z-index:3}
+.nd .cat-cut .pet-cat{width:100%;height:auto;aspect-ratio:auto;border:0;border-radius:0;object-fit:contain;filter:drop-shadow(0 14px 20px oklch(30% 0.05 158 / .3))}
+.nd .eye-cut .eye{position:absolute;z-index:3;aspect-ratio:1;border-radius:50%;overflow:hidden;transform:translate(-50%,-50%);pointer-events:none;box-shadow:inset 0 0 3px 1px rgba(0,0,0,.4)}
+.nd .dog-cut .eye{width:6.6%}
+.nd .cat-cut .eye{width:11.8%;box-shadow:none}
+.nd .dog-cut .eye:nth-of-type(1){left:34%;top:23%}
+.nd .dog-cut .eye:nth-of-type(2){left:67%;top:24%}
+.nd .eye-cut .eyeball{position:absolute;left:0;top:0;max-width:none;transition:transform .1s ease-out;will-change:transform}
+.nd .eye-cut .lid{position:absolute;inset:-2px;background:var(--lid,linear-gradient(#131313 60%,#241a13));transform:translateY(-102%);will-change:transform}
+@media (prefers-reduced-motion:reduce){.nd .eye-cut .eyeball{transition:none}.nd .eye-cut .lid{display:none}}
 .nd .cat-wrap{position:relative;z-index:3;margin-left:-14%;align-self:flex-end}
 .nd .pet-cat{width:150px;max-width:42vw;aspect-ratio:4/5;border-radius:20px;border:5px solid var(--paper)}
 .nd .crown{position:absolute;top:-20px;left:50%;transform:translateX(-50%) rotate(-6deg);width:34px;color:var(--amber-deep);z-index:4}

@@ -33,12 +33,12 @@ class RegistrationTest extends TestCase
         ]);
     }
 
-    public function test_new_users_can_register_as_pet_listers(): void
+    public function test_new_users_can_register_as_shelters(): void
     {
         $this->post('/register', [
             'name' => 'Riley Rescue',
             'email' => 'riley@example.com',
-            'account_type' => 'lister',
+            'account_type' => 'shelter',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -47,6 +47,26 @@ class RegistrationTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'riley@example.com',
             'role' => 'staff',
+        ]);
+    }
+
+    public function test_service_providers_are_sent_to_onboarding(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Sam Sitter',
+            'email' => 'sam@example.com',
+            'account_type' => 'provider',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('provider.onboarding'));
+
+        // Providing services is a profile, not a role — the user stays an adopter.
+        $this->assertDatabaseHas('users', [
+            'email' => 'sam@example.com',
+            'role' => 'adopter',
         ]);
     }
 

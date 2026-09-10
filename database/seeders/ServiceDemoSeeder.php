@@ -106,16 +106,15 @@ class ServiceDemoSeeder extends Seeder
                 ]);
         }
 
-        // Photos themed to what this provider actually offers, locked by
-        // profile id so they stay stable across reseeds.
-        $keyword = self::photoKeyword($selectedCategories->first()->slug);
-
-        foreach (range(0, 2) as $i) {
-            $lock = $profile->id * 10 + $i;
+        // A photo per service the provider offers: people at work with pets,
+        // not portraits of pets on their own. Picked deterministically from the
+        // bundled library so they survive a reseed.
+        foreach ($selectedCategories->values() as $i => $category) {
             ProviderPhoto::create([
                 'provider_profile_id' => $profile->id,
-                'url' => "https://loremflickr.com/800/600/{$keyword}?lock={$lock}",
-                'caption' => $i === 0 ? "Where {$user->name} looks after your pet" : null,
+                'service_category_id' => $category->id,
+                'url' => $this->servicePhotoPath($category->slug),
+                'caption' => self::photoCaption($category->slug, $user->name),
                 'is_primary' => $i === 0,
                 'sort_order' => $i,
             ]);
@@ -132,18 +131,50 @@ class ServiceDemoSeeder extends Seeder
         return $profile->load('services');
     }
 
-    /** A Flickr-tag keyword that reads as the given service category. */
-    private static function photoKeyword(string $categorySlug): string
+    /** How many photos each category has handed out so far, so no two sitters
+     *  in the same listing show the same picture. */
+    private array $photoCursor = [];
+
+    /**
+     * A bundled photo showing this service being carried out — the sitter's
+     * spare room, the walker on the pavement, the taxi's back seat. Falls back
+     * to the pet library if the service set hasn't been downloaded.
+     */
+    private function servicePhotoPath(string $categorySlug): string
+    {
+        $files = glob(public_path("images/seed/services/{$categorySlug}/*.jpg"));
+        $n = $this->photoCursor[$categorySlug] = ($this->photoCursor[$categorySlug] ?? -1) + 1;
+
+        if (! $files) {
+            return DatabaseSeeder::photoPath(self::photoSpecies($categorySlug), $n);
+        }
+
+        sort($files);
+
+        return '/images/seed/services/'.$categorySlug.'/'.basename($files[$n % count($files)]);
+    }
+
+    /** What the primary photo is showing, in the provider's own terms. */
+    private static function photoCaption(string $categorySlug, string $name): string
     {
         return match ($categorySlug) {
-            'boarding' => 'cat',
-            'house-sitting' => 'cat',
-            'dog-walking' => 'dog,walk',
-            'daycare' => 'puppy',
-            'grooming' => 'grooming',
-            'pet-taxi' => 'dog,car',
-            'training' => 'dog,training',
-            default => 'pet',
+            'boarding' => "Where your pet stays with {$name}",
+            'house-sitting' => "{$name} settling in at a client's home",
+            'dog-walking' => "{$name} out on a walk",
+            'daycare' => "A daycare group with {$name}",
+            'grooming' => "{$name} at the grooming table",
+            'pet-taxi' => "{$name}'s car, set up for pet trips",
+            'training' => "{$name} working through a training session",
+            default => "{$name} at work",
+        };
+    }
+
+    /** The species whose photos best illustrate a given service category. */
+    private static function photoSpecies(string $categorySlug): string
+    {
+        return match ($categorySlug) {
+            'dog-walking', 'daycare', 'pet-taxi', 'training' => 'Dog',
+            default => 'Cat',
         };
     }
 

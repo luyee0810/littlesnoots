@@ -29,7 +29,7 @@
 
                 @foreach ([
                     'species' => ['Type', $species->pluck('name', 'slug')->all()],
-                    'age' => ['Age', ['baby' => 'Baby', 'young' => 'Young', 'adult' => 'Adult', 'senior' => 'Senior']],
+                    'age' => ['Age', ['young' => 'Young', 'adult' => 'Adult', 'senior' => 'Senior']],
                     'gender' => ['Gender', ['male' => 'Male', 'female' => 'Female']],
                     'size' => ['Size', ['small' => 'Small', 'medium' => 'Medium', 'large' => 'Large', 'extra_large' => 'Extra large']],
                     'coat' => ['Coat length', ['hairless' => 'Hairless', 'short' => 'Short', 'medium' => 'Medium', 'long' => 'Long', 'wire' => 'Wire', 'curly' => 'Curly']],

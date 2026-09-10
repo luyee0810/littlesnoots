@@ -31,7 +31,7 @@
         <div class="card-grid">
             @foreach ($categories as $category)
                 <a href="{{ route('services.show', $category) }}" class="tile">
-                    <span class="tile__icon" aria-hidden="true">{{ $category->icon }}</span>
+                    <span class="tile__icon {{ $category->iconColorClass() }}" aria-hidden="true"><i data-lucide="{{ $category->lucideIcon() }}"></i></span>
                     <h3>{{ $category->name }}</h3>
                     <p>{{ $category->tagline }}</p>
                     <span class="tile__foot">
@@ -54,7 +54,7 @@
 
             <div class="card-grid">
                 @foreach ($featured as $provider)
-                    @include('partials.provider-card', ['provider' => $provider])
+                    @include('partials.provider-card', ['provider' => $provider, 'category' => null])
                 @endforeach
             </div>
         @endif

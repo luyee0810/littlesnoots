@@ -45,7 +45,7 @@ class ProviderProfileFactory extends Factory
             'user_id' => User::factory(),
             'slug' => 'sitter-'.fake()->unique()->numberBetween(1000, 9999),
             'headline' => fake()->randomElement($headlines),
-            'bio' => fake()->paragraphs(2, true),
+            'bio' => self::bio(),
             'address1' => fake()->buildingNumber().' Jalan '.fake()->lastName(),
             'city' => $city,
             'state' => $state,
@@ -74,6 +74,33 @@ class ProviderProfileFactory extends Factory
             'reviews_count' => fake()->numberBetween(0, 60),
             'bookings_count' => fake()->numberBetween(0, 120),
         ];
+    }
+
+    /** A readable sitter bio — lorem ipsum makes the demo listings unusable. */
+    private static function bio(): string
+    {
+        $opening = fake()->randomElement([
+            'I have kept cats and dogs at home since I was a kid, and pet-sitting is how I spend my weekends.',
+            'I work from home in the Klang Valley, so there is always someone around to keep your pet company.',
+            'I grew up helping out at a local rescue and have been fostering strays for years.',
+            'My own two rescues run the house, and your pet is welcome to join the pack.',
+        ]);
+
+        $detail = fake()->randomElement([
+            'Your pet gets fed on their usual schedule, plenty of playtime, and photo updates every day.',
+            'I send a short WhatsApp update with photos each evening so you know how the day went.',
+            'I am comfortable with medication, senior pets, and anxious rescues who need a slow introduction.',
+            'Air-conditioned room, no other pets around if yours prefers peace and quiet.',
+        ]);
+
+        $closing = fake()->randomElement([
+            'Happy to do a meet-and-greet first — just message me.',
+            'A vet clinic is five minutes away in case anything comes up.',
+            'Drop-off and pick-up can be arranged around the Klang Valley for a small fee.',
+            'Do let me know about any quirks or routines and I will follow them exactly.',
+        ]);
+
+        return "{$opening} {$detail} {$closing}";
     }
 
     public function forUser(User $user): static

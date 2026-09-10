@@ -37,18 +37,18 @@ class DatabaseSeeder extends Seeder
             'slug' => 'two-fat-cats-shelter',
             'type' => 'shelter',
             'email' => 'hello@twofatcats.test',
-            'phone' => '(555) 012-3456',
+            'phone' => '03-2145 6789',
             'website' => 'https://twofatcats.test',
-            'address1' => '12 Whisker Lane',
-            'city' => 'Portland',
-            'state' => 'ME',
-            'postcode' => '04101',
-            'country' => 'US',
-            'mission_statement' => 'Two Fat Cats is a no-kill shelter dedicated to rehoming abandoned and surrendered pets across New England.',
-            'adoption_policy' => 'Adopters must be 18+, complete an application, and pass a brief home check. Fees cover vaccinations and spay/neuter.',
+            'address1' => '12, Jalan Kenari 5, Bandar Puchong Jaya',
+            'city' => 'Puchong',
+            'state' => 'Selangor',
+            'postcode' => '47100',
+            'country' => 'MY',
+            'mission_statement' => 'Two Fat Cats is a no-kill shelter in the Klang Valley, rehoming abandoned and surrendered pets across Selangor and Kuala Lumpur.',
+            'adoption_policy' => 'Adopters must be 18+, send an enquiry, and agree to a short home visit. Fees cover vaccinations, deworming and spay/neuter.',
             'hours' => [
-                'mon' => '10:00–17:00', 'tue' => '10:00–17:00', 'wed' => '10:00–17:00',
-                'thu' => '10:00–17:00', 'fri' => '10:00–17:00', 'sat' => '10:00–15:00', 'sun' => 'Closed',
+                'mon' => '10:00–18:00', 'tue' => '10:00–18:00', 'wed' => '10:00–18:00',
+                'thu' => '10:00–18:00', 'fri' => '10:00–18:00', 'sat' => '10:00–16:00', 'sun' => 'Closed',
             ],
             'facebook' => 'https://facebook.com/twofatcats',
             'instagram' => 'https://instagram.com/twofatcats',
@@ -58,8 +58,9 @@ class DatabaseSeeder extends Seeder
 
         // ---- Species + breeds --------------------------------------
         $taxonomy = [
-            'Cat' => ['Domestic Shorthair', 'Maine Coon', 'Siamese', 'Persian', 'Tabby'],
-            'Dog' => ['Labrador Retriever', 'Beagle', 'Poodle', 'German Shepherd', 'Mixed'],
+            // Breeds you actually see in Malaysian shelters — local mixes dominate.
+            'Cat' => ['Kucing Kampung', 'Domestic Shorthair', 'Persian Mix', 'Siamese', 'Maine Coon'],
+            'Dog' => ['Kampung Dog', 'Golden Retriever', 'Shih Tzu', 'Poodle', 'Beagle'],
             'Rabbit' => ['Holland Lop', 'Netherland Dwarf'],
         ];
 
@@ -103,14 +104,12 @@ class DatabaseSeeder extends Seeder
                         'secondary_breed_id' => $pet->breed_mixed ? $breeds->random()->id : null,
                     ]);
 
-                    // Two species-relevant photos per pet, locked by pet id so
-                    // they stay stable across reseeds.
-                    $keyword = strtolower($speciesName); // cat / dog / rabbit
+                    // Two photos per pet, drawn from the bundled library in
+                    // `public/images/seed` so every listing shows the right animal.
                     foreach ([true, false] as $i => $primary) {
-                        $lock = $pet->id * 10 + $i;
                         PetPhoto::create([
                             'pet_id' => $pet->id,
-                            'path' => "https://loremflickr.com/800/600/{$keyword}?lock={$lock}",
+                            'path' => self::photoPath($speciesName, $pet->id * 2 + $i),
                             'alt' => "Photo of {$pet->name}",
                             'is_primary' => $primary,
                             'sort_order' => $i,
@@ -123,6 +122,21 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ServiceCategorySeeder::class,
             ServiceDemoSeeder::class,
+            MemorialDemoSeeder::class,
         ]);
+    }
+
+    /**
+     * A bundled demo photo for the species, picked deterministically so the
+     * same pet keeps the same picture across reseeds.
+     */
+    public static function photoPath(string $speciesName, int $n): string
+    {
+        $folder = strtolower($speciesName).'s';           // cats / dogs / rabbits
+        $prefix = strtolower($speciesName);               // cat / dog / rabbit
+        $count = count(glob(public_path("images/seed/{$folder}/*.jpg"))) ?: 1;
+        $index = $n % $count + 1;
+
+        return sprintf('/images/seed/%s/%s-%02d.jpg', $folder, $prefix, $index);
     }
 }

@@ -11,7 +11,7 @@
                 <p class="lede" style="margin-top:.5rem">
                     {{ auth()->user()->isStaff()
                         ? "Manage the pets you've listed for adoption."
-                        : "Track the adoption applications you've submitted." }}
+                        : "Track the pets you've asked about." }}
                 </p>
             </div>
             <div class="flex flex-wrap gap-3">
@@ -44,7 +44,7 @@
                         <div class="row">
                             <div style="min-width:0">
                                 <a href="{{ route('bookings.show', $booking) }}" class="link-draw" style="font-weight:600">
-                                    <span aria-hidden="true">{{ $booking->category->icon }}</span>
+                                    <i class="svc-icon" data-lucide="{{ $booking->category->lucideIcon() }}" aria-hidden="true"></i>
                                     {{ $booking->category->name }} for {{ $booking->pet_name }}
                                 </a>
                                 <p class="meta" style="margin-top:.3rem">
@@ -64,7 +64,7 @@
         {{-- ---- Adoption ---------------------------------------------------- --}}
         <section class="section-gap">
             <p class="label">
-                {{ auth()->user()->isStaff() ? 'Pets I’ve listed' : 'My adoption applications' }}
+                {{ auth()->user()->isStaff() ? 'Pets I’ve listed' : 'Pets I’ve asked about' }}
             </p>
 
             @isset($listedPets)
@@ -101,7 +101,7 @@
                     @endforelse
                 </div>
             @else
-                {{-- Adopter view: applications this member has submitted --}}
+                {{-- Adopter view: pets this member has enquired about --}}
                 <div class="panel rows" style="margin-top:1rem">
                     @forelse ($applications as $application)
                         @php($pet = $application->pet)
@@ -122,7 +122,7 @@
                                     @else
                                         <p style="font-weight:600">Pet no longer listed</p>
                                     @endif
-                                    <p class="meta" style="font-size:.78rem">Applied {{ $application->created_at->format('M j, Y') }}</p>
+                                    <p class="meta" style="font-size:.78rem">Asked {{ $application->created_at->format('M j, Y') }}</p>
                                 </div>
                             </div>
                             <span @class([
@@ -136,8 +136,8 @@
                     @empty
                         <div class="empty" style="border:0;padding-block:2.5rem">
                             <p class="empty__icon">🐾</p>
-                            <h2>You haven't applied for any pets yet</h2>
-                            <p>Find your new best friend — it starts with one application.</p>
+                            <h2>You haven't asked about any pets yet</h2>
+                            <p>Find your new best friend — it starts with a question.</p>
                             <a href="{{ route('pets.index') }}" class="btn btn--accent btn--sm">Browse adoptable pets</a>
                         </div>
                     @endforelse

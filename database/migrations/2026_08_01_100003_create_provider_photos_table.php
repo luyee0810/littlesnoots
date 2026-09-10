@@ -12,6 +12,9 @@ return new class extends Migration
         Schema::create('provider_photos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('provider_profile_id')->constrained()->cascadeOnDelete();
+            // Which service the photo shows — a sitter's spare room, the taxi's
+            // back seat — so a category listing can lead with the right picture.
+            $table->foreignId('service_category_id')->nullable()->constrained()->nullOnDelete();
             $table->string('url');
             $table->string('caption')->nullable();
             $table->boolean('is_primary')->default(false);

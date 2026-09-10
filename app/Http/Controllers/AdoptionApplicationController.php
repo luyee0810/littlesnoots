@@ -8,11 +8,11 @@ use Illuminate\Http\RedirectResponse;
 
 class AdoptionApplicationController extends Controller
 {
-    /** Store an adoption application submitted from a pet detail page. */
+    /** Store an enquiry about a pet, submitted from the pet detail page. */
     public function store(StoreAdoptionApplicationRequest $request, Pet $pet): RedirectResponse
     {
         if ($pet->status !== 'available') {
-            return back()->with('error', "Sorry, {$pet->name} is no longer available for adoption.");
+            return back()->with('error', "Sorry, {$pet->name} is no longer available.");
         }
 
         $pet->applications()->create([
@@ -23,6 +23,6 @@ class AdoptionApplicationController extends Controller
 
         return redirect()
             ->route('pets.show', $pet)
-            ->with('success', "Thank you! Your application for {$pet->name} has been received. Our team will be in touch soon.");
+            ->with('success', "Thanks for asking about {$pet->name}! Your enquiry has been received and our team will be in touch soon.");
     }
 }

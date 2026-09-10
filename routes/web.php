@@ -3,6 +3,9 @@
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MemorialCandleController;
+use App\Http\Controllers\MemorialController;
+use App\Http\Controllers\MemorialMessageController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ProviderBookingController;
 use App\Http\Controllers\ProviderController;
@@ -11,6 +14,7 @@ use App\Http\Controllers\ProviderProfileController;
 use App\Http\Controllers\ProviderServiceController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Models\Pet;
+use App\Models\PetMemorial;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +23,10 @@ Route::get('/', function () {
             ->with(['species', 'photos'])
             ->latest('published_at')
             ->take(4)
+            ->get(),
+        'memorials' => PetMemorial::whereNotNull('photo_path')
+            ->latest()
+            ->take(3)
             ->get(),
     ]);
 })->name('home');
@@ -50,6 +58,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
 });
+
+// ---- Pet memorials ------------------------------------------------------
+// `create` is registered before the `{memorial}` slug route so it isn't
+// swallowed as a slug.
+Route::get('/memorials', [MemorialController::class, 'index'])->name('memorials.index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/memorials/create', [MemorialController::class, 'create'])->name('memorials.create');
+    Route::post('/memorials', [MemorialController::class, 'store'])->name('memorials.store');
+    Route::delete('/memorials/{memorial}', [MemorialController::class, 'destroy'])->name('memorials.destroy');
+    Route::post('/memorials/{memorial}/candle', [MemorialCandleController::class, 'store'])->name('memorials.candle');
+    Route::post('/memorials/{memorial}/messages', [MemorialMessageController::class, 'store'])->name('memorials.messages.store');
+});
+
+Route::get('/memorials/{memorial}', [MemorialController::class, 'show'])->name('memorials.show');
 
 // ---- Provider dashboard -------------------------------------------------
 Route::prefix('provider')->name('provider.')->middleware('auth')->group(function () {

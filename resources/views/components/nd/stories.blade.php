@@ -13,14 +13,14 @@
         </div>
         <div class="story-photos">
           <span class="washi" aria-hidden="true"></span>
-          <img src="https://placedog.net/300/300?id=15" alt="Bruno, adopted in March, asleep on a sofa" loading="lazy">
-          <img src="https://placedog.net/300/300?id=16" alt="Sadie playing in her new garden" loading="lazy">
-          <img src="https://placedog.net/300/300?id=17" alt="Pip resting in a sunny window" loading="lazy">
+          <img src="{{ asset('images/seed/dogs/dog-04.jpg') }}" alt="Bruno, adopted in March, asleep on a sofa" loading="lazy">
+          <img src="{{ asset('images/seed/cats/cat-04.jpg') }}" alt="Oyen playing in her new home" loading="lazy">
+          <img src="{{ asset('images/seed/cats/cat-16.jpg') }}" alt="Tompok resting in a sunny window" loading="lazy">
         </div>
         <figure class="quote-card">
           <div class="mark" aria-hidden="true">&ldquo;</div>
-          <blockquote><p>Adopting Max was the best decision we ever made. He didn't just change our life, we changed his.</p></blockquote>
-          <figcaption class="who">— Laria &amp; Max</figcaption>
+          <blockquote><p>Adopting Tompok was the best decision we ever made. He didn't just change our life, we changed his.</p></blockquote>
+          <figcaption class="who">— Aisyah &amp; Tompok, Petaling Jaya</figcaption>
         </figure>
       </div>
     </div>

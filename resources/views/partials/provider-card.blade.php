@@ -1,5 +1,5 @@
 @php
-    $photo = $provider->primaryPhoto();
+    $photo = $provider->photoFor($category ?? null);
     $cheapest = $provider->cheapestService();
 @endphp
 
@@ -25,21 +25,22 @@
             <h3>{{ $provider->user->name }}</h3>
         </div>
 
-        <p class="listing__meta line-clamp-2">{{ $provider->headline }}</p>
-
         <p class="listing__place"><i data-lucide="map-pin" aria-hidden="true"></i>{{ $provider->locationLabel() }}</p>
 
-        <div class="chip-row">
+        <div class="chip-row chip-row--tinted">
             @foreach ($provider->services->where('is_active', true)->take(3) as $service)
-                <span class="chip">{{ $service->category->icon }} {{ $service->category->name }}</span>
+                <span class="chip"><i class="svc-icon" data-lucide="{{ $service->category->lucideIcon() }}" aria-hidden="true"></i> {{ $service->category->name }}</span>
             @endforeach
         </div>
 
         <div class="listing__foot">
-            <span class="listing__cta">View profile <i data-lucide="arrow-right" aria-hidden="true"></i></span>
             @if ($cheapest)
-                <span><span class="label" style="display:inline">from</span> <span class="price">{{ $cheapest->priceLabel() }}</span></span>
+                <span class="listing__price">
+                    <span class="listing__price-from">From</span>
+                    <span class="price">{{ $cheapest->priceLabel() }}</span>
+                </span>
             @endif
+            <span class="listing__cta">View profile <i data-lucide="arrow-right" aria-hidden="true"></i></span>
         </div>
     </div>
 </a>

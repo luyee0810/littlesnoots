@@ -3,6 +3,11 @@
 @php
     $filters = $filters ?? [];
     $val = fn ($k) => $filters[$k] ?? '';
+    $selectedCats = (array) ($filters['category'] ?? []);
+    $selectedNames = $categories->whereIn('slug', $selectedCats)->pluck('name');
+    $catLabel = $selectedNames->isEmpty()
+        ? 'Any service'
+        : ($selectedNames->count() === 1 ? $selectedNames->first() : $selectedNames->count().' services');
 @endphp
 
 <form method="GET" action="{{ route('services.index') }}" class="searchbar" role="search">
@@ -18,14 +23,21 @@
                placeholder="Town or postcode">
     </div>
 
-    <div>
-        <label for="category" class="sr-only">Service</label>
-        <select id="category" name="category" class="select">
-            <option value="">Any service</option>
-            @foreach ($categories as $c)
-                <option value="{{ $c->slug }}" @selected($val('category') === $c->slug)>{{ $c->name }}</option>
-            @endforeach
-        </select>
+    <div class="multiselect">
+        <details class="multiselect__details">
+            <summary class="select multiselect__summary" role="button" aria-haspopup="listbox">
+                <span>{{ $catLabel }}</span>
+            </summary>
+            <div class="multiselect__panel" role="listbox" aria-label="Service">
+                @foreach ($categories as $c)
+                    <label class="multiselect__option">
+                        <input type="checkbox" name="category[]" value="{{ $c->slug }}"
+                               @checked(in_array($c->slug, $selectedCats, true))>
+                        <span>{{ $c->name }}</span>
+                    </label>
+                @endforeach
+            </div>
+        </details>
     </div>
 
     <button type="submit" class="btn btn--primary">

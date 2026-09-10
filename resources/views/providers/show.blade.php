@@ -69,9 +69,9 @@
                     </div>
 
                     @if ($badges->isNotEmpty())
-                        <div class="chip-row" style="margin-top:1.25rem">
+                        <div class="chip-row chip-row--tinted" style="margin-top:1.25rem">
                             @foreach ($badges as $badge)
-                                <span class="chip chip--sage">
+                                <span class="chip">
                                     <i data-lucide="check" aria-hidden="true" style="width:13px;height:13px"></i>{{ $badge }}
                                 </span>
                             @endforeach
@@ -93,7 +93,7 @@
                             <div class="row" style="align-items:flex-start">
                                 <div style="min-width:0">
                                     <h3 style="font-size:1.05rem">
-                                        <span aria-hidden="true">{{ $service->category->icon }}</span> {{ $service->label() }}
+                                        <i class="svc-icon" data-lucide="{{ $service->category->lucideIcon() }}" aria-hidden="true"></i> {{ $service->label() }}
                                     </h3>
                                     @if ($service->description)
                                         <p class="meta" style="margin-top:.35rem">{{ $service->description }}</p>
