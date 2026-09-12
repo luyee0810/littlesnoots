@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create your account — Two Fat Cats')
+@section('title', 'Create your account — Little Snoots')
 
 @section('content')
     <div class="shell-mid page">
@@ -9,7 +9,7 @@
                 <p class="kicker">Get started</p>
                 <h1>Create your account</h1>
                 <p class="lede" style="margin-top:.75rem">
-                    It takes a minute. Tell us how you&rsquo;d like to use Two Fat Cats and we&rsquo;ll
+                    It takes a minute. Tell us how you&rsquo;d like to use Little Snoots and we&rsquo;ll
                     set the rest up around you.
                 </p>
             </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Services & rates — Two Fat Cats')
+@section('title', 'Services & rates — Little Snoots')
 
 @section('content')
     <div class="shell-mid page">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create a memorial — Two Fat Cats')
+@section('title', 'Create a memorial — Little Snoots')
 
 @php($v = fn ($key, $default = null) => old($key, $default))
 

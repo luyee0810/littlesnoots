@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', 'Forgot password — Two Fat Cats')
+@section('title', 'Forgot password — Little Snoots')
 
 @section('content')
     <div>

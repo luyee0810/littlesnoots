@@ -253,13 +253,13 @@ Nav: replace the disabled `Services` span in `layouts/app` with a live link, and
 - `ProviderProfileFactory` + `ProviderServiceFactory` + `BookingFactory`.
 - `ServiceDemoSeeder` — ~20 providers across several cities with photos, 2–3 services each, and
   bookings spread across every status, so search returns varied results.
-- Demo login: `sitter@twofatcats.test`.
+- Demo login: `sitter@littlesnoots.test`.
 
 ## 9. Build sequence
 
 ### 2a — Browse & book ✅ built
 Shipped on `feature/services`. 44 feature tests cover search, booking creation, every state
-transition and authorization. Tests run against Postgres (`createdb twofatcats_testing`) because
+transition and authorization. Tests run against Postgres (`createdb littlesnoots_testing`) because
 the search scopes use `ilike`.
 
 Deviations from the plan above, all deliberate:

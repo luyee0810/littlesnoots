@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', 'Log in — Two Fat Cats')
+@section('title', 'Log in — Little Snoots')
 
 @section('content')
     <div>
@@ -53,7 +53,7 @@
     </form>
 
     <p class="mt-8 text-center text-sm text-stone-500">
-        New to Two Fat Cats?
+        New to Little Snoots?
         <a href="{{ route('register') }}" class="font-semibold text-amber-700 hover:text-amber-800 hover:underline">Create an account</a>
     </p>
 @endsection

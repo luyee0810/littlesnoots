@@ -5,7 +5,7 @@
     $v = fn ($key, $default = null) => old($key, $service->{$key} ?? $default);
 @endphp
 
-@section('title', ($editing ? 'Edit service' : 'Add a service').' — Two Fat Cats')
+@section('title', ($editing ? 'Edit service' : 'Add a service').' — Little Snoots')
 
 @section('content')
     <div class="shell-narrow page">

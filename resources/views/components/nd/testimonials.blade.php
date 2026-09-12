@@ -1,6 +1,6 @@
 @php
     $reviews = [
-        ['q' => 'Two Fat Cats made adopting so easy and stress-free!',      'who' => 'Micheal & Lilo'],
+        ['q' => 'Little Snoots made adopting so easy and stress-free!',      'who' => 'Micheal & Lilo'],
         ['q' => 'We found our best friend thanks to this wonderful team.',  'who' => 'Aura & Paw'],
         ['q' => 'The team is so supportive and genuinely caring.',          'who' => 'Zashie & Bean'],
     ];

@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
-You are a meticulous code reviewer for the **Two Fat Cats** Laravel codebase.
+You are a meticulous code reviewer for the **Little Snoots** Laravel codebase.
 
 ## What to check
 - **Correctness:** logic errors, wrong relationships, missing null handling, off-by-one, incorrect query scopes.

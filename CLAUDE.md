@@ -1,11 +1,14 @@
-# Two Fat Cats
+# Little Snoots
 
 Pet adoption website (expanding to pet **services** and **products**). Laravel 13, PostgreSQL.
 
 ## Stack
 - **Backend:** Laravel 13, PHP 8.5
-- **Database:** PostgreSQL — database name `twofatcats`, user `luyee`, local trust auth (no password), port 5432. Configured in `.env` (`DB_CONNECTION=pgsql`).
-- **Frontend:** Blade + Tailwind CSS v4 via Vite (`@tailwindcss/vite`), Instrument Sans font.
+- **Database:** PostgreSQL — database name `littlesnoots`, user `luyee`, local trust auth (no password), port 5432. Configured in `.env` (`DB_CONNECTION=pgsql`).
+- **Frontend:** Blade + Tailwind CSS v4 via Vite (`@tailwindcss/vite`). Figtree carries both
+  body and display (display separates by weight/tracking, not a second family), self-hosted
+  through the Vite `bunny()` fonts pipeline; Caveat is the script accent, loaded from Google
+  in `partials/fonts`.
 
 ## Run it
 ```bash
@@ -48,7 +51,7 @@ Malaysia-based and priced in **MYR (RM)**.
 - No payments in Phase 2 — the price is recorded for reference, settled off-platform.
 - Search is keywords + location + category only. Other columns exist but aren't facets yet.
 
-Demo users: `admin@twofatcats.test`, `staff@twofatcats.test`, `sitter@twofatcats.test`
+Demo users: `admin@littlesnoots.test`, `staff@littlesnoots.test`, `sitter@littlesnoots.test`
 (password = factory default `password`).
 
 ## Key paths
@@ -63,7 +66,7 @@ Demo users: `admin@twofatcats.test`, `staff@twofatcats.test`, `sitter@twofatcats
 - Case-insensitive search uses Postgres `ilike`.
 - Format with `./vendor/bin/pint`; test with `php artisan test`.
 - Tests run against **Postgres**, not sqlite — search relies on `ilike`, which sqlite lacks.
-  One-time setup: `createdb twofatcats_testing` (configured in `phpunit.xml`).
+  One-time setup: `createdb littlesnoots_testing` (configured in `phpunit.xml`).
 
 ## Specialised agents (`.claude/agents/`)
 - **design-engineer** — Blade/Tailwind UI & visual design

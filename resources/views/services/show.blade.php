@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($category?->name ?? 'Pet services').' — Two Fat Cats')
+@section('title', ($category?->name ?? 'Pet services').' — Little Snoots')
 
 @section('content')
     <div class="shell page">

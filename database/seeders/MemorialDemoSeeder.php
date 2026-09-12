@@ -14,7 +14,7 @@ class MemorialDemoSeeder extends Seeder
 
     public function run(): void
     {
-        $authors = User::whereIn('email', ['admin@twofatcats.test', 'staff@twofatcats.test'])->get();
+        $authors = User::whereIn('email', ['admin@littlesnoots.test', 'staff@littlesnoots.test'])->get();
 
         if ($authors->isEmpty()) {
             $authors = User::factory(2)->create();

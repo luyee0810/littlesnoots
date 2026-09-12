@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'In memory of '.$memorial->pet_name.' — Two Fat Cats')
+@section('title', 'In memory of '.$memorial->pet_name.' — Little Snoots')
 
 @section('content')
     <article class="memorial">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $provider->user->name.' — Pet services — Two Fat Cats')
+@section('title', $provider->user->name.' — Pet services — Little Snoots')
 
 @php
     $photos = $provider->photos;

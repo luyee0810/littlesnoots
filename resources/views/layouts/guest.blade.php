@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#ffffff">
-    <title>@yield('title', 'Two Fat Cats')</title>
+    <title>@yield('title', 'Little Snoots')</title>
     @include('partials.fonts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -13,7 +13,7 @@
         {{-- Brand panel --}}
         <aside class="auth__brand">
             <div>
-                <a href="{{ route('home') }}" class="wordmark">Two Fat Cats</a>
+                <a href="{{ route('home') }}" class="wordmark">Little Snoots</a>
             </div>
 
             <div>
@@ -35,7 +35,7 @@
         {{-- Form panel --}}
         <main class="auth__form">
             <div class="auth__card">
-                <a href="{{ route('home') }}" class="wordmark lg:hidden" style="margin-bottom:2.5rem">Two Fat Cats</a>
+                <a href="{{ route('home') }}" class="wordmark lg:hidden" style="margin-bottom:2.5rem">Little Snoots</a>
 
                 @yield('content')
             </div>

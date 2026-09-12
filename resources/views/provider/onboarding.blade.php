@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Become a sitter — Two Fat Cats')
+@section('title', 'Become a sitter — Little Snoots')
 
 @php($profile = new \App\Models\ProviderProfile)
 

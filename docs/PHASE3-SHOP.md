@@ -1,7 +1,7 @@
 # Phase 3 — Shop (merchant marketplace)
 
 A **multi-merchant** shop for pet products: registered users open a merchant store, list
-products, and sell to buyers. Two Fat Cats hosts the catalogue and the order record; it is a
+products, and sell to buyers. Little Snoots hosts the catalogue and the order record; it is a
 marketplace, not a first-party retailer.
 
 Demo data is Malaysia-based and priced in **MYR (RM)**, matching Phase 2.
@@ -183,7 +183,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
-// Sell on Two Fat Cats (auth)
+// Sell on Little Snoots (auth)
 Route::prefix('merchant')->name('merchant.')->middleware('auth')->group(function () {
     Route::get('/onboarding', [MerchantOnboardingController::class, 'create'])->name('onboarding');
     Route::post('/onboarding', [MerchantOnboardingController::class, 'store']);
@@ -273,7 +273,7 @@ resources/views/
 
 Same warm stone + amber palette. Nav: replace the disabled `Shop` span in `layouts/app`
 ([layouts/app.blade.php:20](../resources/views/layouts/app.blade.php#L20)) with a live link plus
-a cart badge, and add "Sell on Two Fat Cats" to the dashboard next to "Become a sitter".
+a cart badge, and add "Sell on Little Snoots" to the dashboard next to "Become a sitter".
 
 ## 8. Seeders & factories
 
@@ -281,7 +281,7 @@ a cart badge, and add "Sell on Two Fat Cats" to the dashboard next to "Become a 
 - `MerchantProfileFactory`, `ProductFactory`, `ProductVariantFactory`, `OrderFactory`.
 - `ShopDemoSeeder` — ~8 merchants across Malaysian cities, ~60 products with photos and 1–4
   variants each, a few out-of-stock and on-sale, and orders spread across every status.
-- Demo login: `merchant@twofatcats.test` (password = factory default `password`).
+- Demo login: `merchant@littlesnoots.test` (password = factory default `password`).
 - Photos stay placeholder URLs (`picsum.photos`) in 3a, same as pets and providers; real uploads
   are a 3b item.
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Two Fat Cats — Find your new best friend')
+@section('title', 'Little Snoots — Find your new best friend')
 
 @section('content')
     {{-- ---- Hero ---------------------------------------------------------- --}}
@@ -11,7 +11,6 @@
         </video>
         <div class="shell hero__grid">
             <div>
-                <p class="kicker">Adopt · Love · Thrive</p>
                 <h1>Find the companion who changes <em>everything</em></h1>
                 <p class="lede">
                     Meet cats and dogs waiting for a second chance, and book trusted local
@@ -71,7 +70,6 @@
         <div class="shell">
             <div class="band-head">
                 <div>
-                    <p class="kicker">Waiting for you</p>
                     <h2>Meet your new best friend</h2>
                 </div>
                 <a href="{{ route('pets.index') }}" class="btn btn--outline">View all pets <i data-lucide="arrow-right" aria-hidden="true"></i></a>
@@ -98,7 +96,6 @@
         <div class="shell">
             <div class="band-head band-head--center">
                 <div>
-                    <p class="kicker kicker--center">Four easy steps</p>
                     <h2>Adoption is simple</h2>
                 </div>
             </div>
@@ -132,7 +129,6 @@
             <div class="stories">
                 <div class="stories-grid">
                     <div class="stories__intro">
-                        <p class="kicker">In loving memory</p>
                         <h2>A place to<br>remember them</h2>
                         <p>
                             The companions we lose never really leave us. Create a lasting
@@ -163,35 +159,55 @@
         </div>
     </section>
 
-    {{-- ---- Guides --------------------------------------------------------- --}}
-    <section class="band" id="guides">
+    {{-- ---- Donate --------------------------------------------------------- --}}
+    <section class="band" id="donate">
+        {{-- Butterfly-chase footage fills the section behind the content; the
+             grass sits along the bottom padding, the soft sky carries the copy. --}}
+        <video class="guides__bg" autoplay loop muted playsinline preload="metadata"
+               poster="{{ asset('images/butterflybg-poster.jpg') }}" aria-hidden="true">
+            <source src="{{ asset('videos/butterflybg.mp4') }}" type="video/mp4">
+        </video>
         <div class="shell">
-            <div class="band-head">
+            <div class="band-head band-head--center">
                 <div>
-                    <p class="kicker">More than adoption</p>
-                    <h2>Guides &amp; resources</h2>
-                    <p class="lede">Everything you need to give your pet the best life.</p>
+                    <p class="kicker kicker--center">Every gift counts</p>
+                    <h2>Help a rescue find home</h2>
+                    <p class="lede">Little Snoots runs on the kindness of people like you &mdash; give
+                        whatever feels right. Even a few ringgit helps feed, treat, and shelter a pet
+                        in need until their forever family arrives.</p>
                 </div>
-                <a href="{{ route('services.index') }}" class="btn btn--outline">Explore pet care <i data-lucide="arrow-right" aria-hidden="true"></i></a>
             </div>
 
-            <div class="guide-grid">
+            {{-- Each tier is a direct link: gifts are settled off-platform for now,
+                 so a tap opens an email with the amount already filled in. The
+                 impact line tells the donor exactly what their gift covers. --}}
+            <div class="donate-grid">
                 @foreach ([
-                    ['boarding', 'sage', 'book-open', 'New pet parent guide', 'Everyday care for a happy start.'],
-                    ['house-sitting', 'sky', 'house', 'Prepare your home', 'Make your space safe and pet-friendly.'],
-                    ['training', 'blush', 'graduation-cap', 'Training &amp; behaviour', 'Build good habits and a stronger bond.'],
-                    ['grooming', 'butter', 'heart-pulse', 'Health &amp; nutrition', 'Support a long and healthy life.'],
-                ] as [$slug, $tint, $icon, $title, $copy])
-                    <a href="{{ route('services.index', ['category' => $slug]) }}" class="guide-card guide-card--{{ $tint }}">
+                    ['10', 'sand', 'bone', 'A handful of treats and a full bowl.'],
+                    ['20', 'sky', 'house', 'A cosy blanket for a chilly night.'],
+                    ['30', 'blush', 'heart-pulse', 'A check-up to keep a snout healthy.'],
+                    ['50', 'butter', 'stethoscope', 'A helping hand toward vet care.'],
+                ] as [$amount, $tint, $icon, $copy])
+                    <a class="donate-tier donate-tier--{{ $tint }}"
+                       href="mailto:donate@littlesnoots.test?subject={{ rawurlencode('Donation of RM' . $amount . ' to Little Snoots') }}">
                         <span class="glyph" aria-hidden="true"><i data-lucide="{{ $icon }}"></i></span>
-                        <span>
-                            <h3>{!! $title !!}</h3>
-                            <p>{{ $copy }}</p>
-                        </span>
+                        <span class="donate-amount">RM{{ $amount }}</span>
+                        <span class="donate-copy">{{ $copy }}</span>
                     </a>
                 @endforeach
             </div>
+
+            <div class="donate-cta">
+                <a class="btn btn--primary"
+                   href="mailto:donate@littlesnoots.test?subject={{ rawurlencode('I would like to donate to Little Snoots') }}">
+                    Toss us a treat <i data-lucide="bone" aria-hidden="true"></i>
+                </a>
+                <p class="donate-note">No amount is too small. Little Snoots is a registered non-profit,
+                    and gifts are arranged directly with our team &mdash; we&rsquo;ll be in touch to
+                    complete your donation.</p>
+            </div>
         </div>
+
     </section>
 
 @endsection

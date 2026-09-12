@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Adoptable pets — Two Fat Cats')
+@section('title', 'Adoptable pets — Little Snoots')
 
 @php
     $val = fn ($k, $d = '') => $filters[$k] ?? $d;

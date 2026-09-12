@@ -1,4 +1,4 @@
-# Two Fat Cats — Product Roadmap
+# Little Snoots — Product Roadmap
 
 A pet platform built on Laravel 13 + PostgreSQL. Rolls out in three phases; each phase
 reuses a consistent pattern (a `*_categories` taxonomy + a media/photos table where images

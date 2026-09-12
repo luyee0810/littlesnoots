@@ -4,7 +4,13 @@
 
 @section('content')
     {{-- ---- Header --------------------------------------------------------- --}}
-    <section class="band memorial-intro">
+    <section class="band memorial-intro memorial-intro--video">
+        {{-- Meadow clip behind the header; a paper scrim over it keeps the
+             forest ink legible, and the edges feather into the band's wash. --}}
+        <video class="memorial-intro__bg" autoplay loop muted playsinline preload="metadata"
+               poster="{{ asset('images/grassdog-poster.jpg') }}" aria-hidden="true">
+            <source src="{{ asset('videos/grassdog.mp4') }}" type="video/mp4">
+        </video>
         <div class="shell">
             <div class="band-head band-head--center">
                 <div>

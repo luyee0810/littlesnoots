@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#ffffff">
-    <meta name="description" content="Meet adoptable pets and find trusted local pet care with Two Fat Cats.">
-    <title>@yield('title', 'Two Fat Cats — Pet Adoption')</title>
+    <meta name="description" content="Meet adoptable pets and find trusted local pet care with Little Snoots.">
+    <title>@yield('title', 'Little Snoots — Pet Adoption')</title>
     @include('partials.fonts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -14,8 +14,9 @@
 
     <header class="site-header">
         <nav class="shell header-nav" aria-label="Main navigation">
-            <a href="{{ route('home') }}" class="brand" aria-label="Two Fat Cats home">
-                <img src="{{ asset('images/logo.png') }}" alt="Two Fat Cats" width="749" height="391" fetchpriority="high">
+            <a href="{{ route('home') }}" class="brand" aria-label="Little Snoots home">
+                <img src="{{ asset('images/nose-black-sm.png') }}" alt="" width="128" height="113" fetchpriority="high">
+                <span class="brand-name">Little Snoots</span>
             </a>
 
             @php
@@ -74,7 +75,8 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="{{ route('home') }}" class="brand brand--footer">
-                        <img src="{{ asset('images/logo.png') }}" alt="Two Fat Cats" width="749" height="391" loading="lazy">
+                        <img src="{{ asset('images/nose-black-sm.png') }}" alt="" width="128" height="113" loading="lazy">
+                        <span class="brand-name">Little Snoots</span>
                     </a>
                     <p>Connecting loving pets with loving people — and the sitters who look after them. Because every pet deserves a home.</p>
                 </div>
@@ -89,7 +91,7 @@
                 <div>
                     <h3>Support</h3>
                     <nav>
-                        <a href="{{ route('home') }}#guides">Guides &amp; resources</a>
+                        <a href="{{ route('home') }}#donate">Donate</a>
                         <a href="{{ route('provider.onboarding') }}">Become a sitter</a>
                     </nav>
                 </div>
@@ -106,7 +108,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>© {{ date('Y') }} Two Fat Cats. All rights reserved.</span>
+                <span>© {{ date('Y') }} Little Snoots. All rights reserved.</span>
                 <span>Made in Kuala Lumpur 🐾</span>
             </div>
         </div>

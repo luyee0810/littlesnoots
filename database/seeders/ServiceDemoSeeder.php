@@ -40,7 +40,7 @@ class ServiceDemoSeeder extends Seeder
         // ---- A known provider login -------------------------------------
         $demoSitter = User::factory()->create([
             'name' => 'Nurul Aisyah',
-            'email' => 'sitter@twofatcats.test',
+            'email' => 'sitter@littlesnoots.test',
             'phone' => '012-345 6789',
         ]);
 
@@ -60,7 +60,7 @@ class ServiceDemoSeeder extends Seeder
         foreach (array_slice(self::PROVIDER_NAMES, 1) as $name) {
             $user = User::factory()->create([
                 'name' => $name,
-                'email' => Str::slug($name).'@twofatcats.test',
+                'email' => Str::slug($name).'@littlesnoots.test',
                 'phone' => '01'.fake()->numerify('#-### ####'),
             ]);
 

@@ -1,4 +1,4 @@
-# Two Fat Cats 🐾
+# Little Snoots 🐾
 
 A pet-adoption website built with **Laravel 13** and **PostgreSQL**. Browse adoptable pets
 with Petfinder-style filters, view rich pet profiles, and submit adoption applications.
@@ -22,7 +22,7 @@ cp .env.example .env
 php artisan key:generate
 
 # 3. Create the database, then edit .env with your DB credentials
-createdb twofatcats           # PostgreSQL — creates the empty database
+createdb littlesnoots           # PostgreSQL — creates the empty database
 #   set DB_USERNAME / DB_PASSWORD in .env to match your Postgres user
 
 # 4. Build the schema and demo data
@@ -41,8 +41,8 @@ php artisan serve             # http://127.0.0.1:8000
 ### Seeded demo accounts
 | Email | Role | Password |
 |-------|------|----------|
-| `admin@twofatcats.test` | admin | `password` |
-| `staff@twofatcats.test` | staff | `password` |
+| `admin@littlesnoots.test` | admin | `password` |
+| `staff@littlesnoots.test` | staff | `password` |
 
 ## Handy commands
 

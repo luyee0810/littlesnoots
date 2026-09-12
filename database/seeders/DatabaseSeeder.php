@@ -21,40 +21,40 @@ class DatabaseSeeder extends Seeder
         // ---- Users --------------------------------------------------
         User::factory()->create([
             'name' => 'Admin',
-            'email' => 'admin@twofatcats.test',
+            'email' => 'admin@littlesnoots.test',
             'role' => 'admin',
         ]);
 
         $staff = User::factory()->create([
             'name' => 'Shelter Staff',
-            'email' => 'staff@twofatcats.test',
+            'email' => 'staff@littlesnoots.test',
             'role' => 'staff',
         ]);
 
         // ---- Organizations (shelters / rescues) --------------------
-        $twoFatCats = Organization::create([
-            'name' => 'Two Fat Cats Shelter',
-            'slug' => 'two-fat-cats-shelter',
+        $secondChance = Organization::create([
+            'name' => 'Second Chance Animal Shelter',
+            'slug' => 'second-chance-animal-shelter',
             'type' => 'shelter',
-            'email' => 'hello@twofatcats.test',
+            'email' => 'hello@secondchance.test',
             'phone' => '03-2145 6789',
-            'website' => 'https://twofatcats.test',
+            'website' => 'https://secondchance.test',
             'address1' => '12, Jalan Kenari 5, Bandar Puchong Jaya',
             'city' => 'Puchong',
             'state' => 'Selangor',
             'postcode' => '47100',
             'country' => 'MY',
-            'mission_statement' => 'Two Fat Cats is a no-kill shelter in the Klang Valley, rehoming abandoned and surrendered pets across Selangor and Kuala Lumpur.',
+            'mission_statement' => 'Second Chance Animal Shelter is a no-kill shelter in the Klang Valley, rehoming abandoned and surrendered pets across Selangor and Kuala Lumpur.',
             'adoption_policy' => 'Adopters must be 18+, send an enquiry, and agree to a short home visit. Fees cover vaccinations, deworming and spay/neuter.',
             'hours' => [
                 'mon' => '10:00–18:00', 'tue' => '10:00–18:00', 'wed' => '10:00–18:00',
                 'thu' => '10:00–18:00', 'fri' => '10:00–18:00', 'sat' => '10:00–16:00', 'sun' => 'Closed',
             ],
-            'facebook' => 'https://facebook.com/twofatcats',
-            'instagram' => 'https://instagram.com/twofatcats',
+            'facebook' => 'https://facebook.com/secondchancemy',
+            'instagram' => 'https://instagram.com/secondchancemy',
         ]);
 
-        $organizations = collect([$twoFatCats])->merge(Organization::factory(2)->create());
+        $organizations = collect([$secondChance])->merge(Organization::factory(2)->create());
 
         // ---- Species + breeds --------------------------------------
         $taxonomy = [

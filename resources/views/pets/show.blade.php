@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $pet->name.' — Two Fat Cats')
+@section('title', $pet->name.' — Little Snoots')
 
 @php
     $photos = $pet->photos;

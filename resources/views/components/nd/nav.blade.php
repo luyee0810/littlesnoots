@@ -1,7 +1,7 @@
 {{-- N6 masthead: wordmark · centered links · search / wishlist / Donate --}}
 <header class="nav">
   <div class="wrap nav-in">
-    <a href="{{ route('home') }}" class="brand"><svg class="paw"><use href="#i-paw"/></svg>Two Fat Cats</a>
+    <a href="{{ route('home') }}" class="brand"><svg class="paw"><use href="#i-paw"/></svg>Little Snoots</a>
     <nav class="nav-links" aria-label="Primary">
       <a href="{{ route('newdesign') }}" class="active">Home</a>
       <a href="{{ route('pets.index') }}">Adopt</a>

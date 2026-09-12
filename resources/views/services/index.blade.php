@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pet services — Two Fat Cats')
+@section('title', 'Pet services — Little Snoots')
 
 @section('content')
     {{-- ---- Search header -------------------------------------------------- --}}

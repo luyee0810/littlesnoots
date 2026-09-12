@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Booking '.$booking->reference.' — Two Fat Cats')
+@section('title', 'Booking '.$booking->reference.' — Little Snoots')
 
 @php
     $provider = $booking->providerProfile;
@@ -93,7 +93,7 @@
                     </div>
                 </dl>
                 <p class="field-hint" style="margin-top:1rem">
-                    Payment is arranged directly between you and the sitter — Two Fat Cats doesn’t collect it.
+                    Payment is arranged directly between you and the sitter — Little Snoots doesn’t collect it.
                 </p>
             </div>
         </section>
