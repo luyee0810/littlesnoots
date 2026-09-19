@@ -52,7 +52,7 @@ Malaysia-based and priced in **MYR (RM)**.
 - Search is keywords + location + category only. Other columns exist but aren't facets yet.
 
 Demo users: `admin@littlesnoots.test`, `staff@littlesnoots.test`, `sitter@littlesnoots.test`
-(password = factory default `password`).
+(password = factory default `momo12345`).
 
 ## Key paths
 - Routes: `routes/web.php`

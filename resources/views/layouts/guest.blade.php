@@ -13,12 +13,15 @@
         {{-- Brand panel --}}
         <aside class="auth__brand">
             <div>
-                <a href="{{ route('home') }}" class="wordmark">Little Snoots</a>
+                <a href="{{ route('home') }}" class="brand" aria-label="Little Snoots home">
+                    <img src="{{ asset('images/nose-cream-sm.png') }}" alt="" width="128" height="113">
+                    <span class="brand-name">Little Snoots</span>
+                </a>
             </div>
 
             <div>
                 <p class="kicker">Pet adoption, done warmly</p>
-                <h1>Every pet deserves a second chance.</h1>
+                <h1>Every pet deserves a <em>second</em> chance.</h1>
                 <p>
                     Join a community of adopters, rescuers and sitters finding cats and dogs
                     the homes they deserve — whether you're looking for a new best friend or
@@ -35,7 +38,10 @@
         {{-- Form panel --}}
         <main class="auth__form">
             <div class="auth__card">
-                <a href="{{ route('home') }}" class="wordmark lg:hidden" style="margin-bottom:2.5rem">Little Snoots</a>
+                <a href="{{ route('home') }}" class="brand lg:hidden" style="margin-bottom:2.5rem" aria-label="Little Snoots home">
+                    <img src="{{ asset('images/nose-black-sm.png') }}" alt="" width="128" height="113">
+                    <span class="brand-name">Little Snoots</span>
+                </a>
 
                 @yield('content')
             </div>
