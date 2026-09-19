@@ -1080,6 +1080,52 @@
         gap: 0.6rem;
     }
 
+    /* Star ratings — read-only display */
+    .stars {
+        color: var(--ochre);
+        letter-spacing: 0.05em;
+    }
+
+    .stars__off {
+        color: var(--rule-strong);
+    }
+
+    /* Star rating picker. Radios run 5→1 in the DOM and are reversed visually,
+       so `~` reaches the lower stars for both hover and the checked fill. */
+    .star-picker {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        gap: 0.15rem;
+        margin-top: 0.35rem;
+    }
+
+    .star-picker input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .star-picker label {
+        cursor: pointer;
+        color: var(--rule-strong);
+        font-size: 1.9rem;
+        line-height: 1;
+        transition: color 0.15s var(--ease);
+    }
+
+    .star-picker label:hover,
+    .star-picker label:hover ~ label,
+    .star-picker input:checked ~ label {
+        color: var(--ochre);
+    }
+
+    .star-picker input:focus-visible + label {
+        outline: 2px solid var(--persimmon);
+        outline-offset: 2px;
+        border-radius: var(--r-sm, 4px);
+    }
+
     /* Big selectable cards (account type, service picker) */
     .choice {
         position: relative;

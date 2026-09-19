@@ -54,11 +54,11 @@
                             <i data-lucide="map-pin" aria-hidden="true"></i>{{ $provider->locationLabel() }}
                         </span>
                         @if ($provider->reviews_count > 0)
-                            <span>
+                            <a href="#reviews" class="link-quiet">
                                 <i data-lucide="star" aria-hidden="true"
                                    style="display:inline-block;width:14px;height:14px;vertical-align:-2px;fill:currentColor;color:var(--ochre)"></i>
-                                {{ number_format($provider->rating_avg, 1) }} ({{ $provider->reviews_count }} reviews)
-                            </span>
+                                {{ number_format($provider->rating_avg, 1) }} ({{ $provider->reviews_count }} {{ Str::plural('review', $provider->reviews_count) }})
+                            </a>
                         @endif
                         @if ($provider->years_experience > 0)
                             <span>{{ $provider->years_experience }} {{ Str::plural('year', $provider->years_experience) }} experience</span>
@@ -105,9 +105,9 @@
                                         @endif
                                     </p>
                                 </div>
-                                <div style="text-align:right;flex:0 0 auto">
-                                    <div class="price">RM {{ number_format($service->price, 0) }}</div>
-                                    <div class="label">{{ $service->category->priceSuffix() }}</div>
+                                <div style="display:flex;align-items:baseline;gap:.4rem;flex:0 0 auto;white-space:nowrap">
+                                    <span class="price">RM {{ number_format($service->price, 0) }}</span>
+                                    <span class="label">{{ $service->category->priceSuffix() }}</span>
                                 </div>
                             </div>
                         @empty
@@ -117,7 +117,7 @@
                 </section>
 
                 <section class="section-gap">
-                    <h2 style="font-size:1.5rem">Good to know</h2>
+                    <h2 style="font-size:1.5rem">Other details</h2>
                     <div class="card card-pad" style="margin-top:1rem">
                         <dl class="dl dl--cols">
                             @if ($provider->home_type)
@@ -134,6 +134,42 @@
                             @endif
                         </dl>
                     </div>
+                </section>
+
+                <section id="reviews" class="section-gap" style="scroll-margin-top:6rem">
+                    <h2 style="font-size:1.5rem">Reviews</h2>
+                    @if ($provider->reviews_count > 0)
+                        <p class="meta" style="margin-top:.35rem">
+                            <span class="stars" role="img" aria-label="Rated {{ number_format($provider->rating_avg, 1) }} out of 5">{{ str_repeat('★', (int) round($provider->rating_avg)) }}<span class="stars__off">{{ str_repeat('★', 5 - (int) round($provider->rating_avg)) }}</span></span>
+                            {{ number_format($provider->rating_avg, 1) }} average from {{ $provider->reviews_count }} {{ Str::plural('review', $provider->reviews_count) }}
+                        </p>
+                    @endif
+                    <div class="panel rows" style="margin-top:1rem">
+                        @forelse ($reviews as $review)
+                            <article class="row" style="align-items:flex-start">
+                                <div style="min-width:0;flex:1">
+                                    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.25rem 1rem">
+                                        <h3 style="font-size:1rem">{{ $review->reviewerName() }}</h3>
+                                        <time class="meta" style="font-size:.78rem" datetime="{{ $review->created_at->toDateString() }}">{{ $review->created_at->format('j M Y') }}</time>
+                                    </div>
+                                    <p style="margin-top:.2rem">
+                                        <span class="stars" role="img" aria-label="Rated {{ $review->rating }} out of 5">{{ str_repeat('★', $review->rating) }}<span class="stars__off">{{ str_repeat('★', 5 - $review->rating) }}</span></span>
+                                        @if ($review->booking?->category)
+                                            <span class="meta" style="font-size:.78rem"> · {{ $review->booking->category->name }}</span>
+                                        @endif
+                                    </p>
+                                    @if ($review->body)
+                                        <p class="prose" style="margin-top:.5rem">{{ $review->body }}</p>
+                                    @endif
+                                </div>
+                            </article>
+                        @empty
+                            <div class="row"><p class="meta">No reviews yet. Owners can leave one after a completed booking.</p></div>
+                        @endforelse
+                    </div>
+                    @if ($reviews->hasPages())
+                        <div class="pagination-wrap" style="margin-top:1rem">{{ $reviews->links() }}</div>
+                    @endif
                 </section>
             </div>
 

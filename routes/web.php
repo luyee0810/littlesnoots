@@ -12,6 +12,7 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ProviderOnboardingController;
 use App\Http\Controllers\ProviderProfileController;
 use App\Http\Controllers\ProviderServiceController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Models\Pet;
 use App\Models\PetMemorial;
@@ -57,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/sitters/{provider}/book', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])->name('bookings.review.store');
 });
 
 // ---- Pet memorials ------------------------------------------------------

@@ -21,6 +21,11 @@ class ProviderController extends Controller
 
         return view('providers.show', [
             'provider' => $provider,
+            'reviews' => $provider->reviews()
+                ->with(['user', 'booking.category'])
+                ->latest()
+                ->paginate(6)
+                ->fragment('reviews'),
             'species' => Species::orderBy('name')->get(),
             'blockedDates' => $provider->unavailableDates()
                 ->whereDate('date', '>=', now()->toDateString())

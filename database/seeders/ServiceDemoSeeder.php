@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\ProviderPhoto;
 use App\Models\ProviderProfile;
 use App\Models\ProviderService;
+use App\Models\Review;
 use App\Models\ServiceCategory;
 use App\Models\Species;
 use App\Models\User;
@@ -51,8 +52,6 @@ class ServiceDemoSeeder extends Seeder
             'state' => 'Kuala Lumpur',
             'postcode' => '59100',
             'years_experience' => 6,
-            'rating_avg' => 4.9,
-            'reviews_count' => 47,
             'bookings_count' => 112,
         ])]);
 
@@ -85,7 +84,42 @@ class ServiceDemoSeeder extends Seeder
 
             $this->makeBooking($service, $owner, $status, $speciesIds);
         }
+
+        // ---- Reviews, each backed by a completed booking ------------------
+        // The completed bookings above are left unreviewed so the review form
+        // can be tried out as one of the demo owners.
+        foreach ($providers as $i => $provider) {
+            $count = $i === 0 ? 12 : fake()->numberBetween(0, 6);
+
+            foreach (range(1, $count) as $_) {
+                if ($count === 0) {
+                    break;
+                }
+
+                $booking = $this->makeBooking($provider->services->random(), $owners->random(), 'completed', $speciesIds);
+
+                Review::factory()->forBooking($booking)->create([
+                    'body' => fake()->optional(0.85)->randomElement(self::REVIEW_LINES),
+                    'created_at' => $booking->completed_at->copy()->addDays(fake()->numberBetween(0, 3)),
+                ]);
+            }
+
+            $provider->refreshRating();
+        }
     }
+
+    private const REVIEW_LINES = [
+        'Sent photo updates every evening, so I never had to worry. Will book again.',
+        'Our cat is usually terrified of strangers but came home relaxed and happy.',
+        'Very punctual and followed the feeding schedule to the letter.',
+        'Gave our senior dog his medication without any fuss. Highly recommend.',
+        'Friendly, reliable and clearly loves animals. Mochi did not want to leave!',
+        'Great communication before and during the booking.',
+        'The walk updates with the map route were a lovely touch.',
+        'Handled our anxious rescue with a lot of patience.',
+        'Good service overall, though pick-up ran a little late.',
+        'House was spotless when we got back and the plants were watered too.',
+    ];
 
     /** @param  array<string, mixed>  $overrides */
     private function makeProvider(User $user, $categories, array $overrides = []): ProviderProfile
@@ -178,7 +212,7 @@ class ServiceDemoSeeder extends Seeder
         };
     }
 
-    private function makeBooking(ProviderService $service, User $owner, string $status, $speciesIds): void
+    private function makeBooking(ProviderService $service, User $owner, string $status, $speciesIds): Booking
     {
         $category = $service->category;
         $units = $category->requires_date_range ? fake()->numberBetween(2, 6) : 1;
@@ -211,5 +245,7 @@ class ServiceDemoSeeder extends Seeder
             'expired' => ['status' => 'expired', 'expires_at' => now()->subWeek()],
             default => ['status' => 'pending'],
         })->save();
+
+        return $booking;
     }
 }

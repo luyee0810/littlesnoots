@@ -71,6 +71,11 @@ class ProviderProfile extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     // ---- Scopes --------------------------------------------------------
 
     public function scopeApproved(Builder $query): Builder
@@ -145,6 +150,17 @@ class ProviderProfile extends Model
 
         return $this->photos->firstWhere('service_category_id', $category->id)
             ?? $this->primaryPhoto();
+    }
+
+    /** Recompute the denormalised rating_avg / reviews_count from the reviews table. */
+    public function refreshRating(): void
+    {
+        $stats = $this->reviews()->selectRaw('count(*) as total, avg(rating) as average')->first();
+
+        $this->forceFill([
+            'reviews_count' => (int) $stats->total,
+            'rating_avg' => round((float) $stats->average, 2),
+        ])->save();
     }
 
     public function isLive(): bool

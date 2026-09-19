@@ -38,6 +38,14 @@ class BookingPolicy
         return $this->isOwner($user, $booking) || $this->isProvider($user, $booking);
     }
 
+    /** The owner reviews a booking once it's completed, and only once. */
+    public function review(User $user, Booking $booking): bool
+    {
+        return $this->isOwner($user, $booking)
+            && $booking->status === 'completed'
+            && ! $booking->review()->exists();
+    }
+
     private function isOwner(User $user, Booking $booking): bool
     {
         return $booking->user_id === $user->id;

@@ -70,8 +70,9 @@ class ProviderProfileFactory extends Factory
             'status' => 'approved',
             'published_at' => now(),
             'verified_email_at' => now(),
-            'rating_avg' => fake()->randomFloat(2, 3.8, 5.0),
-            'reviews_count' => fake()->numberBetween(0, 60),
+            // Rating and count come from real reviews — see ProviderProfile::refreshRating().
+            'rating_avg' => 0,
+            'reviews_count' => 0,
             'bookings_count' => fake()->numberBetween(0, 120),
         ];
     }

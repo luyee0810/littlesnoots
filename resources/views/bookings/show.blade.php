@@ -105,6 +105,52 @@
             </section>
         @endif
 
+        @if ($booking->review)
+            <section class="panel" style="margin-top:1.25rem">
+                <div class="panel__head"><h2>{{ $isOwner ? 'Your review' : 'Review from '.$booking->owner_name }}</h2></div>
+                <div class="panel__body">
+                    <span class="stars" role="img" aria-label="Rated {{ $booking->review->rating }} out of 5">{{ str_repeat('★', $booking->review->rating) }}<span class="stars__off">{{ str_repeat('★', 5 - $booking->review->rating) }}</span></span>
+                    @if ($booking->review->body)
+                        <p class="prose" style="margin-top:.5rem">{{ $booking->review->body }}</p>
+                    @endif
+                </div>
+            </section>
+        @elseif (auth()->user()->can('review', $booking))
+            <section class="panel" style="margin-top:1.25rem">
+                <div class="panel__head"><h2>How did it go?</h2></div>
+                <div class="panel__body">
+                    <form method="POST" action="{{ route('bookings.review.store', $booking) }}">
+                        @csrf
+                        <fieldset>
+                            <legend class="field-label">Your rating</legend>
+                            <div class="star-picker">
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <input type="radio" name="rating" id="rating-{{ $i }}" value="{{ $i }}" required
+                                           @checked((int) old('rating') === $i)>
+                                    <label for="rating-{{ $i }}" title="{{ $i }} {{ Str::plural('star', $i) }}">
+                                        <span aria-hidden="true">★</span><span class="sr-only">{{ $i }} {{ Str::plural('star', $i) }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                            @error('rating')<p class="field-error">{{ $message }}</p>@enderror
+                        </fieldset>
+
+                        <div class="field" style="margin-top:1rem">
+                            <label for="body">Your review <span class="field-label__optional">optional</span></label>
+                            <textarea name="body" id="body" rows="4" maxlength="2000" class="textarea"
+                                      placeholder="What went well? Anything other owners should know?">{{ old('body') }}</textarea>
+                            @error('body')<p class="field-error">{{ $message }}</p>@enderror
+                            <p class="field-hint">Shown on {{ $provider->user->name }}’s profile with your first name and last initial.</p>
+                        </div>
+
+                        <div class="flex justify-end" style="margin-top:1rem">
+                            <button type="submit" class="btn btn--accent btn--sm">Post review</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        @endif
+
         @can('cancel', $booking)
             <div style="margin-top:2rem">
                 <form method="POST" action="{{ route('bookings.cancel', $booking) }}"
