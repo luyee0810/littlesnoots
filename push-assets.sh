@@ -1,19 +1,30 @@
 #!/usr/bin/env bash
-# Build the frontend locally and upload it to the server.
-# Shared hosting has no Node, so assets are always built here and shipped up.
+# Build the frontend and ship it to the server.
 #
-# Usage: SSH_HOST=user@little-snoots.com bash push-assets.sh
+# Shinjiru allows no inbound SSH (port 22 is refused), so rsync/scp can't reach
+# the server — assets travel through Git instead. public/build is committed on
+# purpose: the server has no Node and cannot build them itself.
+#
+# Usage: bash push-assets.sh          then, in cPanel Terminal: bash deploy.sh
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
-: "${SSH_HOST:?Set SSH_HOST, e.g. SSH_HOST=cpaneluser@little-snoots.com}"
-REMOTE_PATH="${REMOTE_PATH:-~/littlesnoots}"
-
-echo "==> Building assets locally"
+echo "==> Building assets"
 npm run build
 
-echo "==> Uploading public/build to $SSH_HOST:$REMOTE_PATH/public/"
-rsync -avz --delete public/build/ "$SSH_HOST:$REMOTE_PATH/public/build/"
+if git diff --quiet -- public/build; then
+  echo "==> No asset changes to push."
+  exit 0
+fi
 
-echo "==> Done."
+echo "==> Committing built assets"
+git add public/build
+git commit -m "Rebuild frontend assets"
+
+echo "==> Pushing"
+git push origin "$(git rev-parse --abbrev-ref HEAD)"
+
+echo
+echo "==> Now run this in the cPanel Terminal:"
+echo "    cd ~/littlesnoots && bash deploy.sh"
