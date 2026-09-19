@@ -9,24 +9,43 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
+# cPanel's default CLI php is old (7.4 on Shinjiru), and 8.5 there ships without
+# mbstring/pdo_mysql — so pin the binary that actually has the extensions.
+# Override for a different host:  PHP_BIN=/path/to/php bash deploy.sh
+PHP_BIN="${PHP_BIN:-/opt/cpanel/ea-php84/root/usr/bin/php}"
+[ -x "$PHP_BIN" ] || PHP_BIN="$(command -v php)"
+
+# Composer is not on the PATH under jailshell; prefer the local phar.
+if [ -f composer.phar ]; then
+  COMPOSER="$PHP_BIN composer.phar"
+elif command -v composer >/dev/null 2>&1; then
+  COMPOSER="composer"
+else
+  echo "No composer found. Fetch it with: curl -sS https://getcomposer.org/installer | $PHP_BIN" >&2
+  exit 1
+fi
+
 if [ ! -f .env ]; then
   echo "No .env found. Copy .env.production.example to .env and fill it in first." >&2
   exit 1
 fi
 
+echo "==> PHP: $("$PHP_BIN" -r 'echo PHP_VERSION;')"
+"$PHP_BIN" -m | grep -q '^mbstring$' || { echo "PHP is missing mbstring — Laravel needs it." >&2; exit 1; }
+
 echo "==> Pulling latest code"
 git pull --ff-only
 
 echo "==> Installing PHP dependencies (production)"
-composer install --no-dev --optimize-autoloader --no-interaction
+$COMPOSER install --no-dev --optimize-autoloader --no-interaction
 
 echo "==> Running migrations"
-php artisan migrate --force
+"$PHP_BIN" artisan migrate --force
 
 echo "==> Linking storage (ignored if it already exists)"
-php artisan storage:link || true
+"$PHP_BIN" artisan storage:link || true
 
 echo "==> Caching config, routes and views"
-php artisan optimize
+"$PHP_BIN" artisan optimize
 
 echo "==> Done. Live at $(grep '^APP_URL=' .env | cut -d= -f2-)"
