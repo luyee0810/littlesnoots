@@ -10,7 +10,6 @@ use App\Models\Species;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -56,30 +55,15 @@ class DatabaseSeeder extends Seeder
 
         $organizations = collect([$secondChance])->merge(Organization::factory(2)->create());
 
-        // ---- Species + breeds --------------------------------------
-        $taxonomy = [
-            // Breeds you actually see in Malaysian shelters — local mixes dominate.
-            'Cat' => ['Kucing Kampung', 'Domestic Shorthair', 'Persian Mix', 'Siamese', 'Maine Coon'],
-            'Dog' => ['Kampung Dog', 'Golden Retriever', 'Shih Tzu', 'Poodle', 'Beagle'],
-            'Rabbit' => ['Holland Lop', 'Netherland Dwarf'],
-        ];
+        // ---- Species, breeds + service categories ------------------
+        // Reference data lives in ReferenceSeeder so production can seed it
+        // alone, without any of the demo content below.
+        $this->call(ReferenceSeeder::class);
 
-        $breedPool = [];
-
-        foreach ($taxonomy as $speciesName => $breeds) {
-            $species = Species::create([
-                'name' => $speciesName,
-                'slug' => Str::slug($speciesName),
-            ]);
-
-            foreach ($breeds as $breedName) {
-                $breedPool[$speciesName][] = Breed::create([
-                    'species_id' => $species->id,
-                    'name' => $breedName,
-                    'slug' => Str::slug($breedName),
-                ]);
-            }
-        }
+        $breedPool = Breed::with('species')->get()
+            ->groupBy(fn (Breed $breed) => $breed->species->name)
+            ->map(fn ($breeds) => $breeds->all())
+            ->all();
 
         // ---- Pets ---------------------------------------------------
         $species = Species::all()->keyBy('name');
@@ -120,7 +104,6 @@ class DatabaseSeeder extends Seeder
 
         // ---- Phase 2 — services marketplace -------------------------
         $this->call([
-            ServiceCategorySeeder::class,
             ServiceDemoSeeder::class,
             MemorialDemoSeeder::class,
         ]);

@@ -17,7 +17,14 @@ Pet adoption website (expanding to pet **services** and **products**). Laravel 1
 php artisan serve            # http://127.0.0.1:8000
 npm run dev                  # Vite dev server (hot reload) — or `npm run build` for production assets
 php artisan migrate:fresh --seed   # rebuild + reseed demo data
+php artisan db:seed --class=ReferenceSeeder   # reference data only (species, breeds, categories)
 ```
+
+Seeders split in two: `ReferenceSeeder` holds what a *real* install needs
+(`TaxonomySeeder` species/breeds + `ServiceCategorySeeder`) and is idempotent, so
+production runs it alone; `DatabaseSeeder` calls it first, then adds demo content.
+Create the first admin with `php artisan user:admin <email> --name="..."` —
+production is never seeded, so it otherwise has no accounts.
 
 ## Domain model (Phase 1 — adoption)
 - `Organization` (shelter/rescue) → has many `Pet`
