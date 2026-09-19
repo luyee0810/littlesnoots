@@ -108,8 +108,8 @@ class ProviderProfile extends Model
     {
         $like = '%'.$term.'%';
 
-        return $query->where(fn ($q) => $q->where('city', 'ilike', $like)
-            ->orWhere('postcode', 'ilike', $like));
+        return $query->where(fn ($q) => $q->where('city', 'like', $like)
+            ->orWhere('postcode', 'like', $like));
     }
 
     /** Free-text over the provider's own words and the services they list. */
@@ -118,11 +118,11 @@ class ProviderProfile extends Model
         $like = '%'.$term.'%';
 
         return $query->where(function ($q) use ($like) {
-            $q->where('headline', 'ilike', $like)
-                ->orWhere('bio', 'ilike', $like)
-                ->orWhereHas('services', fn ($s) => $s->where('title', 'ilike', $like)
-                    ->orWhere('description', 'ilike', $like))
-                ->orWhereHas('user', fn ($u) => $u->where('name', 'ilike', $like));
+            $q->where('headline', 'like', $like)
+                ->orWhere('bio', 'like', $like)
+                ->orWhereHas('services', fn ($s) => $s->where('title', 'like', $like)
+                    ->orWhere('description', 'like', $like))
+                ->orWhereHas('user', fn ($u) => $u->where('name', 'like', $like));
         });
     }
 

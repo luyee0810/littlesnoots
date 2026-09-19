@@ -33,8 +33,8 @@ class PetController extends Controller
             ->when($request->boolean('special_needs'), fn ($q) => $q->where('special_needs', true))
             ->when($request->filled('q'), function ($query) use ($request) {
                 $term = '%'.$request->string('q').'%';
-                $query->where(fn ($q) => $q->where('name', 'ilike', $term)
-                    ->orWhere('description', 'ilike', $term));
+                $query->where(fn ($q) => $q->where('name', 'like', $term)
+                    ->orWhere('description', 'like', $term));
             })
             ->latest('published_at')
             ->paginate(12)

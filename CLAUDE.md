@@ -1,10 +1,12 @@
 # Little Snoots
 
-Pet adoption website (expanding to pet **services** and **products**). Laravel 13, PostgreSQL.
+Pet adoption website (expanding to pet **services** and **products**). Laravel 13, MySQL.
 
 ## Stack
 - **Backend:** Laravel 13, PHP 8.5
-- **Database:** PostgreSQL — database name `littlesnoots`, user `luyee`, local trust auth (no password), port 5432. Configured in `.env` (`DB_CONNECTION=pgsql`).
+- **Database:** MySQL 8+ — database name `littlesnoots`, user `root`, no password locally, port 3306.
+  Configured in `.env` (`DB_CONNECTION=mysql`). Charset `utf8mb4` / collation `utf8mb4_unicode_ci`.
+  Production target is cPanel shared hosting (MySQL), so keep queries portable — no Postgres-only SQL.
 - **Frontend:** Blade + Tailwind CSS v4 via Vite (`@tailwindcss/vite`). Figtree carries both
   body and display (display separates by weight/tracking, not a second family), self-hosted
   through the Vite `bunny()` fonts pipeline; Caveat is the script accent, loaded from Google
@@ -63,10 +65,12 @@ Demo users: `admin@littlesnoots.test`, `staff@littlesnoots.test`, `sitter@little
 
 ## Conventions
 - Thin controllers, validation in Form Requests, query logic in Eloquent scopes.
-- Case-insensitive search uses Postgres `ilike`.
+- Case-insensitive search uses plain `like` — the `utf8mb4_unicode_ci` collation is already
+  case-insensitive, so don't reach for `ilike` (Postgres-only) or `LOWER()` wrappers.
 - Format with `./vendor/bin/pint`; test with `php artisan test`.
-- Tests run against **Postgres**, not sqlite — search relies on `ilike`, which sqlite lacks.
-  One-time setup: `createdb littlesnoots_testing` (configured in `phpunit.xml`).
+- Tests run against **MySQL**, not sqlite, so they exercise the same collation and SQL as production.
+  One-time setup: `mysql -u root -e "create database littlesnoots_testing character set utf8mb4 collate utf8mb4_unicode_ci"`
+  (configured in `phpunit.xml`).
 
 ## Specialised agents (`.claude/agents/`)
 - **design-engineer** — Blade/Tailwind UI & visual design
