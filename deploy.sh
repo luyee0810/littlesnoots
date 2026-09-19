@@ -37,7 +37,12 @@ echo "==> Pulling latest code"
 git pull --ff-only
 
 echo "==> Installing PHP dependencies (production)"
-$COMPOSER install --no-dev --optimize-autoloader --no-interaction
+# --no-scripts: shared hosting disables proc_open, which Composer's post-install
+# hooks need. package:discover is run directly below instead.
+$COMPOSER install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+echo "==> Discovering packages"
+"$PHP_BIN" artisan package:discover
 
 echo "==> Running migrations"
 "$PHP_BIN" artisan migrate --force
