@@ -102,6 +102,34 @@ class DatabaseSeeder extends Seeder
                 });
         }
 
+        // ---- One listing still awaiting moderation ------------------
+        // A rescuer with no shelter behind them — the case the admin queue exists for.
+        $rescuer = User::factory()->create([
+            'name' => 'Amirah Hassan',
+            'email' => 'rescuer@littlesnoots.test',
+            'role' => 'adopter',
+        ]);
+
+        $submitted = Pet::factory()
+            ->for(Species::where('slug', 'cat')->first())
+            ->create([
+                'name' => 'Tempoyak',
+                'slug' => 'tempoyak',
+                'listed_by' => $rescuer->id,
+                'organization_id' => null,
+                'review_status' => 'submitted',
+                'published_at' => null,
+                'description' => 'Found behind a kopitiam in Bangsar, now fostered in my spare room. Very chatty, follows you everywhere.',
+            ]);
+
+        PetPhoto::create([
+            'pet_id' => $submitted->id,
+            'path' => self::photoPath('Cat', $submitted->id),
+            'alt' => 'Photo of Tempoyak',
+            'is_primary' => true,
+            'sort_order' => 0,
+        ]);
+
         // ---- Phase 2 — services marketplace -------------------------
         $this->call([
             ServiceDemoSeeder::class,

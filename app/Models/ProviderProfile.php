@@ -21,6 +21,7 @@ class ProviderProfile extends Model
         'is_smoke_free', 'has_insurance',
         'accepts_species', 'accepts_sizes', 'max_pets_per_booking', 'available_days',
         'status', 'published_at',
+        'review_notes', 'reviewed_by', 'reviewed_at',
     ];
 
     protected function casts(): array
@@ -37,6 +38,7 @@ class ProviderProfile extends Model
             'available_days' => 'array',
             'rating_avg' => 'decimal:2',
             'published_at' => 'datetime',
+            'reviewed_at' => 'datetime',
             'verified_email_at' => 'datetime',
             'verified_phone_at' => 'datetime',
             'verified_id_at' => 'datetime',
@@ -49,6 +51,11 @@ class ProviderProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 
     public function services(): HasMany
@@ -77,6 +84,12 @@ class ProviderProfile extends Model
     }
 
     // ---- Scopes --------------------------------------------------------
+
+    /** Sitters waiting on a moderator, oldest first — the approval queue. */
+    public function scopeAwaitingApproval(Builder $query): Builder
+    {
+        return $query->where('status', 'pending')->oldest('updated_at');
+    }
 
     public function scopeApproved(Builder $query): Builder
     {
@@ -161,6 +174,54 @@ class ProviderProfile extends Model
             'reviews_count' => (int) $stats->total,
             'rating_avg' => round((float) $stats->average, 2),
         ])->save();
+    }
+
+    // ---- Review workflow -----------------------------------------------
+
+    /** Approving is what puts a sitter in front of owners — isLive() gates on both. */
+    public function markApproved(User $reviewer): void
+    {
+        $this->forceFill([
+            'status' => 'approved',
+            'review_notes' => null,
+            'reviewed_by' => $reviewer->id,
+            'reviewed_at' => now(),
+            'published_at' => $this->published_at ?? now(),
+        ])->save();
+    }
+
+    /**
+     * Held back or taken down. `suspended` covers both — the sitter keeps their
+     * profile and services, they just aren't listed; the notes say why.
+     */
+    public function markSuspended(User $reviewer, string $notes): void
+    {
+        $this->forceFill([
+            'status' => 'suspended',
+            'review_notes' => $notes,
+            'reviewed_by' => $reviewer->id,
+            'reviewed_at' => now(),
+            'published_at' => null,
+        ])->save();
+    }
+
+    /** Back into the queue after the sitter has made changes. */
+    public function submitForReview(): void
+    {
+        $this->forceFill([
+            'status' => 'pending',
+            'review_notes' => null,
+        ])->save();
+    }
+
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            'draft' => 'Draft',
+            'pending' => 'Awaiting approval',
+            'approved' => $this->isLive() ? 'Live' : 'Approved',
+            'suspended' => 'Not listed',
+        };
     }
 
     public function isLive(): bool

@@ -48,8 +48,11 @@ class ProviderOnboardingTest extends TestCase
         $this->assertNotNull($profile);
         $this->assertSame('nurul-aisyah', $profile->slug);
         $this->assertSame('Petaling Jaya', $profile->city);
-        $this->assertTrue($profile->isLive());
-        $this->assertTrue($user->isProvider());
+
+        // Sitters are moderated: signing up puts you in the queue, not on the site.
+        $this->assertSame('pending', $profile->status);
+        $this->assertFalse($profile->isLive());
+        $this->assertFalse($user->isProvider());
     }
 
     public function test_becoming_a_provider_does_not_change_the_users_role(): void
@@ -59,7 +62,15 @@ class ProviderOnboardingTest extends TestCase
         $this->actingAs($user)->post(route('provider.onboarding.store'), $this->profilePayload());
 
         $this->assertSame('adopter', $user->refresh()->role);
-        $this->assertTrue($user->isProvider());
+
+        // isProvider() tracks an *approved* profile, so it stays false until a
+        // moderator approves — the role column is untouched either way.
+        $this->assertFalse($user->isProvider());
+
+        $user->providerProfile->markApproved(User::factory()->create(['role' => 'staff']));
+
+        $this->assertTrue($user->fresh()->isProvider());
+        $this->assertSame('adopter', $user->fresh()->role);
     }
 
     public function test_slugs_do_not_collide(): void

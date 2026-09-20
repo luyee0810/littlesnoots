@@ -18,7 +18,7 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard', [
             'queue' => Pet::awaitingReview()->with(['photos', 'lister', 'species'])->take(5)->get(),
             'awaitingReview' => Pet::awaitingReview()->count(),
-            'pendingProviders' => ProviderProfile::where('status', 'pending')->count(),
+            'pendingProviders' => ProviderProfile::awaitingApproval()->count(),
             'pendingApplications' => AdoptionApplication::where('status', 'pending')->count(),
             'livePets' => Pet::published()->available()->count(),
             'totalUsers' => User::count(),

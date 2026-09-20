@@ -5,6 +5,7 @@
 @section('content')
     <div class="shell-mid page">
         @include('provider.partials.nav', ['active' => 'bookings'])
+        @include('provider.partials.status-banner')
 
         <div class="page-head" style="margin-top:2rem">
             <div><h1>Booking requests</h1></div>

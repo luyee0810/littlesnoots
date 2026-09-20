@@ -36,15 +36,15 @@ class ProviderOnboardingController extends Controller
             ...$request->safe()->except('slug'),
             'user_id' => $user->id,
             'slug' => $this->uniqueSlug($user->name),
-            // Phase 2 has no admin review queue yet, so a new profile goes live
-            // immediately. 2b introduces the `pending` → `approved` step.
-            'status' => 'approved',
-            'published_at' => now(),
+            // Staff approve sitters before owners can find them. The profile is
+            // usable meanwhile — services can be added while it waits.
+            'status' => 'pending',
+            'published_at' => null,
         ]);
 
         return redirect()
             ->route('provider.services.create')
-            ->with('success', 'Profile created. Now add the services you offer.');
+            ->with('success', 'Profile created. Add the services you offer — we’ll review your profile before it goes live.');
     }
 
     private function uniqueSlug(string $name): string

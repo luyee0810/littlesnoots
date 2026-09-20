@@ -23,10 +23,11 @@
                 <span class="stat__n">{{ $pendingApplications }}</span>
                 <span class="stat__label">Adoption applications pending</span>
             </div>
-            <div class="stat">
+            <a href="{{ route('admin.providers.index', ['status' => 'pending']) }}"
+               @class(['stat', 'stat--attention' => $pendingProviders > 0])>
                 <span class="stat__n">{{ $pendingProviders }}</span>
                 <span class="stat__label">Sitters awaiting approval</span>
-            </div>
+            </a>
             <div class="stat">
                 <span class="stat__n">{{ $livePets }}</span>
                 <span class="stat__label">Pets live on the site</span>

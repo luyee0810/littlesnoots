@@ -74,7 +74,11 @@ and `organization_id` stays **optional**.
   the public site on. Transitions go through guarded model methods, never `$pet->review_status = …`.
 - `good_with_*` are **nullable** — null means "not known yet", which is not "no".
 - `/rehome` is the lister's own area (`PetListingController`); `/admin` is staff-only
-  (`staff` middleware + `PetPolicy`), currently listing moderation.
+  (`staff` middleware + `PetPolicy`) and moderates both listings and sitters.
+- **Sitters are moderated too.** Onboarding creates a `pending` profile — `markApproved()`
+  publishes it, `markSuspended()` takes it down with notes the sitter sees on their
+  dashboard, and they can `provider.resubmit` after fixing things. `isProvider()` stays
+  false until approval, so a pending sitter can still prepare services but isn't bookable.
 - Uploads are re-encoded to ≤1600px JPEG by `StorePetPhoto` — shared hosting has a disk quota.
 
 ## Key paths

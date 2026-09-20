@@ -68,6 +68,22 @@ class ServiceDemoSeeder extends Seeder
             ]));
         }
 
+        // ---- Two sitters still in the approval queue ---------------------
+        // So the admin queue isn't empty in a fresh demo install.
+        foreach (['Farah Zainal', 'Kevin Ong'] as $name) {
+            $user = User::factory()->create([
+                'name' => $name,
+                'email' => Str::slug($name).'@littlesnoots.test',
+                'phone' => '01'.fake()->numerify('#-### ####'),
+            ]);
+
+            $this->makeProvider($user, $categories, [
+                'slug' => Str::slug($name),
+                'status' => 'pending',
+                'published_at' => null,
+            ]);
+        }
+
         // ---- Pet owners with bookings in every status --------------------
         $owners = collect(self::OWNER_NAMES)->map(fn (string $name) => User::factory()->create([
             'name' => $name,

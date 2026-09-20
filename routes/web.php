@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\PetModerationController;
+use App\Http\Controllers\Admin\ProviderModerationController;
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
@@ -102,6 +103,7 @@ Route::prefix('provider')->name('provider.')->middleware('auth')->group(function
 
     Route::middleware('provider')->group(function () {
         Route::get('/profile', [ProviderProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/resubmit', [ProviderProfileController::class, 'resubmit'])->name('resubmit');
         Route::put('/profile', [ProviderProfileController::class, 'update'])->name('profile.update');
 
         Route::resource('services', ProviderServiceController::class)->except(['show']);
@@ -127,6 +129,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(fun
     Route::patch('/pets/{pet}/approve', [PetModerationController::class, 'approve'])->name('pets.approve');
     Route::patch('/pets/{pet}/reject', [PetModerationController::class, 'reject'])->name('pets.reject');
     Route::patch('/pets/{pet}/unpublish', [PetModerationController::class, 'unpublish'])->name('pets.unpublish');
+
+    Route::get('/sitters', [ProviderModerationController::class, 'index'])->name('providers.index');
+    Route::get('/sitters/{provider}', [ProviderModerationController::class, 'show'])->name('providers.show');
+    Route::patch('/sitters/{provider}/approve', [ProviderModerationController::class, 'approve'])->name('providers.approve');
+    Route::patch('/sitters/{provider}/suspend', [ProviderModerationController::class, 'suspend'])->name('providers.suspend');
 });
 
 /*

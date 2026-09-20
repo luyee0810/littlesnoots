@@ -34,4 +34,16 @@ class ProviderProfileController extends Controller
             ->route('provider.profile.edit')
             ->with('success', 'Profile updated.');
     }
+
+    /** A suspended sitter asking for another look after making changes. */
+    public function resubmit(Request $request): RedirectResponse
+    {
+        $profile = $request->user()->providerProfile;
+
+        abort_unless($profile !== null, 404);
+
+        $profile->submitForReview();
+
+        return back()->with('success', 'Your profile is back in the queue — we’ll take another look shortly.');
+    }
 }
