@@ -22,6 +22,7 @@ class Pet extends Model
         'good_with_children', 'good_with_dogs', 'good_with_cats',
         'tags', 'location', 'description', 'listed_by',
         'published_at', 'status_changed_at',
+        'review_status', 'review_notes', 'reviewed_by', 'reviewed_at',
     ];
 
     protected function casts(): array
@@ -41,6 +42,7 @@ class Pet extends Model
             'tags' => 'array',
             'published_at' => 'datetime',
             'status_changed_at' => 'datetime',
+            'reviewed_at' => 'datetime',
         ];
     }
 
@@ -81,6 +83,11 @@ class Pet extends Model
         return $this->belongsTo(User::class, 'listed_by');
     }
 
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
     // ---- Scopes --------------------------------------------------------
 
     public function scopeAvailable(Builder $query): Builder
@@ -92,6 +99,76 @@ class Pet extends Model
     {
         return $query->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    /** Listings waiting on a moderator, oldest first — the review queue. */
+    public function scopeAwaitingReview(Builder $query): Builder
+    {
+        return $query->where('review_status', 'submitted')->oldest('updated_at');
+    }
+
+    public function scopeListedBy(Builder $query, User $user): Builder
+    {
+        return $query->where('listed_by', $user->id);
+    }
+
+    // ---- Review workflow -----------------------------------------------
+
+    /**
+     * Listings move draft → submitted → approved / rejected. A rejected listing
+     * goes back to draft when its lister edits and resubmits it.
+     */
+    public function submitForReview(): void
+    {
+        $this->forceFill([
+            'review_status' => 'submitted',
+            'review_notes' => null,
+        ])->save();
+    }
+
+    /** Approving is what makes a listing public — published() gates on this. */
+    public function markApproved(User $reviewer): void
+    {
+        $this->forceFill([
+            'review_status' => 'approved',
+            'review_notes' => null,
+            'reviewed_by' => $reviewer->id,
+            'reviewed_at' => now(),
+            'published_at' => $this->published_at ?? now(),
+        ])->save();
+    }
+
+    /** Rejecting unpublishes, and the reason is shown to the lister. */
+    public function markRejected(User $reviewer, string $notes): void
+    {
+        $this->forceFill([
+            'review_status' => 'rejected',
+            'review_notes' => $notes,
+            'reviewed_by' => $reviewer->id,
+            'reviewed_at' => now(),
+            'published_at' => null,
+        ])->save();
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->published_at !== null && $this->published_at <= now();
+    }
+
+    public function isOwnedBy(?User $user): bool
+    {
+        return $user !== null && $this->listed_by === $user->id;
+    }
+
+    /** Label for the lister's own dashboard — the listing's state, not the pet's. */
+    public function reviewLabel(): string
+    {
+        return match ($this->review_status) {
+            'draft' => 'Draft',
+            'submitted' => 'Awaiting review',
+            'approved' => $this->isPublished() ? 'Live' : 'Approved',
+            'rejected' => 'Changes needed',
+        };
     }
 
     // ---- Helpers -------------------------------------------------------

@@ -74,6 +74,9 @@ class PetFactory extends Factory
             'description' => self::blurb($name),
             'published_at' => now(),
             'status_changed_at' => now(),
+            // Published implies it cleared moderation — otherwise demo pets show
+            // up as unreviewed drafts in the admin queue.
+            'review_status' => 'approved',
         ];
     }
 

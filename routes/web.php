@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\PetModerationController;
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
@@ -7,6 +9,7 @@ use App\Http\Controllers\MemorialCandleController;
 use App\Http\Controllers\MemorialController;
 use App\Http\Controllers\MemorialMessageController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\PetListingController;
 use App\Http\Controllers\ProviderBookingController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ProviderOnboardingController;
@@ -45,6 +48,21 @@ Route::get('/newdesign', function () {
 
 // ---- Pet adoption (Phase 1) --------------------------------------------
 Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+
+// ---- Rehoming: listing your own pet ------------------------------------
+// Registered before `/pets/{pet}` so `create` isn't swallowed as a slug.
+Route::prefix('rehome')->name('listings.')->middleware('auth')->group(function () {
+    Route::get('/', [PetListingController::class, 'index'])->name('index');
+    Route::get('/new', [PetListingController::class, 'create'])->name('create');
+    Route::post('/', [PetListingController::class, 'store'])->name('store');
+    Route::get('/{pet}/edit', [PetListingController::class, 'edit'])->name('edit');
+    Route::put('/{pet}', [PetListingController::class, 'update'])->name('update');
+    Route::post('/{pet}/submit', [PetListingController::class, 'submit'])->name('submit');
+    Route::delete('/{pet}', [PetListingController::class, 'destroy'])->name('destroy');
+    Route::delete('/{pet}/photos/{photo}', [PetListingController::class, 'destroyPhoto'])->name('photos.destroy');
+    Route::patch('/{pet}/photos/{photo}/primary', [PetListingController::class, 'makePhotoPrimary'])->name('photos.primary');
+});
+
 Route::get('/pets/{pet}', [PetController::class, 'show'])->name('pets.show');
 Route::post('/pets/{pet}/apply', [AdoptionApplicationController::class, 'store'])
     ->name('pets.apply');
@@ -99,6 +117,17 @@ Route::prefix('provider')->name('provider.')->middleware('auth')->group(function
 Route::get('/dashboard', DashboardController::class)
     ->middleware('auth')
     ->name('dashboard');
+
+// ---- Admin (back of house) ----------------------------------------------
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(function () {
+    Route::get('/', AdminDashboardController::class)->name('dashboard');
+
+    Route::get('/pets', [PetModerationController::class, 'index'])->name('pets.index');
+    Route::get('/pets/{pet}', [PetModerationController::class, 'show'])->name('pets.show');
+    Route::patch('/pets/{pet}/approve', [PetModerationController::class, 'approve'])->name('pets.approve');
+    Route::patch('/pets/{pet}/reject', [PetModerationController::class, 'reject'])->name('pets.reject');
+    Route::patch('/pets/{pet}/unpublish', [PetModerationController::class, 'unpublish'])->name('pets.unpublish');
+});
 
 /*
 |--------------------------------------------------------------------------

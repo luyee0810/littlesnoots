@@ -49,6 +49,10 @@ class PetController extends Controller
 
     public function show(Pet $pet): View
     {
+        // Drafts and listings awaiting moderation are visible only to their
+        // lister and to staff — anyone else gets a 403, even with the slug.
+        $this->authorize('view', $pet);
+
         $pet->load(['species', 'breed', 'secondaryBreed', 'photos', 'organization', 'lister']);
 
         return view('pets.show', ['pet' => $pet]);

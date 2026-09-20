@@ -35,6 +35,9 @@
 
             <div class="header-actions">
                 @auth
+                    @if (auth()->user()->isStaff())
+                        <a href="{{ route('admin.dashboard') }}" class="icon-button" aria-label="Open admin"><i data-lucide="shield" aria-hidden="true"></i></a>
+                    @endif
                     <a href="{{ route('dashboard') }}" class="icon-button" aria-label="Open dashboard"><i data-lucide="user-round" aria-hidden="true"></i></a>
                     <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="btn btn--outline btn--sm">Log out</button></form>
                 @else
@@ -51,6 +54,10 @@
                     @endforeach
                     @auth
                         <a href="{{ route('dashboard') }}" class="mobile-nav-link">Dashboard</a>
+                        <a href="{{ route('listings.index') }}" class="mobile-nav-link">My listings</a>
+                        @if (auth()->user()->isStaff())
+                            <a href="{{ route('admin.dashboard') }}" class="mobile-nav-link">Admin</a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="mobile-nav-link">Log out</button></form>
                     @else
                         <a href="{{ route('login') }}" class="mobile-nav-link">Log in</a>
@@ -93,6 +100,7 @@
                     <nav>
                         <a href="{{ route('home') }}#donate">Donate</a>
                         <a href="{{ route('provider.onboarding') }}">Become a sitter</a>
+                        <a href="{{ route('listings.create') }}">List a pet for adoption</a>
                     </nav>
                 </div>
                 <div>

@@ -20,6 +20,7 @@
                 @else
                     <a href="{{ route('provider.onboarding') }}" class="btn btn--outline btn--sm">Become a sitter</a>
                 @endif
+                <a href="{{ route('listings.index') }}" class="btn btn--outline btn--sm">My listings</a>
                 <a href="{{ route('pets.index') }}" class="btn btn--accent btn--sm">Browse pets</a>
             </div>
         </div>

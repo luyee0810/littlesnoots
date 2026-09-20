@@ -3358,3 +3358,217 @@ body.pet-cursor-on * {
 @media (prefers-reduced-motion: reduce) {
     .pc-root { display: none; }
 }
+
+/* ==========================================================================
+   Rehoming + admin (listing creation, moderation queue)
+   ========================================================================== */
+@layer components {
+    .shell-wide {
+        width: min(100% - 3rem, 1320px);
+        margin-inline: auto;
+    }
+
+    .panel__note {
+        font-size: 0.86rem;
+        color: var(--ink-faint);
+    }
+
+    /* Listing state, not pet status — "Awaiting review", "Live", "Changes needed". */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: var(--paper-sunk);
+        color: var(--ink-soft);
+    }
+
+    .badge--draft     { background: var(--paper-sunk); color: var(--ink-faint); }
+    .badge--submitted { background: var(--butter); color: #71540c; }
+    .badge--approved  { background: var(--sage); color: #3a5540; }
+    .badge--rejected  { background: var(--blush); color: #8d3b36; }
+
+    /* ---- Admin nav ---- */
+    .admin-nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.55rem 0.7rem;
+        border-radius: 0.9rem;
+        background: var(--forest-deep);
+        color: #fff;
+    }
+
+    .admin-nav__brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-right: 0.6rem;
+        padding-inline: 0.4rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .admin-nav__brand svg { width: 1rem; height: 1rem; }
+
+    .admin-nav__link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.6rem;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+
+    .admin-nav__link:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+    .admin-nav__link.is-on { background: rgba(255, 255, 255, 0.16); color: #fff; }
+    .admin-nav__link--exit { margin-left: auto; }
+
+    .admin-nav__count {
+        min-width: 1.25rem;
+        padding: 0 0.35rem;
+        border-radius: 999px;
+        background: var(--ochre);
+        color: #3d2c02;
+        font-size: 0.75rem;
+        text-align: center;
+    }
+
+    /* ---- Stats ---- */
+    .stat-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+        gap: 0.75rem;
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--rule);
+        border-radius: 0.9rem;
+        background: var(--paper-raised);
+    }
+
+    .stat--attention {
+        border-color: var(--ochre);
+        background: var(--butter);
+    }
+
+    .stat__n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+    .stat__label { font-size: 0.85rem; color: var(--ink-faint); }
+
+    /* ---- Filter bar ---- */
+    .filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-bar__search { margin-left: auto; }
+    .chip.is-on { background: var(--forest); color: #fff; }
+    .chip__count { opacity: 0.7; }
+
+    .input--sm { padding: 0.4rem 0.7rem; font-size: 0.9rem; }
+
+    /* ---- Listing rows (my listings + moderation queue) ---- */
+    .listing-row {
+        display: grid;
+        grid-template-columns: 5.5rem 1fr auto;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.2rem;
+    }
+
+    .listing-row--tight { padding: 0.75rem 0; border: 0; background: none; }
+    .listing-row--tight + .listing-row--tight { border-top: 1px solid var(--rule); }
+
+    .listing-row__media {
+        width: 5.5rem;
+        aspect-ratio: 1;
+        border-radius: 0.7rem;
+        overflow: hidden;
+        background: var(--paper-sunk);
+    }
+
+    .listing-row__media img { width: 100%; height: 100%; object-fit: cover; }
+
+    .listing-row__placeholder {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        color: var(--ink-faint);
+    }
+
+    .listing-row__body h2 { font-size: 1.1rem; }
+    .listing-row__body h3 { font-size: 1rem; }
+
+    .listing-row__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    @media (max-width: 40rem) {
+        .listing-row {
+            grid-template-columns: 4rem 1fr;
+        }
+
+        .listing-row__media { width: 4rem; }
+        .listing-row__actions { grid-column: 1 / -1; }
+    }
+
+    /* ---- Photo manager ---- */
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+        gap: 0.75rem;
+    }
+
+    .photo-grid__item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin: 0;
+    }
+
+    .photo-grid__item img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-radius: 0.7rem;
+        background: var(--paper-sunk);
+    }
+
+    .photo-grid__item figcaption {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    /* ---- Review detail ---- */
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+        gap: 0.9rem 1.5rem;
+    }
+
+    .detail-grid dt {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-faint);
+    }
+
+    .detail-grid dd { margin: 0.15rem 0 0; }
+}

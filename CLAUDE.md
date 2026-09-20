@@ -63,11 +63,26 @@ Malaysia-based and priced in **MYR (RM)**.
 Demo users: `admin@littlesnoots.test`, `staff@littlesnoots.test`, `sitter@littlesnoots.test`
 (password = factory default `momo12345`).
 
+## Listings & moderation (Phase 2b)
+Anyone signed in can rehome a pet — a shelter, a rescuer or a one-off fosterer — so
+**listing is a capability, not a role** (like `isProvider()`); ownership is `pets.listed_by`
+and `organization_id` stays **optional**.
+
+- `pets.status` describes the *animal* (available/adopted); `pets.review_status` describes
+  the *listing* (draft → submitted → approved/rejected). Don't conflate them.
+- Approval is what publishes: `markApproved()` sets `published_at`, which `published()` gates
+  the public site on. Transitions go through guarded model methods, never `$pet->review_status = …`.
+- `good_with_*` are **nullable** — null means "not known yet", which is not "no".
+- `/rehome` is the lister's own area (`PetListingController`); `/admin` is staff-only
+  (`staff` middleware + `PetPolicy`), currently listing moderation.
+- Uploads are re-encoded to ≤1600px JPEG by `StorePetPhoto` — shared hosting has a disk quota.
+
 ## Key paths
 - Routes: `routes/web.php`
 - Controllers: `app/Http/Controllers`
 - Form requests: `app/Http/Requests`
-- Views: `resources/views` (layout `layouts/app`, cards `partials/pet-card`)
+- Views: `resources/views` (layout `layouts/app`, cards `partials/pet-card`,
+  listing form `listings/partials/pet-fields`, admin `admin/`)
 - Roadmap & future phases: `docs/ROADMAP.md`
 
 ## Conventions
