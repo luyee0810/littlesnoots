@@ -114,6 +114,13 @@
                                 <time datetime="{{ $message->created_at->toIso8601String() }}">{{ $message->created_at->diffForHumans() }}</time>
                             </p>
                             <p class="guestbook__body">{{ $message->body }}</p>
+
+                            @include('partials.content-actions', [
+                                'content' => $message,
+                                'type' => 'memorial-message',
+                                'deletable' => $message->isDeletableBy(auth()->user()),
+                                'deleteRoute' => route('memorials.messages.destroy', $message),
+                            ])
                         </div>
                     </div>
                 @empty

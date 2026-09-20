@@ -29,6 +29,11 @@
                 <span class="stat__n">{{ $pendingProviders }}</span>
                 <span class="stat__label">Sitters awaiting approval</span>
             </a>
+            <a href="{{ route('admin.reports.index') }}"
+               @class(['stat', 'stat--attention' => $openReports > 0])>
+                <span class="stat__n">{{ $openReports }}</span>
+                <span class="stat__label">Reported items</span>
+            </a>
             <div class="stat">
                 <span class="stat__n">{{ $livePets }}</span>
                 <span class="stat__label">Pets live on the site</span>

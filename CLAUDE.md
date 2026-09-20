@@ -85,6 +85,14 @@ and `organization_id` stays **optional**.
   false until approval, so a pending sitter can still prepare services but isn't bookable.
 - Uploads are re-encoded to ≤1600px JPEG by `StorePetPhoto` — shared hosting has a disk quota.
 
+## Moderation of user-written content
+Memorial guestbook messages and sitter reviews use the `Reportable` trait (`reports` table,
+polymorphic). Reporting **hides nothing** — it queues the item at `/admin/reports` for a person
+to judge; removing content closes every open report on it, and deleting content directly does
+the same. Memorial messages are deletable by their author, the memorial's owner (their tribute
+page, their call) and staff. A sitter may reply to a review **once** — `canBeRepliedToBy()`
+refuses a second, because rewriting a reply a reader already saw isn't a correction.
+
 ## Email
 Notifications (`app/Notifications`) go out for moderation decisions, adoption enquiries
 and booking requests/answers. **Not queued** — shared hosting can't run a worker, so a

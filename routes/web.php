@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ApplicationOverviewController;
 use App\Http\Controllers\Admin\PetModerationController;
 use App\Http\Controllers\Admin\ProviderModerationController;
+use App\Http\Controllers\Admin\ReportQueueController;
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\AdoptionApplicationReviewController;
 use App\Http\Controllers\BookingController;
@@ -18,7 +19,9 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ProviderOnboardingController;
 use App\Http\Controllers\ProviderProfileController;
 use App\Http\Controllers\ProviderServiceController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReviewReplyController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Models\Pet;
 use App\Models\PetMemorial;
@@ -90,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])->name('bookings.review.store');
+    Route::post('/reviews/{review}/reply', [ReviewReplyController::class, 'store'])->name('reviews.reply');
 });
 
 // ---- Pet memorials ------------------------------------------------------
@@ -103,6 +107,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/memorials/{memorial}', [MemorialController::class, 'destroy'])->name('memorials.destroy');
     Route::post('/memorials/{memorial}/candle', [MemorialCandleController::class, 'store'])->name('memorials.candle');
     Route::post('/memorials/{memorial}/messages', [MemorialMessageController::class, 'store'])->name('memorials.messages.store');
+    Route::delete('/memorial-messages/{message}', [MemorialMessageController::class, 'destroy'])->name('memorials.messages.destroy');
+
+    // Flagging content for a moderator — never hides anything by itself.
+    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 });
 
 Route::get('/memorials/{memorial}', [MemorialController::class, 'show'])->name('memorials.show');
@@ -143,6 +151,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(fun
     Route::patch('/pets/{pet}/unpublish', [PetModerationController::class, 'unpublish'])->name('pets.unpublish');
 
     Route::get('/applications', [ApplicationOverviewController::class, 'index'])->name('applications.index');
+
+    Route::get('/reports', [ReportQueueController::class, 'index'])->name('reports.index');
+    Route::patch('/reports/{report}/remove', [ReportQueueController::class, 'remove'])->name('reports.remove');
+    Route::patch('/reports/{report}/dismiss', [ReportQueueController::class, 'dismiss'])->name('reports.dismiss');
 
     Route::get('/sitters', [ProviderModerationController::class, 'index'])->name('providers.index');
     Route::get('/sitters/{provider}', [ProviderModerationController::class, 'show'])->name('providers.show');

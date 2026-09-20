@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdoptionApplication;
 use App\Models\Pet;
 use App\Models\ProviderProfile;
+use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -20,6 +21,7 @@ class AdminDashboardController extends Controller
             'awaitingReview' => Pet::awaitingReview()->count(),
             'pendingProviders' => ProviderProfile::awaitingApproval()->count(),
             'pendingApplications' => AdoptionApplication::where('status', 'pending')->count(),
+            'openReports' => Report::open()->count(),
             'livePets' => Pet::published()->available()->count(),
             'totalUsers' => User::count(),
         ]);

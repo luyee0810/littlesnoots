@@ -3572,3 +3572,80 @@ body.pet-cursor-on * {
 
     .detail-grid dd { margin: 0.15rem 0 0; }
 }
+
+/* ==========================================================================
+   Moderation — report controls, review replies, reported quotes
+   ========================================================================== */
+@layer components {
+    /* Deliberately quiet: reporting and deleting shouldn't compete with the
+       content they sit under. */
+    .content-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    .content-actions__btn {
+        border: 0;
+        padding: 0;
+        background: none;
+        color: var(--ink-faint);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .content-actions__btn::-webkit-details-marker { display: none; }
+    .content-actions__btn:hover { color: var(--persimmon); }
+
+    .content-actions__done {
+        color: var(--ink-faint);
+        font-size: 0.78rem;
+        font-style: italic;
+    }
+
+    .report-form,
+    .review-reply-form form {
+        display: grid;
+        gap: 0.5rem;
+        max-width: 28rem;
+        margin-top: 0.6rem;
+        padding: 0.85rem;
+        border: 1px solid var(--rule);
+        border-radius: 0.7rem;
+        background: var(--paper-sunk);
+    }
+
+    .report-form label {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .review-reply {
+        margin-top: 0.75rem;
+        padding: 0.75rem 0.9rem;
+        border-left: 3px solid var(--forest);
+        border-radius: 0 0.6rem 0.6rem 0;
+        background: var(--paper-sunk);
+    }
+
+    .review-reply__byline {
+        font-size: 0.8rem;
+        color: var(--ink-faint);
+        margin-bottom: 0.25rem;
+    }
+
+    .review-reply-form { margin-top: 0.75rem; }
+
+    .reported-quote {
+        margin: 0;
+        padding: 0.85rem 1rem;
+        border-left: 3px solid var(--ochre);
+        border-radius: 0 0.6rem 0.6rem 0;
+        background: var(--paper-sunk);
+        font-style: italic;
+    }
+}

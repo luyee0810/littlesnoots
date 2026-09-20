@@ -161,6 +161,34 @@
                                     @if ($review->body)
                                         <p class="prose" style="margin-top:.5rem">{{ $review->body }}</p>
                                     @endif
+
+                                    @if ($review->provider_reply)
+                                        <div class="review-reply">
+                                            <p class="review-reply__byline">
+                                                <b>{{ $provider->user?->name }}</b> replied
+                                                <time datetime="{{ $review->replied_at?->toIso8601String() }}">{{ $review->replied_at?->diffForHumans() }}</time>
+                                            </p>
+                                            <p class="prose">{{ $review->provider_reply }}</p>
+                                        </div>
+                                    @elseif ($review->canBeRepliedToBy(auth()->user()))
+                                        <details class="review-reply-form">
+                                            <summary class="content-actions__btn">Reply to this review</summary>
+                                            <form method="POST" action="{{ route('reviews.reply', $review) }}">
+                                                @csrf
+                                                <label for="reply-{{ $review->id }}" class="sr-only">Your reply</label>
+                                                <textarea name="provider_reply" id="reply-{{ $review->id }}" rows="3" required
+                                                          minlength="2" maxlength="1000" class="textarea"
+                                                          placeholder="Thanks for having us…">{{ old('provider_reply') }}</textarea>
+                                                <p class="field-hint">You can reply once, and it’s public. Make it count.</p>
+                                                <button type="submit" class="btn btn--outline btn--sm">Post reply</button>
+                                            </form>
+                                        </details>
+                                    @endif
+
+                                    @include('partials.content-actions', [
+                                        'content' => $review,
+                                        'type' => 'review',
+                                    ])
                                 </div>
                             </article>
                         @empty
