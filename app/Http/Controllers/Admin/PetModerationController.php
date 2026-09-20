@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pet;
+use App\Notifications\PetListingApproved;
+use App\Notifications\PetListingNeedsChanges;
+use App\Support\Notify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -56,6 +59,8 @@ class PetModerationController extends Controller
     {
         $pet->markApproved($request->user());
 
+        Notify::send($pet->lister, new PetListingApproved($pet));
+
         return redirect()
             ->route('admin.pets.index')
             ->with('success', "{$pet->name} is now live on the site.");
@@ -70,6 +75,8 @@ class PetModerationController extends Controller
 
         $pet->markRejected($request->user(), $validated['review_notes']);
 
+        Notify::send($pet->lister, new PetListingNeedsChanges($pet, $validated['review_notes']));
+
         return redirect()
             ->route('admin.pets.index')
             ->with('success', "Sent back to {$pet->lister?->name} with your notes.");
@@ -83,6 +90,8 @@ class PetModerationController extends Controller
         ]);
 
         $pet->markRejected($request->user(), $validated['review_notes']);
+
+        Notify::send($pet->lister, new PetListingNeedsChanges($pet, $validated['review_notes']));
 
         return back()->with('success', "{$pet->name} has been unpublished.");
     }

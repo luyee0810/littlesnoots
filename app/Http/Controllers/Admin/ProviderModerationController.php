@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProviderProfile;
+use App\Notifications\ProviderProfileApproved;
+use App\Notifications\ProviderProfileSuspended;
+use App\Support\Notify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -53,6 +56,8 @@ class ProviderModerationController extends Controller
     {
         $provider->markApproved($request->user());
 
+        Notify::send($provider->user, new ProviderProfileApproved($provider));
+
         return redirect()
             ->route('admin.providers.index')
             ->with('success', "{$provider->user->name} is now listed as a sitter.");
@@ -67,6 +72,8 @@ class ProviderModerationController extends Controller
         ]);
 
         $provider->markSuspended($request->user(), $validated['review_notes']);
+
+        Notify::send($provider->user, new ProviderProfileSuspended($validated['review_notes']));
 
         return redirect()
             ->route('admin.providers.index')

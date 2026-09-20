@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdoptionApplicationRequest;
 use App\Models\Pet;
+use App\Notifications\AdoptionApplicationReceived;
+use App\Support\Notify;
 use Illuminate\Http\RedirectResponse;
 
 class AdoptionApplicationController extends Controller
@@ -15,11 +17,15 @@ class AdoptionApplicationController extends Controller
             return back()->with('error', "Sorry, {$pet->name} is no longer available.");
         }
 
-        $pet->applications()->create([
+        $application = $pet->applications()->create([
             ...$request->validated(),
             'user_id' => $request->user()?->id,
             'status' => 'pending',
         ]);
+
+        // Whoever listed the pet handles the enquiry — without this it sits
+        // unseen until they next log in.
+        Notify::send($pet->lister, new AdoptionApplicationReceived($application));
 
         return redirect()
             ->route('pets.show', $pet)

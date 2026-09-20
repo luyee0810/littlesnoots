@@ -81,6 +81,13 @@ and `organization_id` stays **optional**.
   false until approval, so a pending sitter can still prepare services but isn't bookable.
 - Uploads are re-encoded to ≤1600px JPEG by `StorePetPhoto` — shared hosting has a disk quota.
 
+## Email
+Notifications (`app/Notifications`) go out for moderation decisions, adoption enquiries
+and booking requests/answers. **Not queued** — shared hosting can't run a worker, so a
+queued job would sit in the table forever. Send through `App\Support\Notify`, never
+`$user->notify()` directly: it swallows and logs transport errors so a dead mail server
+can't turn a successful approval into a 500.
+
 ## Key paths
 - Routes: `routes/web.php`
 - Controllers: `app/Http/Controllers`

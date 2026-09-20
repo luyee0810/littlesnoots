@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RespondToBookingRequest;
 use App\Models\Booking;
+use App\Notifications\BookingAnswered;
+use App\Support\Notify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -32,12 +34,16 @@ class ProviderBookingController extends Controller
     {
         $booking->markAccepted($request->input('provider_response'));
 
+        $this->notifyOwner($booking);
+
         return back()->with('success', "Booking {$booking->reference} confirmed. {$booking->owner_name} has been notified.");
     }
 
     public function decline(RespondToBookingRequest $request, Booking $booking): RedirectResponse
     {
         $booking->markDeclined($request->input('provider_response'));
+
+        $this->notifyOwner($booking);
 
         return back()->with('success', "Booking {$booking->reference} declined.");
     }
@@ -53,5 +59,15 @@ class ProviderBookingController extends Controller
         $booking->markCompleted();
 
         return back()->with('success', "Booking {$booking->reference} marked as completed.");
+    }
+
+    /** The owner may have booked as a guest, so fall back to the snapshot email. */
+    private function notifyOwner(Booking $booking): void
+    {
+        $booking->refresh();
+
+        $booking->user
+            ? Notify::send($booking->user, new BookingAnswered($booking))
+            : Notify::toEmail($booking->owner_email, new BookingAnswered($booking));
     }
 }

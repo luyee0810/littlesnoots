@@ -7,6 +7,8 @@ use App\Exceptions\ProviderNotBookableException;
 use App\Http\Requests\StoreBookingRequest;
 use App\Models\Booking;
 use App\Models\ProviderProfile;
+use App\Notifications\BookingRequested;
+use App\Support\Notify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -29,6 +31,9 @@ class BookingController extends Controller
         } catch (ProviderNotBookableException $e) {
             return back()->with('error', $e->getMessage());
         }
+
+        // The sitter has a limited window to answer, so tell them now.
+        Notify::send($provider->user, new BookingRequested($booking));
 
         return redirect()
             ->route('bookings.show', $booking)
