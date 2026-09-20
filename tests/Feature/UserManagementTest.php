@@ -88,10 +88,10 @@ class UserManagementTest extends TestCase
 
     public function test_a_suspended_member_cannot_log_in(): void
     {
-        $member = User::factory()->create(['password' => bcrypt('momo12345')]);
+        $member = User::factory()->create(['password' => bcrypt('snoots123')]);
         $member->suspend($this->staff, 'Repeated abusive messages on memorials.');
 
-        $this->post('/login', ['email' => $member->email, 'password' => 'momo12345']);
+        $this->post('/login', ['email' => $member->email, 'password' => 'snoots123']);
 
         $this->get(route('dashboard'))->assertRedirect(route('login'));
         $this->assertGuest();

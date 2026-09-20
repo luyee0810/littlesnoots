@@ -19,8 +19,8 @@ class RegistrationPrivilegeTest extends TestCase
         $this->post('/register', [
             'name' => 'Not A Shelter',
             'email' => 'sneaky@example.com',
-            'password' => 'momo12345',
-            'password_confirmation' => 'momo12345',
+            'password' => 'snoots123',
+            'password_confirmation' => 'snoots123',
             'account_type' => 'shelter',
         ]);
 
@@ -42,8 +42,8 @@ class RegistrationPrivilegeTest extends TestCase
             $this->post('/register', [
                 'name' => 'Member '.$i,
                 'email' => "member{$i}@example.com",
-                'password' => 'momo12345',
-                'password_confirmation' => 'momo12345',
+                'password' => 'snoots123',
+                'password_confirmation' => 'snoots123',
                 'account_type' => $type,
             ]);
 
