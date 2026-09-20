@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ApplicationOverviewController;
 use App\Http\Controllers\Admin\PetModerationController;
 use App\Http\Controllers\Admin\ProviderModerationController;
 use App\Http\Controllers\Admin\ReportQueueController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\AdoptionApplicationReviewController;
 use App\Http\Controllers\BookingController;
@@ -151,6 +152,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(fun
     Route::patch('/pets/{pet}/unpublish', [PetModerationController::class, 'unpublish'])->name('pets.unpublish');
 
     Route::get('/applications', [ApplicationOverviewController::class, 'index'])->name('applications.index');
+
+    Route::get('/members', [UserController::class, 'index'])->name('users.index');
+    Route::get('/members/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::patch('/members/{user}/role', [UserController::class, 'updateRole'])->name('users.role');
+    Route::patch('/members/{user}/suspend', [UserController::class, 'suspend'])->name('users.suspend');
+    Route::patch('/members/{user}/reinstate', [UserController::class, 'reinstate'])->name('users.reinstate');
 
     Route::get('/reports', [ReportQueueController::class, 'index'])->name('reports.index');
     Route::patch('/reports/{report}/remove', [ReportQueueController::class, 'remove'])->name('reports.remove');

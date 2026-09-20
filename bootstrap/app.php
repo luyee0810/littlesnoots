@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsNotSuspended;
 use App\Http\Middleware\EnsureUserIsProvider;
 use App\Http\Middleware\EnsureUserIsStaff;
 use Illuminate\Foundation\Application;
@@ -14,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Every web request: a suspension must bite immediately, not at next login.
+        $middleware->appendToGroup('web', EnsureUserIsNotSuspended::class);
+
         $middleware->alias([
             'provider' => EnsureUserIsProvider::class,
             'staff' => EnsureUserIsStaff::class,

@@ -7,12 +7,13 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'phone'])]
+#[Fillable(['name', 'email', 'password', 'role', 'phone', 'suspended_at', 'suspension_reason', 'suspended_by'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -28,6 +29,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'suspended_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -88,5 +90,50 @@ class User extends Authenticatable
     public function hasProviderProfile(): bool
     {
         return $this->providerProfile()->exists();
+    }
+
+    // ---- Suspension ----------------------------------------------------
+
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
+    }
+
+    /** The account survives — their listings and bookings are still needed. */
+    public function suspend(self $by, string $reason): void
+    {
+        $this->forceFill([
+            'suspended_at' => now(),
+            'suspension_reason' => $reason,
+            'suspended_by' => $by->id,
+        ])->save();
+    }
+
+    public function reinstate(): void
+    {
+        $this->forceFill([
+            'suspended_at' => null,
+            'suspension_reason' => null,
+            'suspended_by' => null,
+        ])->save();
+    }
+
+    /**
+     * Who may act on this account. Staff can suspend ordinary members; only an
+     * admin can touch another staff member, and nobody can suspend themselves
+     * or the last way back into the site.
+     */
+    public function canBeModeratedBy(?self $actor): bool
+    {
+        if ($actor === null || $actor->id === $this->id || ! $actor->isStaff()) {
+            return false;
+        }
+
+        return $this->isStaff() ? $actor->isAdmin() : true;
+    }
+
+    public function suspender(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'suspended_by');
     }
 }

@@ -3649,3 +3649,11 @@ body.pet-cursor-on * {
         font-style: italic;
     }
 }
+
+@layer components {
+    .avatar-initial {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ink-faint);
+    }
+}
