@@ -36,7 +36,7 @@
                 <article class="panel listing-row">
                     <div class="listing-row__media">
                         @if ($photo = $provider->photos->first())
-                            <img src="{{ $photo->url() }}" alt="" loading="lazy">
+                            <img src="{{ $photo->url }}" alt="" loading="lazy">
                         @else
                             <div class="listing-row__placeholder" aria-hidden="true"><i data-lucide="user-round"></i></div>
                         @endif

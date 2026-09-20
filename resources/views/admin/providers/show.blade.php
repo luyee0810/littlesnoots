@@ -31,7 +31,7 @@
             <div class="photo-grid" style="margin-top:1.5rem">
                 @foreach ($provider->photos as $photo)
                     <figure class="photo-grid__item">
-                        <img src="{{ $photo->url() }}" alt="" loading="lazy">
+                        <img src="{{ $photo->url }}" alt="" loading="lazy">
                     </figure>
                 @endforeach
             </div>

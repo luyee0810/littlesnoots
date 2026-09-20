@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\ProviderPhoto;
 use App\Models\ProviderProfile;
 use App\Models\User;
 use Database\Seeders\ServiceCategorySeeder;
@@ -22,6 +23,16 @@ class ProviderApprovalTest extends TestCase
 
         $this->staff = User::factory()->create(['role' => 'staff']);
         $this->provider = ProviderProfile::factory()->pendingApproval()->create();
+
+        // With a photo: the admin views render one, and a factory-made profile
+        // has none — which is how a broken photo call reached the browser.
+        ProviderPhoto::create([
+            'provider_profile_id' => $this->provider->id,
+            'url' => '/images/seed/sitters/sitter-01.jpg',
+            'caption' => 'The spare room',
+            'is_primary' => true,
+            'sort_order' => 0,
+        ]);
     }
 
     public function test_a_new_sitter_lands_in_the_queue_rather_than_going_live(): void
