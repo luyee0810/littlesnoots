@@ -1,4 +1,4 @@
-{{-- Where a sitter stands with moderation. Without this an unapproved sitter
+{{-- Where a provider stands with moderation. Without this an unapproved provider
      sees an ordinary-looking dashboard and no clue why nobody can book them. --}}
 @php($profile = auth()->user()?->providerProfile)
 
@@ -11,7 +11,7 @@
         @if ($profile->status === 'pending')
             <strong>Your profile is awaiting approval.</strong>
             <p style="margin-top:.35rem">
-                Owners can’t find you yet. We check every new sitter — usually within a day.
+                Owners can’t find you yet. We check every new provider — usually within a day.
                 Adding your services and rates meanwhile will speed things up.
             </p>
         @elseif ($profile->status === 'suspended')

@@ -89,10 +89,10 @@ Route::post('/pets/{pet}/apply', [AdoptionApplicationController::class, 'store']
 // ---- Pet services (Phase 2) ---------------------------------------------
 Route::get('/services', [ServiceCategoryController::class, 'index'])->name('services.index');
 Route::get('/services/{category}', [ServiceCategoryController::class, 'show'])->name('services.show');
-Route::get('/sitters/{provider}', [ProviderController::class, 'show'])->name('providers.show');
+Route::get('/providers/{provider}', [ProviderController::class, 'show'])->name('providers.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/sitters/{provider}/book', [BookingController::class, 'store'])->name('bookings.store');
+    Route::post('/providers/{provider}/book', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])->name('bookings.review.store');
@@ -170,10 +170,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(fun
     Route::patch('/reports/{report}/remove', [ReportQueueController::class, 'remove'])->name('reports.remove');
     Route::patch('/reports/{report}/dismiss', [ReportQueueController::class, 'dismiss'])->name('reports.dismiss');
 
-    Route::get('/sitters', [ProviderModerationController::class, 'index'])->name('providers.index');
-    Route::get('/sitters/{provider}', [ProviderModerationController::class, 'show'])->name('providers.show');
-    Route::patch('/sitters/{provider}/approve', [ProviderModerationController::class, 'approve'])->name('providers.approve');
-    Route::patch('/sitters/{provider}/suspend', [ProviderModerationController::class, 'suspend'])->name('providers.suspend');
+    Route::get('/providers', [ProviderModerationController::class, 'index'])->name('providers.index');
+    Route::get('/providers/{provider}', [ProviderModerationController::class, 'show'])->name('providers.show');
+    Route::patch('/providers/{provider}/approve', [ProviderModerationController::class, 'approve'])->name('providers.approve');
+    Route::patch('/providers/{provider}/suspend', [ProviderModerationController::class, 'suspend'])->name('providers.suspend');
 });
 
 /*

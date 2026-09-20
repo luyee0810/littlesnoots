@@ -11,7 +11,7 @@
         <div class="field">
             <label for="headline">Headline</label>
             <input type="text" name="headline" id="headline" required maxlength="255" class="input"
-                   value="{{ $v('headline') }}" placeholder="Cat-obsessed sitter with a quiet spare room">
+                   value="{{ $v('headline') }}" placeholder="Cat-obsessed boarder with a quiet spare room">
             <p class="field-hint">One line that sums up what you offer.</p>
         </div>
         <div class="field">

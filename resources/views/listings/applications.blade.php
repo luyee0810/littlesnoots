@@ -6,7 +6,9 @@
     <div class="shell-mid page">
         <div class="page-head">
             <div>
-                <p class="kicker"><a href="{{ route('listings.index') }}">← My listings</a></p>
+                <a href="{{ route('listings.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> My listings
+                </a>
                 <h1>Applications for {{ $pet->name }}</h1>
                 <p class="lede" style="margin-top:.5rem">
                     {{ $applications->count() }} {{ Str::plural('application', $applications->count()) }} ·

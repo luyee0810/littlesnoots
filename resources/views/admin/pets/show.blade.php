@@ -8,7 +8,9 @@
 
         <div class="page-head" style="margin-top:1.5rem">
             <div>
-                <p class="kicker"><a href="{{ route('admin.pets.index') }}">← All listings</a></p>
+                <a href="{{ route('admin.pets.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> All listings
+                </a>
                 <h1>{{ $pet->name }}</h1>
                 <p class="lede" style="margin-top:.5rem">
                     <span class="badge badge--{{ $pet->review_status }}">{{ $pet->reviewLabel() }}</span>

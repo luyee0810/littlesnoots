@@ -33,7 +33,7 @@
         </div>
 
         <p class="meta" style="margin-top:1.5rem">
-            {{ $providers->total() }} {{ Str::plural('sitter', $providers->total()) }} found
+            {{ $providers->total() }} {{ Str::plural('provider', $providers->total()) }} found
             @if ($filters['location'] !== '')
                 near <strong>{{ $filters['location'] }}</strong>
             @endif
@@ -45,7 +45,7 @@
         @if ($providers->isEmpty())
             <div class="empty" style="margin-top:1.5rem">
                 <p class="empty__icon">🔍</p>
-                <h2>No sitters matched that search</h2>
+                <h2>No providers matched that search</h2>
                 <p>Try a broader location, or clear the keywords.</p>
                 <a href="{{ route('services.index') }}" class="btn btn--outline btn--sm">Browse all services</a>
             </div>

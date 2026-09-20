@@ -35,9 +35,9 @@
                 @php($chosen = old('account_type', 'adopter'))
                 <div class="choice-grid">
                     @foreach ([
-                        ['value' => 'adopter', 'icon' => 'house', 'title' => 'Adopt or care for a pet', 'blurb' => 'Browse pets, apply to adopt, and book sitters, groomers or walkers.'],
+                        ['value' => 'adopter', 'icon' => 'house', 'title' => 'Adopt or care for a pet', 'blurb' => 'Browse pets, apply to adopt, and book boarding, grooming, walking and more.'],
                         ['value' => 'shelter', 'icon' => 'paw-print', 'title' => 'List pets for adoption', 'blurb' => 'A shelter, a rescue, or rehoming your own pet — post listings and review applicants.'],
-                        ['value' => 'provider', 'icon' => 'heart', 'title' => 'Offer pet services', 'blurb' => 'Boarding, walking, grooming and more. We’ll set up your sitter profile next.'],
+                        ['value' => 'provider', 'icon' => 'heart', 'title' => 'Offer pet services', 'blurb' => 'Boarding, walking, grooming and more. We’ll set up your provider profile next.'],
                     ] as $option)
                         <label class="choice">
                             <input type="radio" name="account_type" value="{{ $option['value'] }}" @checked($chosen === $option['value'])>

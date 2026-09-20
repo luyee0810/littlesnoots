@@ -31,7 +31,7 @@ class UserController extends Controller
             })
             ->when($filter === 'staff', fn ($q) => $q->whereIn('role', ['staff', 'admin']))
             ->when($filter === 'suspended', fn ($q) => $q->whereNotNull('suspended_at'))
-            ->when($filter === 'sitters', fn ($q) => $q->whereHas('providerProfile'))
+            ->when($filter === 'providers', fn ($q) => $q->whereHas('providerProfile'))
             ->when($filter === 'unverified', fn ($q) => $q->whereNull('email_verified_at'))
             ->latest()
             ->paginate(25)
@@ -43,7 +43,7 @@ class UserController extends Controller
             'counts' => [
                 'all' => User::count(),
                 'staff' => User::whereIn('role', ['staff', 'admin'])->count(),
-                'sitters' => User::whereHas('providerProfile')->count(),
+                'providers' => User::whereHas('providerProfile')->count(),
                 'suspended' => User::whereNotNull('suspended_at')->count(),
                 'unverified' => User::whereNull('email_verified_at')->count(),
             ],

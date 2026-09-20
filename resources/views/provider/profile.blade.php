@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sitter profile — Little Snoots')
+@section('title', 'Provider profile — Little Snoots')
 
 @section('content')
     <div class="shell-mid page">
@@ -9,7 +9,7 @@
 
         <div class="page-head" style="margin-top:2rem">
             <div>
-                <h1>Your sitter profile</h1>
+                <h1>Your provider profile</h1>
                 <p class="lede" style="margin-top:.5rem">This is what pet owners see before they book you.</p>
             </div>
         </div>

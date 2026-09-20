@@ -152,7 +152,7 @@ class ServiceSearchTest extends TestCase
 
         $this->get(route('services.index', ['location' => 'Nowhere']))
             ->assertOk()
-            ->assertSee('No sitters matched that search');
+            ->assertSee('No providers matched that search');
     }
 
     public function test_the_public_profile_shows_services_and_rates(): void

@@ -111,7 +111,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="row"><p class="meta">This sitter hasn’t listed any services yet.</p></div>
+                            <div class="row"><p class="meta">This provider hasn’t listed any services yet.</p></div>
                         @endforelse
                     </div>
                 </section>

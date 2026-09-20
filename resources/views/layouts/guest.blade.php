@@ -23,7 +23,7 @@
                 <p class="kicker">Pet adoption, done warmly</p>
                 <h1>Every pet deserves a <em>second</em> chance.</h1>
                 <p>
-                    Join a community of adopters, rescuers and sitters finding cats and dogs
+                    Join a community of adopters, rescuers and pet carers finding cats and dogs
                     the homes they deserve — whether you're looking for a new best friend or
                     finding one for someone else.
                 </p>

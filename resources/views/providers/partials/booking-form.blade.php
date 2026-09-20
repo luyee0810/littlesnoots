@@ -14,7 +14,7 @@
 
 <div class="panel">
     @if ($services->isEmpty())
-        <div class="panel__body"><p class="meta">This sitter isn’t taking bookings right now.</p></div>
+        <div class="panel__body"><p class="meta">This provider isn’t taking bookings right now.</p></div>
     @elseif (! $provider->isLive())
         <div class="panel__body"><p class="meta">Publish your profile to start receiving bookings.</p></div>
     @else

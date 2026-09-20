@@ -45,7 +45,9 @@ production is never seeded, so it otherwise has no accounts.
 - `Organization` = Petfinder "organization": contact, address, `hours` (json), `mission_statement`, `adoption_policy`, socials.
 
 ## Domain model (Phase 2a — services marketplace)
-PetBacker-style: individuals list services, owners book them directly. Demo data is
+PetBacker-style: individuals list services, owners book them directly. They're **service
+providers**, not "sitters" — boarding, walking, grooming, taxi and training are all in scope,
+so the copy and the URLs (`/providers/{slug}`) match the `ProviderProfile` model. Demo data is
 Malaysia-based and priced in **MYR (RM)**.
 
 - `ServiceCategory` (Boarding, House Sitting, Dog Walking, Daycare, Grooming, Pet Taxi, Training).

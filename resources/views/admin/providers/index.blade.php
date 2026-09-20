@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sitters — Admin')
+@section('title', 'Service providers — Admin')
 
 @section('content')
     <div class="shell-wide page">
@@ -9,7 +9,7 @@
         <div class="page-head" style="margin-top:1.5rem">
             <div>
                 <p class="kicker">Back of house</p>
-                <h1>Sitters</h1>
+                <h1>Service providers</h1>
             </div>
         </div>
 
@@ -27,7 +27,7 @@
             <form method="GET" action="{{ route('admin.providers.index') }}" class="filter-bar__search">
                 <input type="hidden" name="status" value="{{ $filter }}">
                 <input type="search" name="q" class="input input--sm" value="{{ request('q') }}"
-                       placeholder="Search sitters" aria-label="Search sitters">
+                       placeholder="Search providers" aria-label="Search providers">
             </form>
         </div>
 
@@ -67,7 +67,7 @@
             @empty
                 <div class="empty">
                     <p><strong>Nothing here.</strong></p>
-                    <p class="field-hint">No sitters match this filter.</p>
+                    <p class="field-hint">No providers match this filter.</p>
                 </div>
             @endforelse
         </div>

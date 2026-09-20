@@ -6,7 +6,9 @@
     <div class="shell-mid page">
         <div class="page-head">
             <div>
-                <p class="kicker">Rehoming</p>
+                <a href="{{ route('listings.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> My listings
+                </a>
                 <h1>{{ $pet->name }}’s listing</h1>
                 <p class="lede" style="margin-top:.75rem">
                     <span class="badge badge--{{ $pet->review_status }}">{{ $pet->reviewLabel() }}</span>

@@ -9,7 +9,7 @@
             <p class="kicker">Pet care</p>
             <h1 style="font-size:clamp(2.2rem,4.5vw,3.4rem);max-width:16ch">Trusted pet care, close to home</h1>
             <p class="lede" style="margin-top:1rem">
-                Boarding, walking, grooming and more — from sitters across the Klang Valley
+                Boarding, walking, grooming and more — from trusted providers across the Klang Valley
                 and beyond. Browse profiles, then book the person you like.
             </p>
 
@@ -36,19 +36,19 @@
                     <p>{{ $category->tagline }}</p>
                     <span class="tile__foot">
                         {{ $category->provider_services_count }}
-                        {{ Str::plural('sitter', $category->provider_services_count) }}
+                        {{ Str::plural('provider', $category->provider_services_count) }}
                         · priced {{ $category->priceSuffix() }}
                     </span>
                 </a>
             @endforeach
         </div>
 
-        {{-- ---- Featured sitters ------------------------------------------- --}}
+        {{-- ---- Featured providers ----------------------------------------- --}}
         @if ($featured->isNotEmpty())
             <div class="band-head section-gap" style="margin-bottom:2rem">
                 <div>
                     <p class="kicker">Highly rated</p>
-                    <h2>Top rated sitters</h2>
+                    <h2>Top rated providers</h2>
                 </div>
             </div>
 
@@ -59,7 +59,7 @@
             </div>
         @endif
 
-        {{-- ---- Become a sitter -------------------------------------------- --}}
+        {{-- ---- Offer pet services -------------------------------------------- --}}
         <div class="cta-strip section-gap">
             <div>
                 <p class="kicker">Earn doing what you love</p>
@@ -67,7 +67,7 @@
                 <p>List your services and start taking bookings from pet owners near you.</p>
             </div>
             <a href="{{ route('provider.onboarding') }}" class="btn btn--accent">
-                Become a sitter <i data-lucide="arrow-right" aria-hidden="true"></i>
+                Offer pet services <i data-lucide="arrow-right" aria-hidden="true"></i>
             </a>
         </div>
     </div>

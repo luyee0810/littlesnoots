@@ -50,7 +50,7 @@
                             <dd>{{ $booking->unit_quantity }} {{ Str::plural($booking->unit_label, $booking->unit_quantity) }}</dd>
                         </div>
                         <div>
-                            <dt>Sitter</dt>
+                            <dt>Provider</dt>
                             <dd><a href="{{ route('providers.show', $provider) }}" class="link-quiet">{{ $provider->user->name }}</a></dd>
                         </div>
                     </dl>
@@ -93,7 +93,7 @@
                     </div>
                 </dl>
                 <p class="field-hint" style="margin-top:1rem">
-                    Payment is arranged directly between you and the sitter — Little Snoots doesn’t collect it.
+                    Payment is arranged directly between you and the provider — Little Snoots doesn’t collect it.
                 </p>
             </div>
         </section>

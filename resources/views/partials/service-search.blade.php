@@ -14,7 +14,7 @@
     <div>
         <label for="q" class="sr-only">Keywords</label>
         <input type="search" id="q" name="q" value="{{ $val('q') }}" class="input"
-               placeholder="Cat sitter, grooming, puppy training…">
+               placeholder="Boarding, grooming, puppy training…">
     </div>
 
     <div>

@@ -6,7 +6,9 @@
     <div class="shell-mid page">
         <div class="page-head">
             <div>
-                <p class="kicker">Rehoming</p>
+                <a href="{{ route('listings.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> My listings
+                </a>
                 <h1>List a pet for adoption</h1>
                 <p class="lede" style="margin-top:.75rem">
                     Whether you’re a shelter, a rescuer or fostering one cat — tell us about them.

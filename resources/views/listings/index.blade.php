@@ -6,7 +6,9 @@
     <div class="shell-mid page">
         <div class="page-head">
             <div>
-                <p class="kicker">Rehoming</p>
+                <a href="{{ route('dashboard') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> Dashboard
+                </a>
                 <h1>My listings</h1>
                 <p class="lede" style="margin-top:.75rem">Pets you’ve listed for adoption.</p>
             </div>

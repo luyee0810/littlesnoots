@@ -3709,3 +3709,29 @@ body.pet-cursor-on * {
         font-weight: 700;
     }
 }
+
+@layer components {
+    /* A back control, not a label. These used to live inside .kicker, which is
+       0.69rem uppercase small-caps — it read as a heading eyebrow and nobody
+       could tell it was clickable. */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        margin-bottom: 0.85rem;
+        padding: 0.3rem 0.6rem 0.3rem 0.45rem;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        color: var(--ink-soft);
+        font-size: 0.85rem;
+        font-weight: 600;
+        background: var(--paper-raised);
+    }
+
+    .back-link:hover {
+        border-color: currentColor;
+        color: var(--forest);
+    }
+
+    .back-link svg { width: 0.95rem; height: 0.95rem; }
+}

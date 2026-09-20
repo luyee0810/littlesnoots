@@ -14,8 +14,8 @@
     @endif
 
     <p class="field-hint" style="margin-top:1.25rem">
-        You can browse pets and sitters without this. We ask before you list a pet,
-        book a sitter or message someone — those all rely on us being able to reach you.
+        You can browse pets and providers without this. We ask before you list a pet,
+        book a service or message someone — those all rely on us being able to reach you.
     </p>
 
     <form method="POST" action="{{ route('verification.send') }}" style="margin-top:1.5rem">

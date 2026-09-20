@@ -14,7 +14,7 @@
                 <h1>Find the companion who changes <em>everything</em></h1>
                 <p class="lede">
                     Meet cats and dogs waiting for a second chance, and book trusted local
-                    sitters to look after them once they're home.
+                    trusted pet care for once they're home.
                 </p>
 
                 <div class="hero__actions">

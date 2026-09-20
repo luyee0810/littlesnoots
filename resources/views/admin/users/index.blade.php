@@ -14,7 +14,7 @@
         </div>
 
         <div class="filter-bar" style="margin-top:1.25rem">
-            @foreach (['all' => 'Everyone', 'sitters' => 'Sitters', 'staff' => 'Staff', 'suspended' => 'Suspended', 'unverified' => 'Unverified email'] as $key => $label)
+            @foreach (['all' => 'Everyone', 'providers' => 'Providers', 'staff' => 'Staff', 'suspended' => 'Suspended', 'unverified' => 'Unverified email'] as $key => $label)
                 <a href="{{ route('admin.users.index', ['filter' => $key, 'q' => request('q')]) }}"
                    @class(['chip', 'is-on' => $filter === $key])>
                     {{ $label }}
@@ -57,7 +57,7 @@
                                 <span class="badge badge--approved">{{ ucfirst($member->role) }}</span>
                             @endif
                             @if ($member->providerProfile)
-                                <span class="badge badge--submitted">Sitter</span>
+                                <span class="badge badge--submitted">Provider</span>
                             @endif
                             @if ($member->listed_pets_count)
                                 <span class="badge">{{ $member->listed_pets_count }} listed</span>

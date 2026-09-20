@@ -12,7 +12,9 @@
 
         <div class="page-head" style="margin-top:1.5rem">
             <div>
-                <p class="kicker"><a href="{{ route('admin.organizations.index') }}">← All shelters</a></p>
+                <a href="{{ route('admin.organizations.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> All shelters
+                </a>
                 <h1>{{ $isNew ? 'Add a shelter' : $organization->name }}</h1>
                 @unless ($isNew)
                     <p class="lede" style="margin-top:.35rem">

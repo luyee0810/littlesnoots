@@ -85,13 +85,13 @@
                         <img src="{{ asset('images/nose-black-sm.png') }}" alt="" width="128" height="113" loading="lazy">
                         <span class="brand-name">Little Snoots</span>
                     </a>
-                    <p>Connecting loving pets with loving people — and the sitters who look after them. Because every pet deserves a home.</p>
+                    <p>Connecting loving pets with loving people — and the people who look after them. Because every pet deserves a home.</p>
                 </div>
                 <div>
                     <h3>Explore</h3>
                     <nav>
                         <a href="{{ route('pets.index') }}">Adopt a pet</a>
-                        <a href="{{ route('services.index') }}">Find a sitter</a>
+                        <a href="{{ route('services.index') }}">Find pet care</a>
                         <a href="{{ route('memorials.index') }}">Pet memorials</a>
                     </nav>
                 </div>
@@ -99,7 +99,7 @@
                     <h3>Support</h3>
                     <nav>
                         <a href="{{ route('home') }}#donate">Donate</a>
-                        <a href="{{ route('provider.onboarding') }}">Become a sitter</a>
+                        <a href="{{ route('provider.onboarding') }}">Offer pet services</a>
                         <a href="{{ route('listings.create') }}">List a pet for adoption</a>
                     </nav>
                 </div>

@@ -35,7 +35,9 @@ class DashboardController extends Controller
             ),
             'unreadTotal' => $bookings->sum('unread_count'),
             'providerProfile' => $user->providerProfile,
-            'listedPets' => $user->listedPets()->with('photos')->latest()->get(),
+            // Listings live at /rehome — duplicating them here just meant two
+            // places to keep in step.
+            'hasListings' => $user->listedPets()->exists(),
         ];
 
         return view('dashboard', [

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Become a sitter — Little Snoots')
+@section('title', 'Offer pet services — Little Snoots')
 
 @php($profile = new \App\Models\ProviderProfile)
 
@@ -8,8 +8,10 @@
     <div class="shell-mid page">
         <div class="page-head">
             <div>
-                <p class="kicker">Join the sitter community</p>
-                <h1>Become a sitter</h1>
+                <a href="{{ route('dashboard') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> Dashboard
+                </a>
+                <h1>Offer pet services</h1>
                 <p class="lede" style="margin-top:.75rem">
                     Tell pet owners who you are and where you are. You’ll add your services and rates next.
                 </p>

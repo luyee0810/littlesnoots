@@ -11,7 +11,9 @@
 
         <div class="page-head" style="margin-top:1.5rem">
             <div>
-                <p class="kicker"><a href="{{ route('admin.users.index') }}">← All members</a></p>
+                <a href="{{ route('admin.users.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> All members
+                </a>
                 <h1>{{ $user->name }}</h1>
                 <p class="lede" style="margin-top:.35rem">
                     <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
@@ -23,7 +25,7 @@
                     @endif
                     <span class="badge badge--approved">{{ ucfirst($user->role) }}</span>
                     @if ($user->providerProfile)
-                        <span class="badge badge--submitted">{{ $user->providerProfile->statusLabel() }} sitter</span>
+                        <span class="badge badge--submitted">{{ $user->providerProfile->statusLabel() }} provider</span>
                     @endif
                     @if (! $user->email_verified_at)
                         <span class="badge">Email unverified</span>
@@ -65,8 +67,8 @@
         @if ($user->providerProfile)
             <section class="panel" style="margin-top:1.5rem">
                 <div class="panel__head">
-                    <h2>Sitter profile</h2>
-                    <a href="{{ route('admin.providers.show', $user->providerProfile) }}" class="panel__note">Open sitter review</a>
+                    <h2>Provider profile</h2>
+                    <a href="{{ route('admin.providers.show', $user->providerProfile) }}" class="panel__note">Open provider review</a>
                 </div>
                 <div class="panel__body">
                     <p>{{ $user->providerProfile->headline }}</p>

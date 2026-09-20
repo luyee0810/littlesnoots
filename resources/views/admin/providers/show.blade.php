@@ -8,7 +8,9 @@
 
         <div class="page-head" style="margin-top:1.5rem">
             <div>
-                <p class="kicker"><a href="{{ route('admin.providers.index') }}">← All sitters</a></p>
+                <a href="{{ route('admin.providers.index') }}" class="back-link">
+                    <i data-lucide="arrow-left" aria-hidden="true"></i> All providers
+                </a>
                 <h1>{{ $provider->user?->name }}</h1>
                 <p class="lede" style="margin-top:.35rem">{{ $provider->headline }}</p>
                 <p style="margin-top:.5rem">
@@ -61,7 +63,7 @@
         <section class="panel" style="margin-top:1.5rem">
             <div class="panel__head">
                 <h2>Services &amp; rates</h2>
-                <p class="panel__note">A sitter with no services has nothing to book.</p>
+                <p class="panel__note">A provider with no services has nothing to book.</p>
             </div>
             <div class="panel__body">
                 @forelse ($provider->services as $service)
@@ -81,7 +83,7 @@
         <section class="panel" style="margin-top:1.5rem">
             <div class="panel__head">
                 <h2>Decision</h2>
-                <p class="panel__note">Approving lists this sitter for owners to book.</p>
+                <p class="panel__note">Approving lists this provider for owners to book.</p>
             </div>
             <div class="panel__body form-grid">
                 @if ($provider->status !== 'approved')
@@ -99,10 +101,10 @@
                         </label>
                         <textarea name="review_notes" id="review_notes" rows="3" class="textarea" required
                                   minlength="10" maxlength="1000"
-                                  placeholder="The sitter sees this — e.g. please add a photo of the room pets would stay in.">{{ old('review_notes') }}</textarea>
+                                  placeholder="The provider sees this — e.g. please add a photo of the room pets would stay in.">{{ old('review_notes') }}</textarea>
                     </div>
                     <button type="submit" class="btn btn--outline">
-                        {{ $provider->isLive() ? 'Take down' : 'Send back to sitter' }}
+                        {{ $provider->isLive() ? 'Take down' : 'Send back to provider' }}
                     </button>
                 </form>
             </div>

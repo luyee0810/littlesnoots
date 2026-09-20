@@ -35,7 +35,7 @@
                         <div>
                             <h2>{{ $report->reasonLabel() }}</h2>
                             <p class="panel__note">
-                                {{ class_basename($report->reportable_type) === 'Review' ? 'Sitter review' : 'Memorial message' }}
+                                {{ class_basename($report->reportable_type) === 'Review' ? 'Provider review' : 'Memorial message' }}
                                 · reported by {{ $report->reporter?->name ?? 'a deleted account' }}
                                 {{ $report->created_at->diffForHumans() }}
                             </p>

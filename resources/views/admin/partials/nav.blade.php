@@ -1,7 +1,7 @@
 {{-- Back-of-house nav. Deliberately distinct from the public header so it's
      always obvious which side of the site you're on. --}}
 @php($awaiting = \App\Models\Pet::awaitingReview()->count())
-@php($awaitingSitters = \App\Models\ProviderProfile::awaitingApproval()->count())
+@php($awaitingProviders = \App\Models\ProviderProfile::awaitingApproval()->count())
 @php($openApplications = \App\Models\AdoptionApplication::open()->count())
 @php($openReports = \App\Models\Report::open()->count())
 <nav class="admin-nav" aria-label="Admin">
@@ -20,9 +20,9 @@
         @endif
     </a>
     <a href="{{ route('admin.providers.index') }}" @class(['admin-nav__link', 'is-on' => request()->routeIs('admin.providers.*')])>
-        Sitters
-        @if ($awaitingSitters)
-            <span class="admin-nav__count">{{ $awaitingSitters }}</span>
+        Providers
+        @if ($awaitingProviders)
+            <span class="admin-nav__count">{{ $awaitingProviders }}</span>
         @endif
     </a>
     <a href="{{ route('admin.organizations.index') }}" @class(['admin-nav__link', 'is-on' => request()->routeIs('admin.organizations.*')])>Shelters</a>

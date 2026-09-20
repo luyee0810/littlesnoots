@@ -7,8 +7,8 @@
 @endphp
 
 <div>
-    <p class="kicker">Sitter dashboard</p>
-    <nav class="tabs" aria-label="Sitter dashboard">
+    <p class="kicker">Provider dashboard</p>
+    <nav class="tabs" aria-label="Provider dashboard">
         @foreach ($tabs as $key => $tab)
             <a href="{{ route($tab['route']) }}" class="tab"
                @if (($active ?? '') === $key) aria-current="page" @endif>{{ $tab['label'] }}</a>

@@ -27,7 +27,7 @@
             <a href="{{ route('admin.providers.index', ['status' => 'pending']) }}"
                @class(['stat', 'stat--attention' => $pendingProviders > 0])>
                 <span class="stat__n">{{ $pendingProviders }}</span>
-                <span class="stat__label">Sitters awaiting approval</span>
+                <span class="stat__label">Providers awaiting approval</span>
             </a>
             <a href="{{ route('admin.reports.index') }}"
                @class(['stat', 'stat--attention' => $openReports > 0])>

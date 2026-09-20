@@ -16,11 +16,13 @@
             </div>
             <div class="flex flex-wrap gap-3">
                 @if ($providerProfile)
-                    <a href="{{ route('provider.bookings.index') }}" class="btn btn--outline btn--sm">Sitter dashboard</a>
+                    <a href="{{ route('provider.bookings.index') }}" class="btn btn--outline btn--sm">Provider dashboard</a>
                 @else
-                    <a href="{{ route('provider.onboarding') }}" class="btn btn--outline btn--sm">Become a sitter</a>
+                    <a href="{{ route('provider.onboarding') }}" class="btn btn--outline btn--sm">Offer pet services</a>
                 @endif
-                <a href="{{ route('listings.index') }}" class="btn btn--outline btn--sm">My listings</a>
+                <a href="{{ route('listings.index') }}" class="btn btn--outline btn--sm">
+                    {{ $hasListings ? 'My listings' : 'List a pet' }}
+                </a>
                 <a href="{{ route('pets.index') }}" class="btn btn--accent btn--sm">Browse pets</a>
             </div>
         </div>
@@ -33,7 +35,7 @@
                         <div class="row">
                             <div>
                                 <strong>{{ $unreadTotal }} unread {{ Str::plural('message', $unreadTotal) }}</strong>
-                                <p class="meta">From your sitters.</p>
+                                <p class="meta">From your providers.</p>
                             </div>
                         </div>
                     @endif
@@ -54,7 +56,7 @@
         <section class="section-gap">
             <div class="flex flex-wrap items-baseline justify-between gap-4">
                 <p class="label">Upcoming bookings</p>
-                <a href="{{ route('services.index') }}" class="link-quiet" style="font-size:.85rem">Find a sitter →</a>
+                <a href="{{ route('services.index') }}" class="link-quiet" style="font-size:.85rem">Find pet care →</a>
             </div>
 
             @if ($upcoming->isEmpty())
@@ -62,7 +64,7 @@
                     <p class="empty__icon">🏡</p>
                     <h2>Nothing booked right now</h2>
                     <p>Browse boarding, walking and grooming near you.</p>
-                    <a href="{{ route('services.index') }}" class="btn btn--outline btn--sm">Find a sitter</a>
+                    <a href="{{ route('services.index') }}" class="btn btn--outline btn--sm">Find pet care</a>
                 </div>
             @else
                 <div class="panel rows" style="margin-top:1rem">
@@ -80,48 +82,6 @@
                 <div class="panel rows" style="margin-top:1rem">
                     @foreach ($past as $booking)
                         @include('partials.booking-row', ['booking' => $booking])
-                    @endforeach
-                </div>
-            </section>
-        @endif
-
-        {{-- ---- Pets I've listed -------------------------------------------- --}}
-        @if ($listedPets->isNotEmpty())
-            <section class="section-gap">
-                <div class="flex flex-wrap items-baseline justify-between gap-4">
-                    <p class="label">Pets I’ve listed</p>
-                    <a href="{{ route('listings.index') }}" class="link-quiet" style="font-size:.85rem">Manage listings →</a>
-                </div>
-
-                <div class="panel rows" style="margin-top:1rem">
-                    @foreach ($listedPets as $pet)
-                        @php($photo = $pet->primaryPhoto())
-                        @php($applicationCount = $pet->applications()->count())
-                        <div class="row">
-                            <div class="flex items-center gap-4" style="min-width:0">
-                                <div class="thumb">
-                                    @if ($photo)
-                                        <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy">
-                                    @else
-                                        <span aria-hidden="true">🐾</span>
-                                    @endif
-                                </div>
-                                <div style="min-width:0">
-                                    <a href="{{ route('listings.edit', $pet) }}" class="link-draw" style="font-weight:600">{{ $pet->name }}</a>
-                                    <p class="meta" style="margin-top:.2rem">{{ $pet->breedLabel() }}</p>
-                                    <p class="meta" style="font-size:.78rem">
-                                        @if ($applicationCount)
-                                            <a href="{{ route('listings.applications', $pet) }}">
-                                                {{ $applicationCount }} {{ Str::plural('application', $applicationCount) }}
-                                            </a>
-                                        @else
-                                            No applications yet
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                            <span class="status status--idle">{{ $pet->reviewLabel() }}</span>
-                        </div>
                     @endforeach
                 </div>
             </section>
