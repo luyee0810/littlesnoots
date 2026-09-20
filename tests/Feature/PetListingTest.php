@@ -71,14 +71,23 @@ class PetListingTest extends TestCase
         $this->assertNull($pet->published_at);
     }
 
-    public function test_a_listing_can_name_a_shelter(): void
+    public function test_only_staff_can_name_a_shelter_on_a_listing(): void
     {
         $org = Organization::factory()->create();
 
+        // A member claiming a shelter would borrow its reputation — it's dropped.
         $this->actingAs($this->rescuer)
             ->post(route('listings.store'), $this->validPayload(['organization_id' => $org->id]));
 
-        $this->assertSame($org->id, Pet::firstWhere('name', 'Luna')->organization_id);
+        $this->assertNull(Pet::firstWhere('name', 'Luna')->organization_id);
+
+        $this->actingAs(User::factory()->create(['role' => 'staff']))
+            ->post(route('listings.store'), $this->validPayload([
+                'name' => 'Mochi',
+                'organization_id' => $org->id,
+            ]));
+
+        $this->assertSame($org->id, Pet::firstWhere('name', 'Mochi')->organization_id);
     }
 
     public function test_guests_cannot_create_listings(): void

@@ -39,6 +39,11 @@
                         <div style="text-align:right;flex:0 0 auto">
                             <div class="price">{{ $booking->totalLabel() }}</div>
                             <a href="{{ route('bookings.show', $booking) }}" class="label link-quiet">{{ $booking->reference }}</a>
+                            @if ($booking->unread_count ?? 0)
+                                <a href="{{ route('bookings.show', $booking) }}#messages" class="unread-dot">
+                                    {{ $booking->unread_count }}
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -88,6 +93,12 @@
                                 </p>
                             </div>
                             <div class="flex items-center gap-3">
+                                @if ($booking->unread_count ?? 0)
+                                    <a href="{{ route('bookings.show', $booking) }}#messages" class="unread-dot"
+                                       title="{{ $booking->unread_count }} unread {{ Str::plural('message', $booking->unread_count) }}">
+                                        {{ $booking->unread_count }}
+                                    </a>
+                                @endif
                                 <span class="status {{ $booking->statusClasses() }}">{{ $booking->statusLabel() }}</span>
                                 @can('complete', $booking)
                                     <form method="POST" action="{{ route('provider.bookings.complete', $booking) }}">

@@ -39,6 +39,11 @@ class RegisteredUserController extends Controller
                 ->with('status', 'Welcome! Tell us about the services you offer.');
         }
 
+        if ($request->wantsToRehome()) {
+            return redirect()->route('listings.create')
+                ->with('status', 'Welcome! Tell us about the pet you’re rehoming.');
+        }
+
         return redirect()->route('dashboard');
     }
 }

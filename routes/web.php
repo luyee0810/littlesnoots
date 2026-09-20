@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ApplicationOverviewController;
+use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\PetModerationController;
 use App\Http\Controllers\Admin\ProviderModerationController;
 use App\Http\Controllers\Admin\ReportQueueController;
@@ -59,7 +60,7 @@ Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
 
 // ---- Rehoming: listing your own pet ------------------------------------
 // Registered before `/pets/{pet}` so `create` isn't swallowed as a slug.
-Route::prefix('rehome')->name('listings.')->middleware('auth')->group(function () {
+Route::prefix('rehome')->name('listings.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [PetListingController::class, 'index'])->name('index');
     Route::get('/new', [PetListingController::class, 'create'])->name('create');
     Route::post('/', [PetListingController::class, 'store'])->name('store');
@@ -90,7 +91,7 @@ Route::get('/services', [ServiceCategoryController::class, 'index'])->name('serv
 Route::get('/services/{category}', [ServiceCategoryController::class, 'show'])->name('services.show');
 Route::get('/sitters/{provider}', [ProviderController::class, 'show'])->name('providers.show');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sitters/{provider}/book', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
@@ -106,10 +107,11 @@ Route::get('/memorials', [MemorialController::class, 'index'])->name('memorials.
 
 Route::middleware('auth')->group(function () {
     Route::get('/memorials/create', [MemorialController::class, 'create'])->name('memorials.create');
-    Route::post('/memorials', [MemorialController::class, 'store'])->name('memorials.store');
+    Route::post('/memorials', [MemorialController::class, 'store'])->middleware('verified')->name('memorials.store');
     Route::delete('/memorials/{memorial}', [MemorialController::class, 'destroy'])->name('memorials.destroy');
     Route::post('/memorials/{memorial}/candle', [MemorialCandleController::class, 'store'])->name('memorials.candle');
-    Route::post('/memorials/{memorial}/messages', [MemorialMessageController::class, 'store'])->name('memorials.messages.store');
+    Route::post('/memorials/{memorial}/messages', [MemorialMessageController::class, 'store'])
+        ->middleware('verified')->name('memorials.messages.store');
     Route::delete('/memorial-messages/{message}', [MemorialMessageController::class, 'destroy'])->name('memorials.messages.destroy');
 
     // Flagging content for a moderator — never hides anything by itself.
@@ -122,7 +124,8 @@ Route::get('/memorials/{memorial}', [MemorialController::class, 'show'])->name('
 Route::prefix('provider')->name('provider.')->middleware('auth')->group(function () {
     // Onboarding sits outside the `provider` middleware — it's how you become one.
     Route::get('/onboarding', [ProviderOnboardingController::class, 'create'])->name('onboarding');
-    Route::post('/onboarding', [ProviderOnboardingController::class, 'store'])->name('onboarding.store');
+    Route::post('/onboarding', [ProviderOnboardingController::class, 'store'])
+        ->middleware('verified')->name('onboarding.store');
 
     Route::middleware('provider')->group(function () {
         Route::get('/profile', [ProviderProfileController::class, 'edit'])->name('profile.edit');
@@ -154,6 +157,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(fun
     Route::patch('/pets/{pet}/unpublish', [PetModerationController::class, 'unpublish'])->name('pets.unpublish');
 
     Route::get('/applications', [ApplicationOverviewController::class, 'index'])->name('applications.index');
+
+    Route::resource('organizations', OrganizationController::class)->except(['show']);
 
     Route::get('/members', [UserController::class, 'index'])->name('users.index');
     Route::get('/members/{user}', [UserController::class, 'show'])->name('users.show');

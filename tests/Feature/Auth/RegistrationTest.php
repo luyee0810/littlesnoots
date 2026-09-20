@@ -33,6 +33,7 @@ class RegistrationTest extends TestCase
         ]);
     }
 
+    /** Rehoming needs no role — see RegistrationPrivilegeTest for why staff isn't granted. */
     public function test_new_users_can_register_as_shelters(): void
     {
         $this->post('/register', [
@@ -46,7 +47,7 @@ class RegistrationTest extends TestCase
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'riley@example.com',
-            'role' => 'staff',
+            'role' => 'adopter',
         ]);
     }
 

@@ -22,23 +22,31 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['nullable', 'string', 'max:50'],
-            // How the member describes themselves at sign-up:
-            //   adopter  — a pet owner adopting, booking services, or posting a memorial
-            //   shelter  — a shelter, rescue, or individual rehoming pets (gets staff tools)
-            //   provider — offers pet services; goes on to the provider onboarding form
+            // How the member describes themselves at sign-up. This picks where we
+            // send them next — it grants nothing. Listing pets is open to every
+            // member, and staff access is granted by an admin, never self-selected.
             'account_type' => ['required', 'in:adopter,shelter,provider'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
 
     /**
-     * Map the public account type to an internal user role. Providers are ordinary
-     * users — being a provider is an approved profile, not a role — so they land on
-     * `adopter` and are pushed through onboarding after registering.
+     * Everyone registers as an adopter.
+     *
+     * "Shelter" used to map to `staff`, which now means the /admin area —
+     * moderation queues, member records and suspension. Anyone could have
+     * ticked a radio button on the public sign-up form and walked in. Rehoming
+     * needs no role at all (see PetPolicy::create), and staff is granted by an
+     * admin from /admin/members.
      */
     public function role(): string
     {
-        return $this->validated('account_type') === 'shelter' ? 'staff' : 'adopter';
+        return 'adopter';
+    }
+
+    public function wantsToRehome(): bool
+    {
+        return $this->validated('account_type') === 'shelter';
     }
 
     public function wantsToProvideServices(): bool

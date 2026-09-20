@@ -56,6 +56,8 @@ Malaysia-based and priced in **MYR (RM)**.
 - `Booking` — direct booking. `pending` → provider `accepted`/`declined` → `in_progress` →
   `completed`; either side can cancel. Transitions go through guarded model methods
   (`markAccepted()` …) that throw on an illegal move; don't set `status` directly.
+- Shelters (`organizations`) are **staff-managed reference records**, optional on a listing.
+  Only staff may attach one — anyone picking any shelter would borrow its reputation.
 - **Provider is not a role.** A user can be an adopter *and* a sitter, which the single-value
   `users.role` enum can't express — `$user->isProvider()` checks for an approved profile.
 - **Pet & price are snapshotted onto the booking.** `pets` is the shelter's adoption listing, not
@@ -102,6 +104,16 @@ to judge; removing content closes every open report on it, and deleting content 
 the same. Memorial messages are deletable by their author, the memorial's owner (their tribute
 page, their call) and staff. A sitter may reply to a review **once** — `canBeRepliedToBy()`
 refuses a second, because rewriting a reply a reader already saw isn't a correction.
+
+## Email verification
+`User` implements `MustVerifyEmail`, but `verified` is applied **only where a member's
+writing reaches other people** — listing a pet, booking, memorials, guestbook, provider
+onboarding. Browsing, the dashboard and adoption enquiries stay open, because an unverified
+address is a deliverability problem, not a trust problem.
+
+**`account_type` at sign-up grants nothing.** It used to map "shelter" → `role = staff`,
+which now means the whole `/admin` area; it only chooses where the member is sent next.
+Staff is granted from `/admin/members` by an admin.
 
 ## Email
 Notifications (`app/Notifications`) go out for moderation decisions, adoption enquiries

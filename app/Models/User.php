@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +15,13 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'role', 'phone', 'suspended_at', 'suspension_reason', 'suspended_by'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+/**
+ * Verification is enforced only where a member's writing reaches other people
+ * (listing a pet, booking, messaging, reviewing) — browsing and their own
+ * dashboard stay open. An unverified address means our notifications never
+ * arrive, which matters most exactly when someone is relying on them.
+ */
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;

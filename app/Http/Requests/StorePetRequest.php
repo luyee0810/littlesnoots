@@ -23,6 +23,7 @@ class StorePetRequest extends FormRequest
             'name' => ['required', 'string', 'max:120'],
             'species_id' => ['required', 'exists:species,id'],
             // Optional by design: rescuers and fosterers rehome without a shelter.
+            // Staff-only: see prepareForValidation, which strips it from everyone else.
             'organization_id' => ['nullable', 'exists:organizations,id'],
             'location' => ['nullable', 'string', 'max:160'],
             'description' => ['required', 'string', 'max:5000'],
@@ -72,6 +73,11 @@ class StorePetRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        // A listing can't claim to come from a shelter unless staff say so.
+        if (! $this->user()?->isStaff()) {
+            $this->request->remove('organization_id');
+        }
+
         $flags = [
             'breed_mixed', 'breed_unknown', 'spayed_neutered', 'shots_current',
             'house_trained', 'declawed', 'special_needs',

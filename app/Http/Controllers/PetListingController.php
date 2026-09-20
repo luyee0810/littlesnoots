@@ -165,7 +165,12 @@ class PetListingController extends Controller
         return [
             'species' => Species::orderBy('name')->get(),
             'breeds' => Breed::orderBy('name')->get(['id', 'name', 'species_id']),
-            'organizations' => Organization::orderBy('name')->get(['id', 'name']),
+            // Only staff may attach a shelter. Letting anyone pick any
+            // organisation lets a stranger borrow a real rescue's reputation
+            // and publish its phone number on a listing it knows nothing about.
+            'organizations' => request()->user()?->isStaff()
+                ? Organization::orderBy('name')->get(['id', 'name'])
+                : collect(),
         ];
     }
 

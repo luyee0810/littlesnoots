@@ -25,6 +25,7 @@
             <span class="admin-nav__count">{{ $awaitingSitters }}</span>
         @endif
     </a>
+    <a href="{{ route('admin.organizations.index') }}" @class(['admin-nav__link', 'is-on' => request()->routeIs('admin.organizations.*')])>Shelters</a>
     <a href="{{ route('admin.users.index') }}" @class(['admin-nav__link', 'is-on' => request()->routeIs('admin.users.*')])>Members</a>
     <a href="{{ route('admin.reports.index') }}" @class(['admin-nav__link', 'is-on' => request()->routeIs('admin.reports.*')])>
         Reports

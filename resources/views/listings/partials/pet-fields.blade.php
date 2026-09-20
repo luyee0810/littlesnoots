@@ -45,6 +45,7 @@
     </div>
 </section>
 
+@if (auth()->user()?->isStaff())
 <section class="panel">
     <div class="panel__head">
         <h2>Who’s rehoming</h2>
@@ -74,6 +75,7 @@
         </div>
     </div>
 </section>
+@endif
 
 <section class="panel">
     <div class="panel__head"><h2>Breed</h2></div>

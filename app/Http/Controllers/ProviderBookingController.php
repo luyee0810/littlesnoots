@@ -17,8 +17,11 @@ class ProviderBookingController extends Controller
     {
         $profile = $request->user()->providerProfile;
 
+        $user = $request->user();
+
         $bookings = Booking::forProvider($profile)
             ->with(['user', 'category', 'service'])
+            ->withCount(['messages as unread_count' => fn ($q) => $q->unreadFor($user)])
             ->orderByRaw("case when status = 'pending' then 0 else 1 end")
             ->orderByDesc('created_at')
             ->get();
