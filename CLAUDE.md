@@ -31,6 +31,9 @@ production is never seeded, so it otherwise has no accounts.
 - `Species` → `Breed` → `Pet` → `PetPhoto`
 - `AdoptionApplication` (belongs to Pet, optionally User)
 - `User` roles: `adopter` / `staff` / `admin` (`$user->isStaff()`, `isAdmin()`)
+- Suspension (`suspended_at`) ends access on the **next request**, not the next login —
+  `EnsureUserIsNotSuspended` runs on the whole `web` group. `canBeModeratedBy()` holds the
+  guards: no self-moderation, staff can't touch staff, roles are admin-only.
 - `Pet` binds routes on `slug`; has `available()` / `published()` scopes and soft deletes.
 
 ### Pet attributes — modelled on the Petfinder v2 "animal" object
@@ -84,6 +87,13 @@ and `organization_id` stays **optional**.
   dashboard, and they can `provider.resubmit` after fixing things. `isProvider()` stays
   false until approval, so a pending sitter can still prepare services but isn't bookable.
 - Uploads are re-encoded to ≤1600px JPEG by `StorePetPhoto` — shared hosting has a disk quota.
+
+## Messaging
+Chat is scoped to a **booking**, not to a pair of users (`booking_messages`): the booking is
+what they're discussing, it gives the thread a natural end, and access control is then exactly
+`BookingPolicy::view` rather than a second set of rules. Admins can **read** a thread for
+disputes but `isParticipant()` stops them posting as a party. Opening the booking page marks
+the thread read; `unreadCountFor()` drives the dashboard badge. Messages are `Reportable`.
 
 ## Moderation of user-written content
 Memorial guestbook messages and sitter reviews use the `Reportable` trait (`reports` table,

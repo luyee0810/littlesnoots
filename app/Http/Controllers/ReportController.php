@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BookingMessage;
 use App\Models\MemorialMessage;
 use App\Models\Report;
 use App\Models\Review;
@@ -21,6 +22,7 @@ class ReportController extends Controller
     /** Only these can be reported; the type comes from the form, so it's a whitelist. */
     private const TYPES = [
         'memorial-message' => MemorialMessage::class,
+        'booking-message' => BookingMessage::class,
         'review' => Review::class,
     ];
 

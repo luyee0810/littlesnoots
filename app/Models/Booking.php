@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -84,6 +85,11 @@ class Booking extends Model
     public function petSpecies(): BelongsTo
     {
         return $this->belongsTo(Species::class, 'pet_species_id');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(BookingMessage::class)->oldest();
     }
 
     public function review(): HasOne
@@ -184,6 +190,31 @@ class Booking extends Model
     }
 
     // ---- Helpers -------------------------------------------------------
+
+    /** The person on the other side of this booking, from someone's point of view. */
+    public function counterpartFor(User $user): ?User
+    {
+        return $this->user_id === $user->id
+            ? $this->providerProfile?->user
+            : $this->user;
+    }
+
+    public function isParticipant(?User $user): bool
+    {
+        return $user !== null
+            && ($this->user_id === $user->id || $this->providerProfile?->user_id === $user->id);
+    }
+
+    public function unreadCountFor(User $user): int
+    {
+        return $this->messages()->unreadFor($user)->count();
+    }
+
+    /** Everything the other side sent is read the moment the thread is opened. */
+    public function markMessagesReadFor(User $user): void
+    {
+        $this->messages()->unreadFor($user)->update(['read_at' => now()]);
+    }
 
     public function getRouteKeyName(): string
     {

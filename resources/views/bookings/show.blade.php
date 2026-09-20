@@ -105,6 +105,58 @@
             </section>
         @endif
 
+        {{-- ---- Messages --------------------------------------------------- --}}
+        <section class="panel" id="messages" style="margin-top:1.25rem;scroll-margin-top:6rem">
+            <div class="panel__head">
+                <h2>Messages</h2>
+                <p class="panel__note">
+                    Between you and {{ $booking->counterpartFor(auth()->user())?->name ?? 'the other party' }}
+                </p>
+            </div>
+            <div class="panel__body">
+                @forelse ($booking->messages as $message)
+                    @php($mine = $message->user_id === auth()->id())
+                    <div @class(['chat-msg', 'chat-msg--mine' => $mine])>
+                        <p class="chat-msg__byline">
+                            <b>{{ $mine ? 'You' : $message->user?->name ?? 'Deleted account' }}</b>
+                            <time datetime="{{ $message->created_at->toIso8601String() }}">{{ $message->created_at->diffForHumans() }}</time>
+                        </p>
+                        <p class="chat-msg__body">{{ $message->body }}</p>
+
+                        @unless ($mine)
+                            @include('partials.content-actions', [
+                                'content' => $message,
+                                'type' => 'booking-message',
+                            ])
+                        @endunless
+                    </div>
+                @empty
+                    <p class="field-hint">
+                        No messages yet. Anything you agree here stays on the record —
+                        useful if a booking goes wrong.
+                    </p>
+                @endforelse
+
+                @if ($booking->isParticipant(auth()->user()))
+                    <form method="POST" action="{{ route('bookings.messages.store', $booking) }}"
+                          class="chat-form">
+                        @csrf
+                        <label for="body" class="sr-only">Your message</label>
+                        <textarea name="body" id="body" rows="3" required maxlength="2000" class="textarea"
+                                  placeholder="Ask a question, share pick-up details…">{{ old('body') }}</textarea>
+                        @error('body')<p class="field-error">{{ $message }}</p>@enderror
+                        <div class="flex justify-end">
+                            <button type="submit" class="btn btn--accent btn--sm">Send</button>
+                        </div>
+                    </form>
+                @else
+                    <p class="field-hint" style="margin-top:1rem">
+                        You’re viewing this as an admin — you can read the thread but not post in it.
+                    </p>
+                @endif
+            </div>
+        </section>
+
         @if ($booking->review)
             <section class="panel" style="margin-top:1.25rem">
                 <div class="panel__head"><h2>{{ $isOwner ? 'Your review' : 'Review from '.$booking->owner_name }}</h2></div>

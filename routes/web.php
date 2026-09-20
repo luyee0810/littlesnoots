@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\AdoptionApplicationReviewController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingMessageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MemorialCandleController;
 use App\Http\Controllers\MemorialController;
@@ -94,6 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])->name('bookings.review.store');
+    Route::post('/bookings/{booking}/messages', [BookingMessageController::class, 'store'])->name('bookings.messages.store');
     Route::post('/reviews/{review}/reply', [ReviewReplyController::class, 'store'])->name('reviews.reply');
 });
 

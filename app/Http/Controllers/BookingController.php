@@ -40,11 +40,19 @@ class BookingController extends Controller
             ->with('success', "Request sent to {$provider->user->name}. You'll hear back within ".Booking::RESPONSE_WINDOW_HOURS.' hours.');
     }
 
-    public function show(Booking $booking): View
+    public function show(Request $request, Booking $booking): View
     {
         $this->authorize('view', $booking);
 
-        $booking->load(['providerProfile.user', 'providerProfile.photos', 'service', 'category', 'user']);
+        $booking->load([
+            'providerProfile.user', 'providerProfile.photos', 'service', 'category', 'user',
+            'messages.user',
+        ]);
+
+        // Opening the thread is reading it.
+        if ($booking->isParticipant($request->user())) {
+            $booking->markMessagesReadFor($request->user());
+        }
 
         return view('bookings.show', ['booking' => $booking]);
     }
