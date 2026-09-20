@@ -19,10 +19,11 @@
                 <span class="stat__n">{{ $awaitingReview }}</span>
                 <span class="stat__label">Listings awaiting review</span>
             </a>
-            <div class="stat">
+            <a href="{{ route('admin.applications.index') }}"
+               @class(['stat', 'stat--attention' => $pendingApplications > 0])>
                 <span class="stat__n">{{ $pendingApplications }}</span>
                 <span class="stat__label">Adoption applications pending</span>
-            </div>
+            </a>
             <a href="{{ route('admin.providers.index', ['status' => 'pending']) }}"
                @class(['stat', 'stat--attention' => $pendingProviders > 0])>
                 <span class="stat__n">{{ $pendingProviders }}</span>

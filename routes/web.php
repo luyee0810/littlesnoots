@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\ApplicationOverviewController;
 use App\Http\Controllers\Admin\PetModerationController;
 use App\Http\Controllers\Admin\ProviderModerationController;
 use App\Http\Controllers\AdoptionApplicationController;
+use App\Http\Controllers\AdoptionApplicationReviewController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MemorialCandleController;
@@ -62,6 +64,16 @@ Route::prefix('rehome')->name('listings.')->middleware('auth')->group(function (
     Route::delete('/{pet}', [PetListingController::class, 'destroy'])->name('destroy');
     Route::delete('/{pet}/photos/{photo}', [PetListingController::class, 'destroyPhoto'])->name('photos.destroy');
     Route::patch('/{pet}/photos/{photo}/primary', [PetListingController::class, 'makePhotoPrimary'])->name('photos.primary');
+
+    Route::get('/{pet}/applications', [AdoptionApplicationReviewController::class, 'index'])->name('applications');
+});
+
+// ---- Adoption applications ----------------------------------------------
+Route::middleware('auth')->group(function () {
+    Route::patch('/applications/{application}', [AdoptionApplicationReviewController::class, 'update'])
+        ->name('applications.update');
+    Route::patch('/applications/{application}/withdraw', [AdoptionApplicationReviewController::class, 'withdraw'])
+        ->name('applications.withdraw');
 });
 
 Route::get('/pets/{pet}', [PetController::class, 'show'])->name('pets.show');
@@ -129,6 +141,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff'])->group(fun
     Route::patch('/pets/{pet}/approve', [PetModerationController::class, 'approve'])->name('pets.approve');
     Route::patch('/pets/{pet}/reject', [PetModerationController::class, 'reject'])->name('pets.reject');
     Route::patch('/pets/{pet}/unpublish', [PetModerationController::class, 'unpublish'])->name('pets.unpublish');
+
+    Route::get('/applications', [ApplicationOverviewController::class, 'index'])->name('applications.index');
 
     Route::get('/sitters', [ProviderModerationController::class, 'index'])->name('providers.index');
     Route::get('/sitters/{provider}', [ProviderModerationController::class, 'show'])->name('providers.show');

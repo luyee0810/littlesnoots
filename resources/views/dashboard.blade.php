@@ -126,13 +126,23 @@
                                     <p class="meta" style="font-size:.78rem">Asked {{ $application->created_at->format('M j, Y') }}</p>
                                 </div>
                             </div>
-                            <span @class([
-                                'status',
-                                'status--warn' => $application->status === 'pending',
-                                'status--ok' => $application->status === 'approved',
-                                'status--bad' => $application->status === 'rejected',
-                                'status--idle' => ! in_array($application->status, ['pending', 'approved', 'rejected'], true),
-                            ])>{{ $application->status }}</span>
+                            <div class="flex items-center gap-3">
+                                <span @class([
+                                    'status',
+                                    'status--warn' => $application->status === 'pending',
+                                    'status--ok' => $application->status === 'approved',
+                                    'status--bad' => $application->status === 'rejected',
+                                    'status--idle' => ! in_array($application->status, ['pending', 'approved', 'rejected'], true),
+                                ])>{{ $application->statusLabel() }}</span>
+
+                                @can('withdraw', $application)
+                                    <form method="POST" action="{{ route('applications.withdraw', $application) }}"
+                                          onsubmit="return confirm('Withdraw your application?')">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="btn btn--ghost btn--sm">Withdraw</button>
+                                    </form>
+                                @endcan
+                            </div>
                         </div>
                     @empty
                         <div class="empty" style="border:0;padding-block:2.5rem">

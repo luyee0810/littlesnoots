@@ -52,7 +52,9 @@
                         <p style="margin-top:.5rem">
                             <span class="badge badge--{{ $pet->review_status }}">{{ $pet->reviewLabel() }}</span>
                             @if ($pet->applications_count)
-                                <span class="badge">{{ $pet->applications_count }} {{ Str::plural('application', $pet->applications_count) }}</span>
+                                <a href="{{ route('listings.applications', $pet) }}" class="badge badge--submitted">
+                                    {{ $pet->applications_count }} {{ Str::plural('application', $pet->applications_count) }}
+                                </a>
                             @endif
                             <span class="field-hint">· updated {{ $pet->updated_at->diffForHumans() }}</span>
                         </p>

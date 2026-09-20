@@ -74,7 +74,11 @@ and `organization_id` stays **optional**.
   the public site on. Transitions go through guarded model methods, never `$pet->review_status = …`.
 - `good_with_*` are **nullable** — null means "not known yet", which is not "no".
 - `/rehome` is the lister's own area (`PetListingController`); `/admin` is staff-only
-  (`staff` middleware + `PetPolicy`) and moderates both listings and sitters.
+  (`staff` middleware + `PetPolicy`) and covers listings, sitters and an application overview.
+- **Applications are handled by the lister, not staff.** `/rehome/{pet}/applications` is the
+  review screen (`AdoptionApplicationPolicy`: lister or staff decide, the applicant may only
+  withdraw). Transitions are guarded: pending → reviewing → approved/rejected, and approving
+  optionally moves the pet to `pending`/`adopted` — it never assumes it.
 - **Sitters are moderated too.** Onboarding creates a `pending` profile — `markApproved()`
   publishes it, `markSuspended()` takes it down with notes the sitter sees on their
   dashboard, and they can `provider.resubmit` after fixing things. `isProvider()` stays

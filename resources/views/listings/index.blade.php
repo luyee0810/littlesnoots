@@ -45,7 +45,9 @@
                             <p style="margin-top:.5rem">
                                 <span class="badge badge--{{ $pet->review_status }}">{{ $pet->reviewLabel() }}</span>
                                 @if ($pet->applications_count)
-                                    <span class="badge">{{ $pet->applications_count }} {{ Str::plural('application', $pet->applications_count) }}</span>
+                                    <a href="{{ route('listings.applications', $pet) }}" class="badge badge--submitted">
+                                        {{ $pet->applications_count }} {{ Str::plural('application', $pet->applications_count) }}
+                                    </a>
                                 @endif
                             </p>
 
@@ -55,7 +57,8 @@
                         </div>
 
                         <div class="listing-row__actions">
-                            <a href="{{ route('listings.edit', $pet) }}" class="btn btn--outline btn--sm">Edit</a>
+                            <a href="{{ route('listings.applications', $pet) }}" class="btn btn--outline btn--sm">Applications</a>
+                            <a href="{{ route('listings.edit', $pet) }}" class="btn btn--ghost btn--sm">Edit</a>
                             @if ($pet->isPublished())
                                 <a href="{{ route('pets.show', $pet) }}" class="btn btn--ghost btn--sm">View</a>
                             @endif
