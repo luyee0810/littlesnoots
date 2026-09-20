@@ -28,7 +28,7 @@
             @forelse ($organizations as $organization)
                 <article class="panel listing-row">
                     <div class="listing-row__media">
-                        <div class="listing-row__placeholder" aria-hidden="true"><i data-lucide="home"></i></div>
+                        <div class="listing-row__placeholder" aria-hidden="true"><i data-lucide="house"></i></div>
                     </div>
 
                     <div class="listing-row__body">
